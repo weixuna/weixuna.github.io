@@ -1,14 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>ceshi</title>
-    <url>/2023/08/04/ceshi/</url>
-    <content><![CDATA[]]></content>
+    <title>第一章 C数据类型及语句</title>
+    <url>/2023/08/06/%E7%AC%AC%E4%B8%80%E7%AB%A0-C%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%8F%8A%E8%AF%AD%E5%8F%A5/</url>
+    <content><![CDATA[<h3 id="1-1-C语言的特点"><a href="#1-1-C语言的特点" class="headerlink" title="1.1 C语言的特点"></a>1.1 C语言的特点</h3><p>1.#include&lt;stdio.h&gt; 头文件包含，一定要有 </p>
+<p>2.每一个 c 语言的程序有且只有一个 main 函数，这是整个程序的开始位置 </p>
+<p>3.C 语言中()、[]、{}、“”、’’、都必须成对出现,必须是英文符号 </p>
+<p>4.C 语言中语句要以分号结束。 </p>
+<p>5.&#x2F;&#x2F;为注释  &#x2F;*  *&#x2F;为多行注释</p>
+<h3 id="1-2-关键字"><a href="#1-2-关键字" class="headerlink" title="1.2 关键字"></a>1.2 关键字</h3><p>1、char 字符型</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">char</span> ch1 = <span class="string">&#x27;zifu&#x27;</span>;</span><br></pre></td></tr></table></figure></div>
+
+<p>2、short 短整型 占2个字节</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">short</span> <span class="type">int</span> a = <span class="number">11</span>; <span class="number">-32768</span> - --<span class="number">-32767</span></span><br></pre></td></tr></table></figure></div>
+
+<p>3、int整形，在32位占4个字节，16位站2个</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> a = <span class="number">44</span>; <span class="number">-20</span> 亿--<span class="number">-20</span> 亿</span><br></pre></td></tr></table></figure></div>
+
+<p>4、long长整型 在32位占4个字节</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">long</span> <span class="type">int</span> a = <span class="number">66</span>;</span><br></pre></td></tr></table></figure></div>
+
+<p>5、float 单精度浮点型（实数），占4个字节</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">float</span> b = <span class="number">3.8f</span>;</span><br></pre></td></tr></table></figure></div>
+
+<p>6、 double 双精度浮点型 （实数），占 8 个字节</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">double</span> b=<span class="number">3.8</span>;</span><br></pre></td></tr></table></figure></div>
+
+<p>7、 struct 这个关键字是与结构体类型相关的关键字，可以用它来定义结构体类型</p>
+<p>8、 union 这个关键字是与共用体（联合体）相关的关键字</p>
+<p>9、 enum 与枚举类型相关的关键字</p>
+<p>10、signed 有符号(正负)的意思</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">//定义cahr，整形数据使用signed修饰，代表数据是有符号的，可以保存整数，复数</span></span><br><span class="line"><span class="type">signed</span> <span class="type">int</span> b = <span class="number">-6</span>;  <span class="comment">//关键字可以省略</span></span><br></pre></td></tr></table></figure></div>
+
+<p>11、unsigned 无符号的意思</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">int</span> a = <span class="number">101</span>; <span class="comment">//只能保存整数和0</span></span><br></pre></td></tr></table></figure></div>
+
+<p>12、void 空类型的关键字</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">//void 是用来修饰函数的参数或者返回值，代表函数没有参数或没有返回值</span></span><br><span class="line"><span class="comment">//例：</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">fun</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//代表 fun 函数没有返回值，fun 函数没有参数</span></span><br></pre></td></tr></table></figure></div>
+
+<p>1.1.2 存储相关关键字</p>
+<p>1、<strong>register</strong> 是寄存器的意思，用 register 修饰的变量是寄存器变量（尽量分配存储空间在寄存器中）</p>
+<p>(1): 定义的变量不一定真的存放在寄存器中。 </p>
+<p>(2)：cpu 取数据的时候去寄存器中拿数据比去内存中拿数据要快 </p>
+<p>(3)：因为寄存器比较宝贵，所以不能定义寄存器数组 </p>
+<p>(4)：register 只能修饰 字符型及整型的，不能修饰浮点型</p>
+<p>(5)：因为 register 修饰的变量可能存放在寄存器中不存放在内存中，所以不能对寄存器变量取地址。因为只有存放在内存中的数据才有地址</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">register</span> <span class="type">int</span> a;</span><br><span class="line"><span class="type">int</span> *p;</span><br><span class="line">p = &amp;a; <span class="comment">//错误的，a 可能没有地址</span></span><br></pre></td></tr></table></figure></div>
+
+<p>2、static是静态的意思</p>
+<p>static 可以修饰全局变量、局部变量、函数</p>
+<p>3、const常量的意思</p>
+<p>用 const 修饰的变量是只读的，不能修改它的值（<strong>可以修改指针</strong>）</p>
+<p>4、auto   int a;和 int a 是等价的，auto 关键字现在基本不用</p>
+<p>5、extern是外部的意思，一般用于函数和全局变量的声明</p>
+<h3 id="1-1-3-控制语句相关的关键字"><a href="#1-1-3-控制语句相关的关键字" class="headerlink" title="1.1.3 控制语句相关的关键字"></a>1.1.3 控制语句相关的关键字</h3><p>if 、else 、break、continue、for 、while、do、switch case、goto、default</p>
+<h3 id="1-1-4-其他关键字"><a href="#1-1-4-其他关键字" class="headerlink" title="1.1.4 其他关键字"></a>1.1.4 其他关键字</h3><p>1、sizeof</p>
+<p>使用来测变量、数组的占用存储空间的大小（字节数） </p>
+<p>例 3： </p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> a=<span class="number">10</span>; </span><br><span class="line"><span class="type">int</span> num; </span><br><span class="line">num=<span class="keyword">sizeof</span>(a);</span><br></pre></td></tr></table></figure></div>
+
+<p>2、typedef 重命名相关的关键字</p>
+<p>关键字 ，作用是给一个已有的类型，重新起个类型名，并没有创造一个新的类型 </p>
+<p>以前大家看程序的时候见过类似的变量定义方法 </p>
+<p>INT16 a; </p>
+<p>U8 ch; </p>
+<p>INT32 b</p>
+<p>3、volatile 易改变的意思 </p>
+<p>用 volatile 定义的变量，是易改变的，即告诉 cpu 每次用 volatile 变量的时候，重新去内存中取 。保证用的是最新的值,而不是寄存器中的备份。 </p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">//volatile 关键字现在较少适用 </span></span><br><span class="line"><span class="keyword">volatile</span> <span class="type">int</span> a=<span class="number">10</span>;</span><br></pre></td></tr></table></figure></div>]]></content>
       <categories>
-        <category>ceshi</category>
+        <category>千峰</category>
       </categories>
       <tags>
-        <tag>ww</tag>
+        <tag>嵌入式C</tag>
       </tags>
   </entry>
 </search>

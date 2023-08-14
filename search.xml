@@ -526,4 +526,73 @@
         <tag>嵌入式C</tag>
       </tags>
   </entry>
+  <entry>
+    <title>电路基础</title>
+    <url>/2023/08/10/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>第五章-指针</title>
+    <url>/2023/08/14/%E7%AC%AC%E4%BA%94%E7%AB%A0-%E6%8C%87%E9%92%88/</url>
+    <content><![CDATA[<p>一、指针的概念</p>
+<p>操作系统给每个存储单元分配了一个编号，从0x00 00 00 00 00 ~0xff ff ff ff 称之为内存</p>
+<p>指针变量：是变量也是指针变量，这个变量用来存放一个地址编号。在32位系统下，有4个字节</p>
+<p>注：</p>
+<p>​	1、无论声明类型的地址，都有存储单元的编号，在32位下都是4个总控二。所以 任何类型的指针变量都是4个字节</p>
+<p>​	2、对应类型的指针变量，只能存放对应类型的变量地址</p>
+<p>​	比如：整形的指针变量，就是存放整型变量的地址</p>
+]]></content>
+      <categories>
+        <category>千锋C语言</category>
+        <category>指针</category>
+      </categories>
+      <tags>
+        <tag>嵌入式C</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>第四章-预处理</title>
+    <url>/2023/08/14/%E7%AC%AC%E5%9B%9B%E7%AB%A0-%E9%A2%84%E5%A4%84%E7%90%86/</url>
+    <content><![CDATA[<h3 id="一、C语言编译过程"><a href="#一、C语言编译过程" class="headerlink" title="一、C语言编译过程"></a>一、C语言编译过程</h3><p>预处理、编译、汇编链接</p>
+<p>gcc -E hello.c -o hello.i  1、预处理 </p>
+<p>gcc -S hello.i –o hello.s  2、编译 </p>
+<p>gcc -c hello.s -o hello.o  3、汇编 </p>
+<p>gcc hello.o -o hello_elf   4、链接</p>
+<p>1、预编译  </p>
+<p>​	将.c的头文件、宏展开</p>
+<p>​	生成.i文件</p>
+<p>2、编译</p>
+<p>​	将预处理的.i文件生成 .s汇编文件</p>
+<p>3、汇编</p>
+<p>​	将.s汇编文件生成.o目标文件</p>
+<p>4、链接</p>
+<p>​	.o文件链接成目标文件</p>
+<h3 id="二、include"><a href="#二、include" class="headerlink" title="二、include"></a>二、include</h3><p>#include&lt;&gt; 用尖括号包括头文件，在系统指定的路径找到头文件</p>
+<p>#include”” 用双引号包括头文件，先在当前目录下找到头文件，找不到再系统指定的路径下找</p>
+<h3 id="三、define"><a href="#三、define" class="headerlink" title="三、define"></a>三、define</h3><p>定义 宏用define</p>
+<h4 id="1、不带参数的宏"><a href="#1、不带参数的宏" class="headerlink" title="1、不带参数的宏"></a>1、不带参数的宏</h4><div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> PI 3.14</span></span><br><span class="line"><span class="comment">//终止宏的定义 定义</span></span><br><span class="line"><span class="meta">#<span class="keyword">undef</span> PI</span></span><br></pre></td></tr></table></figure></div>
+
+<h4 id="2、带参宏"><a href="#2、带参宏" class="headerlink" title="2、带参宏"></a>2、带参宏</h4><p>#define S(a,b) a*b</p>
+<p>注意带参宏的形参 ab没有类名</p>
+<p>S(2,4)在预处理代替成字符串的形参  2 * 4</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> S(a,b) ((a)*(b))</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>,S(<span class="number">2</span>,<span class="number">4</span>));</span><br><span class="line">    <span class="comment">//((2+8))*(4))=40</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>,S(<span class="number">2</span> + <span class="number">8</span>,<span class="number">4</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="3、带参宏和代餐函数的区"><a href="#3、带参宏和代餐函数的区" class="headerlink" title="3、带参宏和代餐函数的区"></a>3、带参宏和代餐函数的区</h4><p>​	带参宏被<strong>调用</strong>多少次就会<strong>展开多少次</strong>，执行代码的时候没有函数调用的过程，不需要压栈弹栈。带参宏，浪费空间</p>
+<p>​	带参函数，代码只有一份，存放在代码段，调用的时候去代码段指令，调用的时候要压栈弹栈。带参函数浪费了时间，节省了空间</p>
+<h3 id="四、选择性编译"><a href="#四、选择性编译" class="headerlink" title="四、选择性编译"></a>四、选择性编译</h3><p>1、</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifdef</span> AAA</span></span><br><span class="line">	代码段一</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">	代码段二</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//如果在当前.c ifdef上边定义AAA，就编译代码段一，否则编译代码段二</span></span><br><span class="line"> <span class="meta">#<span class="keyword">include</span> AAA</span></span><br><span class="line"> </span><br><span class="line"> <span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="meta">#<span class="keyword">ifdef</span> AAA</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;hello kitty\n&quot;</span>);</span><br><span class="line">        <span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;hello ddd&quot;</span>);</span><br><span class="line">        <span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>2、</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> AAA</span></span><br><span class="line">	代码段一</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">	代码段二</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"> <span class="comment">//和第一种互补，用在防止头文件重复包含，用于多文件编程中.h的第一行就是#indef #endif结尾</span></span><br></pre></td></tr></table></figure></div>
+
+<p>3、</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">if</span> 表达式</span></span><br><span class="line">	代码块一</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">	代码块二</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="comment">//如果表达式为真，编译第一段，否则第二段</span></span><br><span class="line"><span class="comment">//多用于注释多行代码</span></span><br></pre></td></tr></table></figure></div>]]></content>
+      <categories>
+        <category>千锋C语言</category>
+        <category>预处理</category>
+      </categories>
+      <tags>
+        <tag>嵌入式C</tag>
+      </tags>
+  </entry>
 </search>

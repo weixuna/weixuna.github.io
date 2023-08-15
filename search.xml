@@ -541,6 +541,88 @@
 <p>​	1、无论声明类型的地址，都有存储单元的编号，在32位下都是4个总控二。所以 任何类型的指针变量都是4个字节</p>
 <p>​	2、对应类型的指针变量，只能存放对应类型的变量地址</p>
 <p>​	比如：整形的指针变量，就是存放整型变量的地址</p>
+<p>扩展：</p>
+<p>字符变量 char ch; ch占一个字节，它有一个地址编号，这个地址编号就是ch的地址整型变量int a； a占四个字节，占有四个字节的存储单位，有四个地址编号</p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%AC%AC%E4%BA%94%E7%AB%A0-%E6%8C%87%E9%92%88/1692111175278.png" alt="1692111175278"></p>
+<h3 id="三、指针的定义方法"><a href="#三、指针的定义方法" class="headerlink" title="三、指针的定义方法"></a>三、指针的定义方法</h3><p>1、简单指针</p>
+<p>数据类型 * 指针变量名</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> * P;</span><br><span class="line"><span class="comment">//定义一个指针变量P</span></span><br></pre></td></tr></table></figure></div>
+
+<p>2、指针的运算符</p>
+<p>&amp; 取地址 ：获取一个变量的地址</p>
+<p> *取值：标识作用</p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%AC%AC%E4%BA%94%E7%AB%A0-%E6%8C%87%E9%92%88/1692111376174.png" alt="1692111376174"></p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="type">int</span> a = <span class="number">100</span>;</span><br><span class="line">    <span class="type">int</span> * p;<span class="comment">//指针变量</span></span><br><span class="line">    p = &amp;a;<span class="comment">//a的地址保存在p中</span></span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;a = %d %d\n&quot;</span>,a,*p);</span><br><span class="line">    ptintf(<span class="string">&quot;&amp;a = %p %p\n&quot;</span>,&amp;a,p);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%AC%AC%E4%BA%94%E7%AB%A0-%E6%8C%87%E9%92%88/1692111480916.png" alt="1692111480916"></p>
+<p>3、指针大小</p>
+<p>在32位系统下，所以类型的指针都是4个字节</p>
+<h3 id="四、指针的分类"><a href="#四、指针的分类" class="headerlink" title="四、指针的分类"></a>四、指针的分类</h3><p>1、字符指针</p>
+<p>​	char *p;&#x2F;&#x2F;只能存放字符串类型的地址编号</p>
+<p>​	char ch;</p>
+<p>​	p &#x3D; &ch;</p>
+<p>2、短整型指针</p>
+<p>​	short int *p;</p>
+<p>​	short int a;</p>
+<p>​	p &#x3D;&a;</p>
+<p>3、整形指针</p>
+<p>​	int *p;</p>
+<p>​	int a; </p>
+<p>​	p &#x3D;&a;</p>
+<p>4：长整型指针</p>
+<p>long int *p;</p>
+<p>long int a; </p>
+<p>p &#x3D;&a; </p>
+<p>5：float 型的指针</p>
+<p>float *p;</p>
+<p>float a; </p>
+<p>p &#x3D;&a;</p>
+<p>6：double型的指针</p>
+<p>​	double *p;</p>
+<p>​	double a; </p>
+<p>​	p &#x3D;&a; </p>
+<p>7：函数指针 </p>
+<p>8、结构体指针 </p>
+<p>9、指针的指针 </p>
+<p>10、数组指针 </p>
+<h3 id="五、指针和变量的关系"><a href="#五、指针和变量的关系" class="headerlink" title="五、指针和变量的关系"></a>五、指针和变量的关系</h3><p><strong>指针可以存放变量地址编号</strong></p>
+<p>1、变量的名称引用变量</p>
+<p>​	int a;</p>
+<p>​	a&#x3D;100;</p>
+<p>2、通过指针变量引来变量</p>
+<p>​	int *p;</p>
+<p>​	p &#x3D;&a;&#x2F;&#x2F;p保存了a的地址，也可以说p指向了a</p>
+<p>​	*p&#x3D;100;</p>
+<p>注意：指针变量的定义可以初始化</p>
+<p>int a;</p>
+<p>int *p&#x3D;&a;&#x2F;&#x2F;指针就是存放变量地址的</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="type">int</span> *p1,*p2,temp,a,b;</span><br><span class="line">    p1=&amp;a;</span><br><span class="line">    p2=&amp;b;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;输入a b的值：\n&quot;</span>);</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d %d&quot;</span>,p1,p2);<span class="comment">//70 90</span></span><br><span class="line">    temp = *p1;<span class="comment">//p1指向a的值给temp赋值 70</span></span><br><span class="line">    *p1 = *p2;<span class="comment">//p2指向b的值给p1的变量a赋值 90</span></span><br><span class="line">    *p2 = temp;<span class="comment">//temp给p2指向的变量b赋值 70</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;a=%d b=%d\n&quot;</span>,a,b);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;*p1=%d *p2=%d\n&quot;</span>,*p1,*p2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%AC%AC%E4%BA%94%E7%AB%A0-%E6%8C%87%E9%92%88/1692112482696.png" alt="1692112482696"></p>
+<p>扩展：</p>
+<p>对应类型的指针，只能保存对应类型数据的地址</p>
+<p>如果想让不同类型的指针互相赋值，需要强制类型转换</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="type">int</span> a=<span class="number">0x1234</span>,b=<span class="number">5678</span>;</span><br><span class="line">    <span class="type">char</span> *p1,*p2;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%#x %#x\n&quot;</span>,a,b);</span><br><span class="line">    p1=(<span class="type">char</span> *)&amp;a;</span><br><span class="line">    p2=(<span class="type">char</span> *)&amp;b;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%#x %#x\n&quot;</span>,*p1,*p2);</span><br><span class="line">    p1++;</span><br><span class="line">    p2++;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%#x %#x\n&quot;</span>,*p1,*p2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%AC%AC%E4%BA%94%E7%AB%A0-%E6%8C%87%E9%92%88/1692113002001.png" alt="1692113002001"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%AC%AC%E4%BA%94%E7%AB%A0-%E6%8C%87%E9%92%88/1692113028355.png" alt="1692113028355"></p>
+<h3 id="六、指针和数组元素之间的关系"><a href="#六、指针和数组元素之间的关系" class="headerlink" title="六、指针和数组元素之间的关系"></a>六、指针和数组元素之间的关系</h3><p>1、数组元素和指针的基本关系</p>
+<p>变量存放在内存中，有地址编号，定义的数组，是的哟个相同类型的变量的集合。每个变量都占内存空间，都有地址编号。指针变量可以存放数组元素的地址（数组首元素）</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> a[<span class="number">10</span>];</span><br><span class="line"><span class="comment">//int *p =&amp;a[0];</span></span><br><span class="line"><span class="type">int</span> *p;</span><br><span class="line">p=&amp;a[<span class="number">0</span>]; <span class="comment">//指针变量p保存了数组a中第0个元素的地址，即a[0]的地址</span></span><br></pre></td></tr></table></figure></div>
+
+<p>2、数组元素的引用方式</p>
+<p>（1）数组名[下标]</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> a[<span class="number">10</span>];</span><br><span class="line">a[<span class="number">2</span>]=<span class="number">100</span>;</span><br></pre></td></tr></table></figure></div>
+
+<p>（2）指针名加下标</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">int a[10];</span><br><span class="line">int *p;</span><br><span class="line">p=a;</span><br><span class="line">p[2]=100;</span><br></pre></td></tr></table></figure></div>
+
+<p>（3）指针运算加取值</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> a[<span class="number">10</span>];</span><br><span class="line"><span class="type">int</span> *p;</span><br><span class="line">p = a;</span><br><span class="line">*(p+<span class="number">2</span>)=<span class="number">100</span>;<span class="comment">//a[2]=100</span></span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="type">int</span> a[<span class="number">5</span>]=&#123;<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>&#125;;</span><br><span class="line">    <span class="type">int</span> *p;</span><br><span class="line">    p=a;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;a[2]=%d\n&quot;</span>,a[<span class="number">2</span>]);<span class="comment">//2</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;p[2]=%d\n&quot;</span>,p[<span class="number">2</span>]);<span class="comment">//2</span></span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;*(p+2) = %d\n&quot;</span>,*(p+<span class="number">2</span>));<span class="comment">//2</span></span><br><span class="line"> 	<span class="built_in">printf</span>(<span class="string">&quot;*(a+2) = %d\n&quot;</span>,*(a+<span class="number">2</span>));<span class="comment">//2</span></span><br><span class="line"></span><br><span class="line"> 	<span class="built_in">printf</span>(<span class="string">&quot;p=%p\n&quot;</span>,p);</span><br><span class="line"> 	<span class="built_in">printf</span>(<span class="string">&quot;p+2=%p\n&quot;</span>,p+<span class="number">2</span>);</span><br><span class="line"> 	<span class="built_in">printf</span>(<span class="string">&quot;&amp;a[0] = %p\n&quot;</span>, &amp;a[<span class="number">0</span>]);</span><br><span class="line"> 	<span class="built_in">printf</span>(<span class="string">&quot;&amp;a[2] = %p\n&quot;</span>, &amp;a[<span class="number">2</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%AC%AC%E4%BA%94%E7%AB%A0-%E6%8C%87%E9%92%88/1692113975759.png" alt="1692113975759"></p>
 ]]></content>
       <categories>
         <category>千锋C语言</category>

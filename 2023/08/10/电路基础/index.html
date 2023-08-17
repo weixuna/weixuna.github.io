@@ -22,16 +22,25 @@
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     
-        <meta property="og:type" content="article">
+        <meta name="description" content="一、芯片里面有什么1.片上外设 内核之外的部件叫核外外设或片上外设。GPIO，USART、I2C、SPI都叫做片上外设。  芯片内核和外设之间，有总线连接，主控总线有8条，被控总线有7条。 2、寄存器映射 给存储器分配地址的过程称为存储器映射。如果是给吹气球再分配一个地址叫存储器重映射。 3、存储器区域功能划分  （1）BLock0功能划分  （2）Block1功能划分  （3）Block2功能划">
+<meta property="og:type" content="article">
 <meta property="og:title" content="电路基础">
 <meta property="og:url" content="http://example.com/2023/08/10/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一、芯片里面有什么1.片上外设 内核之外的部件叫核外外设或片上外设。GPIO，USART、I2C、SPI都叫做片上外设。  芯片内核和外设之间，有总线连接，主控总线有8条，被控总线有7条。 2、寄存器映射 给存储器分配地址的过程称为存储器映射。如果是给吹气球再分配一个地址叫存储器重映射。 3、存储器区域功能划分  （1）BLock0功能划分  （2）Block1功能划分  （3）Block2功能划">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1692286715541.png">
+<meta property="og:image" content="http://example.com/assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1692287169333.png">
+<meta property="og:image" content="http://example.com/assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1692287359301.png">
+<meta property="og:image" content="http://example.com/assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1692287500692.png">
+<meta property="og:image" content="http://example.com/assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1692287707507.png">
+<meta property="og:image" content="http://example.com/assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1692288238634.png">
 <meta property="article:published_time" content="2023-08-10T15:15:07.000Z">
-<meta property="article:modified_time" content="2023-08-17T15:07:55.712Z">
+<meta property="article:modified_time" content="2023-08-17T16:17:28.507Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="电工电路">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1692286715541.png">
     
     
     <!--- Icon Part-->
@@ -422,8 +431,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-08-17 23:07:55</span>
-            <span class="mobile">2023-08-17 23:07:55</span>
+            <span class="desktop">2023-08-18 00:17:28</span>
+            <span class="mobile">2023-08-18 00:17:28</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -437,7 +446,7 @@
                     
                         
                         <li>
-                            <a href="/categories/%E7%BD%97%E6%95%99%E6%8E%88%E7%94%B5%E8%B7%AF/">-罗教授电路</a>&nbsp;
+                            <a href="/categories/%E7%BD%97%E6%95%99%E6%8E%88%E7%94%B5%E8%B7%AF/">罗教授电路</a>&nbsp;
                         </li>
                     
                     
@@ -474,7 +483,36 @@
         
 
         <div class="article-content markdown-body">
-            
+            <h2 id="一、芯片里面有什么"><a href="#一、芯片里面有什么" class="headerlink" title="一、芯片里面有什么"></a>一、芯片里面有什么</h2><p>1.片上外设</p>
+<p>内核之外的部件叫<strong>核外外设或片上外设</strong>。GPIO，USART、I2C、SPI都叫做<strong>片上外设</strong>。</p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1692286715541.png" alt="1692286715541"></p>
+<p>芯片内核和外设之间，有总线连接，主控总线有8条，被控总线有7条。</p>
+<p>2、寄存器映射</p>
+<p>给存储器分配地址的过程称为<strong>存储器映射</strong>。如果是给吹气球再分配一个地址叫<strong>存储器重映射</strong>。</p>
+<p>3、存储器区域功能划分</p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1692287169333.png" alt="1692287169333"></p>
+<p>（1）BLock0功能划分</p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1692287359301.png" alt="1692287359301"></p>
+<p>（2）Block1功能划分</p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1692287500692.png" alt="1692287500692"></p>
+<p>（3）Block2功能划分</p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1692287707507.png" alt="1692287707507"></p>
+<h2 id="二、寄存器"><a href="#二、寄存器" class="headerlink" title="二、寄存器"></a>二、寄存器</h2><p>以<strong>功能为名给这个内存单位取一个别名</strong>，这个别名就是我们经常说的<strong>寄存器</strong>，<strong>分配好地址的特定功能的内存单元</strong>取别名的过程叫做<strong>寄存器映射</strong></p>
+<p><strong>如何理解寄存器</strong></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1692288238634.png" alt="1692288238634"></p>
+<p>1、名称 (GPIOx_BSRR)(x&#x3D;A…I)</p>
+<p>该寄存器名为(GPIOx_BSRR)(x&#x3D;A…I)，其中x可以为A-I，适用于GPIOA、GPIOB到GPIOU</p>
+<p>2、偏移地址，寄存器相对这个外设的基地址的编译</p>
+<p>寄存器的编译地址是0x18，可以查到GPIOA外设的基地址是0x4002 0000，GPIOx_BSRR寄存器地址为，0x4002 0000+0x18</p>
+<p>3、寄存器位表</p>
+<p>0-31的名称以及权限。最上方是位编号，中间位名称，最下方是读写权限，w只写，r只读，rw可读写</p>
+<p>4、位功能说明</p>
+<p>BRy 及 BSy，其中的 y 数值可以是 0-15，这里的 0-15 表示端口的引脚号， 如 BR0、BS0 用于控制 GPIOx 的第 0 个引脚，若 x 表示 GPIOA，那就是控制 GPIOA 的第 0 引脚， 而 BR1、BS1 就是控制 GPIOA 第 1 个引脚。 </p>
+<p>其中，“复位”是将该位设置为 0 的意思，而“置位”表示将该位设置为 1；如果对 BR0 写入“</p>
+<p>1”的话，那么 GPIOx 的第 0 个引脚就会输出“低电平”，但是对 </p>
+<p>BR0 写入“0”的话，却不会影响 ODR0 位，所以引脚电平不会改变。要想该引脚输出“高电平”， 就需要对“BS0”位写入“1”，寄存器位 BSy 与 BRy 是相反的操作</p>
+<h2 id="三、C语言对寄存器的封装"><a href="#三、C语言对寄存器的封装" class="headerlink" title="三、C语言对寄存器的封装"></a>三、C语言对寄存器的封装</h2><p>总线基地址和外设基地址都以相应的宏定义起来，总线或者外设都以他们的名字作为宏名</p>
+
         </div>
 
         
@@ -486,7 +524,7 @@
         <li><strong>创建于:</strong> 2023-08-10 23:15:07</li>
         
             <li>
-                <strong>更新于:</strong> 2023-08-17 23:07:55
+                <strong>更新于:</strong> 2023-08-18 00:17:28
             </li>
         
         <li>
@@ -604,7 +642,7 @@
     <div class="post-toc">
         <div class="toc-title">此页目录</div>
         <div class="page-title">电路基础</div>
-        
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E8%8A%AF%E7%89%87%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88"><span class="nav-text">一、芯片里面有什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-text">二、寄存器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81C%E8%AF%AD%E8%A8%80%E5%AF%B9%E5%AF%84%E5%AD%98%E5%99%A8%E7%9A%84%E5%B0%81%E8%A3%85"><span class="nav-text">三、C语言对寄存器的封装</span></a></li></ol>
 
     </div>
 </div>

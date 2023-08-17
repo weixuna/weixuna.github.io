@@ -22,16 +22,21 @@
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     
-        <meta property="og:type" content="article">
+        <meta name="description" content="一、芯片组成负责在 内核之外设计部件并生产整个芯片，这些内核之外的部件被称为核外外设或片上外设。如 GPIO、 USART（串口）、I2C、SPI 等都叫做片上外设  芯片内核和外设之间通过各种总线连接，其中主控总线有 8 条，被控总线有 7 条 二、存储器映射给存储器分配地址的过程就称为存储器映射，具体见图 。给存储器再分配一个地址就叫存储器重映射 三、寄存器以功能为名给这个  内存单元取一个别">
+<meta property="og:type" content="article">
 <meta property="og:title" content="第二章-寄存器">
 <meta property="og:url" content="http://example.com/2023/08/17/%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E5%AF%84%E5%AD%98%E5%99%A8/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一、芯片组成负责在 内核之外设计部件并生产整个芯片，这些内核之外的部件被称为核外外设或片上外设。如 GPIO、 USART（串口）、I2C、SPI 等都叫做片上外设  芯片内核和外设之间通过各种总线连接，其中主控总线有 8 条，被控总线有 7 条 二、存储器映射给存储器分配地址的过程就称为存储器映射，具体见图 。给存储器再分配一个地址就叫存储器重映射 三、寄存器以功能为名给这个  内存单元取一个别">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/assets/%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E5%AF%84%E5%AD%98%E5%99%A8/1692290301872.png">
+<meta property="og:image" content="http://example.com/assets/%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E5%AF%84%E5%AD%98%E5%99%A8/1692290420600.png">
 <meta property="article:published_time" content="2023-08-17T15:10:24.000Z">
-<meta property="article:modified_time" content="2023-08-17T15:11:29.135Z">
+<meta property="article:modified_time" content="2023-08-17T16:43:05.023Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="STM32">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/assets/%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E5%AF%84%E5%AD%98%E5%99%A8/1692290301872.png">
     
     
     <!--- Icon Part-->
@@ -422,8 +427,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-08-17 23:11:29</span>
-            <span class="mobile">2023-08-17 23:11:29</span>
+            <span class="desktop">2023-08-18 00:43:05</span>
+            <span class="mobile">2023-08-18 00:43:05</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -484,7 +489,25 @@
         
 
         <div class="article-content markdown-body">
-            
+            <h2 id="一、芯片组成"><a href="#一、芯片组成" class="headerlink" title="一、芯片组成"></a>一、芯片组成</h2><p>负责在 内核之外设计部件并生产整个芯片，这些内核之外的部件被称为核外外设或片上外设。如 GPIO、 USART（串口）、I2C、SPI 等都叫做片上外设</p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E5%AF%84%E5%AD%98%E5%99%A8/1692290301872.png" alt="1692290301872"></p>
+<p>芯片内核和外设之间通过各种总线连接，其中主控总线有 8 条，被控总线有 7 条</p>
+<h2 id="二、存储器映射"><a href="#二、存储器映射" class="headerlink" title="二、存储器映射"></a>二、<strong>存储器映射</strong></h2><p>给存储器分配地址的过程就称为存储器映射，具体见图 。给存储器再分配一个地址就叫存储器重映射</p>
+<h2 id="三、寄存器"><a href="#三、寄存器" class="headerlink" title="三、寄存器"></a>三、寄存器</h2><p>以功能为名给这个 </p>
+<p>内存单元取一个别名，这个别名就是我们经常说的寄存器，这个给已经分配好地址的有特定功能的内存单元取别名的过程就叫寄存器映射</p>
+<p><strong>寄存器的说明</strong></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E5%AF%84%E5%AD%98%E5%99%A8/1692290420600.png" alt="1692290420600"></p>
+<p>① 名称</p>
+<p>(GPIOx_BSRR)(x&#x3D;A…I)”是该寄存器名为“GPIOx_BSRR”其中的“x”可以为 A-I，也就是说这个寄存器说明适用于 GPIOA、GPIOB 至 GPIOI，这些 GPIO 端口都有这样的一个寄存器</p>
+<p>② 偏移地址</p>
+<p>偏移地址是指本寄存器相对于这个外设的基地址的偏移。查到 GPIOA 外设的基地址为 0x4002 0000 ，就可以算出 GPIOA 的这个GPIOA_BSRR 寄存器的地址为：0x4002 0000+0x18</p>
+<p>③ 寄存器位表</p>
+<p>为读写权限，其中 w 表示只写，r 表示只读，rw 表示可读写</p>
+<p>④ 位功能说明</p>
+<p>本寄存器中有 </p>
+<p>两种寄存器位，分别为 BRy 及 BSy，其中的 y 数值可以是 0-15，这里的 0-15 表示端口的引脚号，如 BR0、BS0 用于控制 GPIOx 的第 0 个引脚，若 x 表示 GPIOA，那就是控制 GPIOA 的第 0 引脚，而 BR1、BS1 就是控制 GPIOA 第 1 个引脚。 </p>
+<p>这里的“复位”是将该位设置为 0 的意思，而“置位”表示将该位设置为 1；</p>
+
         </div>
 
         
@@ -496,7 +519,7 @@
         <li><strong>创建于:</strong> 2023-08-17 23:10:24</li>
         
             <li>
-                <strong>更新于:</strong> 2023-08-17 23:11:29
+                <strong>更新于:</strong> 2023-08-18 00:43:05
             </li>
         
         <li>
@@ -599,7 +622,7 @@
     <div class="post-toc">
         <div class="toc-title">此页目录</div>
         <div class="page-title">第二章-寄存器</div>
-        
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E8%8A%AF%E7%89%87%E7%BB%84%E6%88%90"><span class="nav-text">一、芯片组成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%AD%98%E5%82%A8%E5%99%A8%E6%98%A0%E5%B0%84"><span class="nav-text">二、存储器映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-text">三、寄存器</span></a></li></ol>
 
     </div>
 </div>

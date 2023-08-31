@@ -793,4 +793,148 @@
         <tag>windows维护</tag>
       </tags>
   </entry>
+  <entry>
+    <title>第一章-了解数据库</title>
+    <url>/2023/08/29/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E4%BA%86%E8%A7%A3%E6%95%B0%E6%8D%AE%E5%BA%93/</url>
+    <content><![CDATA[<h2 id="1、什么是数据库"><a href="#1、什么是数据库" class="headerlink" title="1、什么是数据库"></a>1、什么是数据库</h2><p>数据库是以某种组织的方式存储的数据集合。</p>
+<p>数据库（database）保存有组织的数据的容器（一个文件或者一组文件）</p>
+<p><strong>更准确的来说，数据库软件称为数据库管理系统（DBMS）。通过DBMS创建和操作的容器</strong></p>
+]]></content>
+      <categories>
+        <category>Mysql</category>
+        <category>了解数据库</category>
+      </categories>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>数据库常用命令</title>
+    <url>/2023/08/29/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</url>
+    <content><![CDATA[<h2 id="一、连接数据库"><a href="#一、连接数据库" class="headerlink" title="一、连接数据库"></a>一、连接数据库</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">MySQL -u root -p</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>连接远程主机</strong></p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql -h110.110.110.110 -u root -p 123;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="二、修改用户密码"><a href="#二、修改用户密码" class="headerlink" title="二、修改用户密码"></a>二、修改用户密码</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysqladmin -u root -password ab12</span><br></pre></td></tr></table></figure></div>
+
+<p>再次修改</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysqladmin -u root -password djg345</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="三、新增用户"><a href="#三、新增用户" class="headerlink" title="三、新增用户"></a>三、新增用户</h2><p>（1）增加一个用户test1，密码为abc</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">grant select,insert,delete on *.*to [email]=test@&quot;%]test1@&quot;[/email]&quot;Indentified by&quot;abc&quot;;</span><br><span class="line"># grant on 命令格式：grant select on 数据库.* to 用户名@登录主机 identified by “密码”;</span><br></pre></td></tr></table></figure></div>
+
+<p>（2）新增一个test2密码为abc，只能localhost登录</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">grant select,insert,update,delete on mydb.* to [email=test2@localhost]test2@localhsot[/email] identified by &quot;abc&quot;;</span><br><span class="line"># 如果不想test有密码可以在用一次打消密码</span><br><span class="line">grant select,insert,update,delete on mydb.* to [email=test2@localhost]test2@localhost[/email] identified by “”;=</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="四、创建数据库"><a href="#四、创建数据库" class="headerlink" title="四、创建数据库"></a>四、创建数据库</h2><p>（1）create database 命名;</p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693301573827.png" alt="1693301573827"></p>
+<p>（2）创建数据库并分配用户</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">#1 </span><br><span class="line">create database 数据库名;</span><br><span class="line">#2 </span><br><span class="line">create select,insert,update,delete,create,drop,alter on 数据库名.* to 数据库名@loclhost identified by &#x27;密码&#x27;;</span><br><span class="line">#3 </span><br><span class="line">select password por &#x27;数据名&#x27;@&#x27;localhost&#x27; =old_password(&#x27;密码&#x27;);</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="五、显示数据库"><a href="#五、显示数据库" class="headerlink" title="五、显示数据库"></a>五、显示数据库</h2><p><strong>show databases显示所有数据库</strong></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693311907411.png" alt="1693311907411"></p>
+<h2 id="六、删除数据库"><a href="#六、删除数据库" class="headerlink" title="六、删除数据库"></a>六、删除数据库</h2><p><strong>drop database xhkdb;</strong></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693311993666.png" alt="1693311993666"></p>
+<h2 id="七、使用数据库"><a href="#七、使用数据库" class="headerlink" title="七、使用数据库"></a>七、使用数据库</h2><p><strong>use xhkdb;</strong></p>
+<p>（1）use语句可以通告mysql把数据库当作默认使用。知道下一个不同的use语句。</p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693314402433.png" alt="1693314402433"></p>
+<p>（2）use语句不会阻碍访问其他数据库中的表。ab1数据库访问author表，并从db2数据库访问editor表</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">use db1;</span><br><span class="line">select author_name,editor_name from author,ab2,editor;</span><br><span class="line">where author.editor_id = ab2.editor.editor_id;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="八、当前连接的数据库"><a href="#八、当前连接的数据库" class="headerlink" title="八、当前连接的数据库"></a>八、当前连接的数据库</h2><p><strong>select database();</strong></p>
+<p>（1）显示mysql版本</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">select version();</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693314931707.png" alt="1693314931707"></p>
+<p>（2）显示当前时间</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">select now();</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693314952201.png" alt="1693314952201"></p>
+<p>（3）显示年月日</p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693315145115.png" alt="1693315145115"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693315128832.png" alt="1693315128832"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693315054667.png" alt="1693315054667"></p>
+<p>（4）显示字符串</p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693315209186.png" alt="1693315209186"></p>
+<p>（5）当计算器</p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693315238981.png" alt="1693315238981"></p>
+<p>（5）串接字符串</p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693315322414.png" alt="1693315322414"></p>
+<p><strong>&#x2F;&#x2F;这里用到 CONCAT()函数，用来把字符串串接起来。</strong></p>
+<h2 id="九、创建数据库表"><a href="#九、创建数据库表" class="headerlink" title="九、创建数据库表"></a>九、创建数据库表</h2><p>注意：要先使用use 数据库名；</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">create table 表名</span><br><span class="line">(</span><br><span class="line">	字段名1，数据类型 [列级别约束条件][默认值]，</span><br><span class="line">	字段名2，数据类型 [列级别约束条件][默认值],</span><br><span class="line">	……</span><br><span class="line">	[表级别约束条件]</span><br><span class="line">)</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693315552760.png" alt="1693315552760"></p>
+<p>例如:创建tb_emp1表结构</p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693317121082.png" alt="1693317121082"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693317243938.png" alt="1693317243938"></p>
+<h2 id="十、获取表结构"><a href="#十、获取表结构" class="headerlink" title="十、获取表结构"></a>十、获取表结构</h2><p><strong>查看表结构可以使用describe和show create table；</strong></p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">describe 表名;</span><br></pre></td></tr></table></figure></div>
+
+<p>或</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">desc 表名；</span><br></pre></td></tr></table></figure></div>
+
+<p>show create table可以查看显示创建表时的create table语句。</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">show create table 表名\G;</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693317695853.png" alt="1693317695853"></p>
+<h2 id="十一、删除数据表"><a href="#十一、删除数据表" class="headerlink" title="十一、删除数据表"></a>十一、删除数据表</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">drop table if exists 表1，表2,表n</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693355675932.png" alt="1693355675932"></p>
+<h2 id="十二、向表中插入数据"><a href="#十二、向表中插入数据" class="headerlink" title="十二、向表中插入数据"></a>十二、向表中插入数据</h2><p><strong>insert into插入新行</strong></p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">insert into 表名称 values(值1，值2);</span><br><span class="line"># 也可以指定要插入数据的列</span><br><span class="line">insert into table_name(列1，列2)values(值1，值2)</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="十三、查询表中数据"><a href="#十三、查询表中数据" class="headerlink" title="十三、查询表中数据"></a>十三、查询表中数据</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT </span><br><span class="line"> &#123;* | &lt;字段列表&gt;&#125; </span><br><span class="line"> [ </span><br><span class="line">	 FROM &lt;表 1&gt;,&lt;表 2&gt;... </span><br><span class="line">	 [WHERE &lt;表达式&gt; </span><br><span class="line">	 [GROUP BY &lt;group by definition&gt;] </span><br><span class="line">	 [HAVING &lt;expression&gt; [&#123;&lt;operator&gt;&lt;expression&gt;&#125;...]] </span><br><span class="line"> 	[ORDER BY &lt;order by definition&gt;] </span><br><span class="line"> 	[LIMIT [&lt;offset&gt;,] &lt;row count&gt;] </span><br><span class="line"> ]</span><br><span class="line">SELECT [字段 1,字段 2,…,字段 n]</span><br><span class="line">FROM [表或视图]</span><br><span class="line">WHERE [查询条件];</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="十四、删除记录"><a href="#十四、删除记录" class="headerlink" title="十四、删除记录"></a>十四、删除记录</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">delete from table_name[where &lt;condition&gt;];</span><br><span class="line">#						指定删除条件</span><br><span class="line">delete from person where id=11;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="十五、修改表中的数据"><a href="#十五、修改表中的数据" class="headerlink" title="十五、修改表中的数据"></a>十五、修改表中的数据</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">update table_name</span><br><span class="line">set column_nmael=value1,column_name2=value2</span><br><span class="line">where(condition)</span><br></pre></td></tr></table></figure></div>
+
+<p>column_name1，为指定更新的字段名称。value为相对应指定字段的更新值。condition更新记录需要满足的条件</p>
+<p>【例】在 person 表中，更新 id 值为 11 的记录，将 age 字段值改为 15，将 name 字段值改为LiMing，SQL 语句如下：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">update person set age=15,name=&#x27;liming&#x27;where id=11;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="十六、增加字段"><a href="#十六、增加字段" class="headerlink" title="十六、增加字段"></a>十六、增加字段</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">alter add 表名 add 新字段 数据类型</span><br><span class="line">	约束条件 first|after 已存在字段名</span><br><span class="line">	        first将新添加的字段设置为表的第一个字段</span><br><span class="line">	        after新添加的字段指定在‘已存在字段名’的后面</span><br></pre></td></tr></table></figure></div>
+
+<p>【例】在数据表 tb_dept1 中添加一个没有完整性约束的 INT 类型的字段 managerId（部门经理编号），SQL 语句如下： </p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">ALTER TABLE tb_dept1 ADD managerId INT(10);</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="十七、修改表名"><a href="#十七、修改表名" class="headerlink" title="十七、修改表名"></a>十七、修改表名</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">alter table 旧表名 rename to新表名</span><br></pre></td></tr></table></figure></div>
+
+<p>【例】将数据表 tb_dept3 改名为 tb_deptment3，SQL 语句如下： </p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">ALTER TABLE tb_dept3 RENAME tb_deptment3;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="十八、备份数据库"><a href="#十八、备份数据库" class="headerlink" title="十八、备份数据库"></a>十八、备份数据库</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysqldump -u user -h host -p password dbname[tbname,[tbname]]&gt;filename.sql</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="十九、还原数据库"><a href="#十九、还原数据库" class="headerlink" title="十九、还原数据库"></a>十九、还原数据库</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql -u user -p [dbname]&lt;filename.sql</span><br></pre></td></tr></table></figure></div>
+
+<p>【例 1】使用 mysql 命令将 C:\backup\booksdb_20130301.sql 文件中的备份导入到数据库中，输入语句如下： </p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql –u root –p booksDB &lt; C:/backup/booksdb_20130301.sql</span><br></pre></td></tr></table></figure></div>
+
+<p>如果已经登录 MySQL 服务器，还可以使用 source 命令导入 sql 文件。source 语句语法如下： </p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">source filename </span><br></pre></td></tr></table></figure></div>
+
+<p>【 例 2 】 使 用 root 用 户 登 录 到 服 务 器 ， 然 后 使 用 source 导 入 本 地 的 备 份 文 件booksdb_20110101.sql，输入语句如下： </p>
+<p>–选择要恢复到的数据库 </p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql&gt; use booksDB; </span><br><span class="line"></span><br><span class="line">Database changed </span><br></pre></td></tr></table></figure></div>
+
+<p>–使用 source 命令导入备份文件 </p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql&gt; source C:\backup\booksDB_20130301.sql </span><br></pre></td></tr></table></figure></div>
+
+<h2 id="二十、快速恢复数据库"><a href="#二十、快速恢复数据库" class="headerlink" title="二十、快速恢复数据库"></a>二十、快速恢复数据库</h2><p>在 MySQL 服务器停止运行时，将备份的数据库文件复制到 MySQL 存放数据的位置（MySQL 的 data 文件夹）</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">chown -R mysql.mysql /var/lib/mysql/dbname</span><br></pre></td></tr></table></figure></div>
+
+<p>【例】从 mysqlhotcopy 复制的备份恢复数据库，输入语句如下： </p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">cp -R /usr/backup/test usr/local/mysql/data</span><br></pre></td></tr></table></figure></div>
+
+]]></content>
+      <categories>
+        <category>Mysql</category>
+        <category>常用命令指令</category>
+      </categories>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
 </search>

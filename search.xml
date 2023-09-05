@@ -941,4 +941,67 @@
         <tag>数据库</tag>
       </tags>
   </entry>
+  <entry>
+    <title>第三章 寄存器点亮LED</title>
+    <url>/2023/09/01/%E7%AC%AC%E4%B8%89%E7%AB%A0-%E5%AF%84%E5%AD%98%E5%99%A8%E7%82%B9%E4%BA%AELED/</url>
+    <content><![CDATA[<h2 id="一、GPIO"><a href="#一、GPIO" class="headerlink" title="一、GPIO"></a>一、GPIO</h2><p>GPIO是通用输入输出端口的简称，就是可控的引脚。</p>
+<p><strong>上拉是高电平，下拉是低电平</strong></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%AC%AC%E4%B8%89%E7%AB%A0-%E5%AF%84%E5%AD%98%E5%99%A8%E7%82%B9%E4%BA%AELED/1693727391280.png" alt="1693727391280"></p>
+<h3 id="1、P-MOS和N-MOS管"><a href="#1、P-MOS和N-MOS管" class="headerlink" title="1、P-MOS和N-MOS管"></a>1、P-MOS和N-MOS管</h3><p><strong>推挽输出：  低电平0v，高电平3.3v</strong></p>
+<p>输出高电平，经过反向后，上方P-MOS管导通，下方N-MOS管关闭，对外输出高电平。</p>
+<p>输入低电平，经过反向后，上方P-MOS管关闭，下方N-MOS管导通，对外输出低电平。</p>
+<p>当高低电平切换时，两个管轮流导通，P负责电流，N负责电流。</p>
+<p>** 推挽输出一般应用在输出电平为0，3.3v，需要高速切换开关的状态。</p>
+<p><strong>开漏输出：</strong></p>
+<p>P-MOS管不工作。例如，输出0，低电平，则P-MOS关闭，N-MOS管导通，使输出接地。</p>
+<p>输出为1，P-MOS，N-MOS都关闭，所以不输出高电平，低电平，为高阻态。</p>
+<p>** 开漏输出一般应用在I2C、SMBUS通讯，需要“线与”（ <em>指的是它们任意一开关只要对地导通，这根线就一定是低电平</em> ）在总线电路上</p>
+<h3 id="输出："><a href="#输出：" class="headerlink" title="输出："></a>输出：</h3><h4 id="输出数据寄存器"><a href="#输出数据寄存器" class="headerlink" title="输出数据寄存器"></a>输出数据寄存器</h4><p>MOS管结构电路的输出信号，由GPIO“输出数据寄存器”GPIO_ODR提供</p>
+<p>“置位&#x2F;复位寄存器GPIOx_BSRR”可以通过修改输出数据寄存器的值从而影响电路的输出</p>
+<h4 id="复用功能输出"><a href="#复用功能输出" class="headerlink" title="复用功能输出"></a>复用功能输出</h4><p>复用 是指STM32其它片上外设对GPIO引脚进行控制，此时GPIO引脚用作改外设功能的一部分。</p>
+<p><strong>例如我们使用 USART 串口通讯时，需要用到某个 GPIO 引脚作为通讯发送引脚，这个时候就可以把该 GPIO 引脚配置成 USART 串口复用功能，由串口外设控制该引脚，发送数据。</strong> </p>
+<h3 id="输入："><a href="#输入：" class="headerlink" title="输入："></a>输入：</h3><p><strong>输出数据寄存器</strong></p>
+<p>连接到施密特触发器，模拟信号转换0&#x2F;1数字信号，最好存储在“输出数据寄存器GPIOx_IDR”中</p>
+<p><strong>复用功能输出</strong></p>
+<p>GPIO引脚将信号传输到stm32其他片上外设，由该外设读取引脚状态</p>
+<p><strong>如我们使用 USART 串口通讯时，需要用到某个 GPIO 引脚作为通讯接收引脚，这个时候就可以把该 GPIO 引脚配置成 USART 串口复用功能，使 USART 可以通过该通讯引脚的接收远端数据。</strong></p>
+]]></content>
+      <categories>
+        <category>野火STM32</category>
+        <category>点亮LED</category>
+      </categories>
+      <tags>
+        <tag>STM32yi</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>尝试-Android物联网开发</title>
+    <url>/2023/09/03/%E5%B0%9D%E8%AF%95-Android%E7%89%A9%E8%81%94%E7%BD%91%E5%BC%80%E5%8F%91/</url>
+    <content><![CDATA[<p>linearlayout横向</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>物联网比赛之连线总结</title>
+    <url>/2023/09/02/%E7%89%A9%E8%81%94%E7%BD%91%E6%AF%94%E8%B5%9B%E4%B9%8B%E8%BF%9E%E7%BA%BF%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%89%A9%E8%81%94%E7%BD%91%E6%AF%94%E8%B5%9B%E4%B9%8B%E8%BF%9E%E7%BA%BF%E6%80%BB%E7%BB%93/1693637499754.png" alt="1693637499754"></p>
+<h2 id="24v的设备"><a href="#24v的设备" class="headerlink" title="24v的设备"></a>24v的设备</h2><h3 id="二氧化碳"><a href="#二氧化碳" class="headerlink" title="二氧化碳"></a>二氧化碳</h3><p>vs–vs，gnd–gnd，signal（信号线）— 4017 vin0+</p>
+<h3 id="pm25"><a href="#pm25" class="headerlink" title="pm25"></a>pm25</h3><p>vs–vs，gnd–gnd，signal（信号线）— 4017 vin1+</p>
+<h3 id="光照传感器"><a href="#光照传感器" class="headerlink" title="光照传感器"></a>光照传感器</h3><p>vs–vs，gnd–gnd，signal（信号线）— 4017vin2+</p>
+<h3 id="氧气传感器"><a href="#氧气传感器" class="headerlink" title="氧气传感器"></a>氧气传感器</h3><p>vs–vs，gnd–gnd，signal（信号线）— 4017 vin3+</p>
+<h3 id="烟雾"><a href="#烟雾" class="headerlink" title="烟雾"></a>烟雾</h3><p>vs–vs，gnd–gnd，signal（信号线）— 4150 DI0</p>
+<h3 id="火焰"><a href="#火焰" class="headerlink" title="火焰"></a>火焰</h3><p>vs–vs，gnd–gnd，signal（信号线）— 4150 DI1</p>
+<h3 id="微波"><a href="#微波" class="headerlink" title="微波"></a>微波</h3><p>vs–vs，gnd–gnd，signal（信号线）— 4150 DI2</p>
+<h3 id="警示器（连接普通继电器"><a href="#警示器（连接普通继电器" class="headerlink" title="警示器（连接普通继电器"></a>警示器（连接普通继电器</h3><p>vs–vs，gnd–gnd，</p>
+<h3 id="风扇（连接双联继电器"><a href="#风扇（连接双联继电器" class="headerlink" title="风扇（连接双联继电器"></a>风扇（连接双联继电器</h3><p>vs–vs，gnd–gnd，</p>
+<h3 id="雾化器（连接单联继电器"><a href="#雾化器（连接单联继电器" class="headerlink" title="雾化器（连接单联继电器"></a>雾化器（连接单联继电器</h3><p>vs–vs，gnd–gnd，</p>
+<h3 id="普通继电器"><a href="#普通继电器" class="headerlink" title="普通继电器"></a>普通继电器</h3><p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%89%A9%E8%81%94%E7%BD%91%E6%AF%94%E8%B5%9B%E4%B9%8B%E8%BF%9E%E7%BA%BF%E6%80%BB%E7%BB%93/1693639085665.png" alt="1693639085665"></p>
+]]></content>
+      <categories>
+        <category>技能大赛</category>
+        <category>windows维护</category>
+      </categories>
+      <tags>
+        <tag>设备连接</tag>
+      </tags>
+  </entry>
 </search>

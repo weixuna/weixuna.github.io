@@ -726,7 +726,7 @@
 ]]></content>
       <categories>
         <category>野火STM32</category>
-        <category>初始STM32</category>
+        <category>初识STM32</category>
       </categories>
       <tags>
         <tag>STM32</tag>
@@ -971,7 +971,7 @@
         <category>点亮LED</category>
       </categories>
       <tags>
-        <tag>STM32yi</tag>
+        <tag>STM32</tag>
       </tags>
   </entry>
   <entry>
@@ -1003,7 +1003,7 @@
 <p><img lazyload src="/images/loading.svg" data-src="/../assets/%E5%B0%9D%E8%AF%95-Android%E7%89%A9%E8%81%94%E7%BD%91%E5%BC%80%E5%8F%91/1693964477356.png" alt="1693964477356"></p>
 ]]></content>
       <categories>
-        <category>物联网大赛之andr开发</category>
+        <category>物联网大赛之Android开发</category>
         <category>第一章-智慧城市</category>
       </categories>
       <tags>
@@ -1028,10 +1028,10 @@
 ]]></content>
       <categories>
         <category>技能大赛</category>
-        <category>windows维护</category>
+        <category>设备连接</category>
       </categories>
       <tags>
-        <tag>设备连接</tag>
+        <tag>windows维护</tag>
       </tags>
   </entry>
 </search>

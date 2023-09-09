@@ -830,7 +830,17 @@
   <entry>
     <title>数据库常用命令</title>
     <url>/2023/08/29/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</url>
-    <content><![CDATA[<h2 id="一、连接数据库"><a href="#一、连接数据库" class="headerlink" title="一、连接数据库"></a>一、连接数据库</h2><h3 id="在Ubuntu"><a href="#在Ubuntu" class="headerlink" title="在Ubuntu"></a>在Ubuntu</h3><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">MySQL -u root -p</span><br></pre></td></tr></table></figure></div>
+    <content><![CDATA[<h2 id="修订："><a href="#修订：" class="headerlink" title="修订："></a>修订：</h2><p>查看表中的字段</p>
+<div class="highlight-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line">show columns from 商品库存;xxxxxxxxxx columnshow columns from 商品库存;</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1694239120400.png" alt="1694239120400"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1694240340953.png" alt="1694240340953"></p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">select 所在区域 from 商品库存 limit 5;  检索此语句使用SELECT语句检索单个列。LIMIT 5指示MySQL返回</span><br><span class="line">不多于5行。</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1694240532823.png" alt="1694240532823"></p>
+<h2 id="一、连接数据库"><a href="#一、连接数据库" class="headerlink" title="一、连接数据库"></a>一、连接数据库</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql -h 主机IP -P 端口号 -u 用户名 -p 密码 </span><br></pre></td></tr></table></figure></div>
+
+<h3 id="在Ubuntu"><a href="#在Ubuntu" class="headerlink" title="在Ubuntu"></a>在Ubuntu</h3><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">MySQL -u root -p</span><br></pre></td></tr></table></figure></div>
 
 <p><strong>连接远程主机</strong></p>
 <div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql -h110.110.110.110 -u root -p 123;</span><br></pre></td></tr></table></figure></div>

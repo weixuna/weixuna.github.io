@@ -529,7 +529,21 @@
   <entry>
     <title>电路基础</title>
     <url>/2023/08/10/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<h2 id="一、电流、电压、电功率和能量"><a href="#一、电流、电压、电功率和能量" class="headerlink" title="一、电流、电压、电功率和能量"></a>一、电流、电压、电功率和能量</h2><h2 id="电流："><a href="#电流：" class="headerlink" title="电流："></a>电流：</h2><p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242554424.png" alt="1694242554424"></p>
+<p><strong>i 电流   q 电荷量  t时间</strong></p>
+<h2 id="电压："><a href="#电压：" class="headerlink" title="电压："></a>电压：</h2><p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242617918.png" alt="1694242617918"></p>
+<p><strong>u 电压 w 功 q电荷量</strong></p>
+<h2 id="功率："><a href="#功率：" class="headerlink" title="功率："></a>功率：</h2><p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242654855.png" alt="1694242654855"></p>
+<h2 id="小结："><a href="#小结：" class="headerlink" title="小结："></a>小结：</h2><p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242683878.png" alt="1694242683878"></p>
+<h2 id="二、电流和电压的参考方向"><a href="#二、电流和电压的参考方向" class="headerlink" title="二、电流和电压的参考方向"></a>二、电流和电压的参考方向</h2><p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242819757.png" alt="1694242819757"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242852600.png" alt="1694242852600"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242876285.png" alt="1694242876285"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242905012.png" alt="1694242905012"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242939314.png" alt="1694242939314"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242973674.png" alt="1694242973674"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242986138.png" alt="1694242986138"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694243025513.png" alt="1694243025513"></p>
+]]></content>
       <categories>
         <category>罗教授电路</category>
       </categories>
@@ -1061,6 +1075,45 @@
       </categories>
       <tags>
         <tag>windows维护</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>第一章 电路模型和电路定律</title>
+    <url>/2023/09/09/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E7%94%B5%E8%B7%AF%E6%A8%A1%E5%9E%8B%E5%92%8C%E7%94%B5%E8%B7%AF%E5%AE%9A%E5%BE%8B/</url>
+    <content><![CDATA[<h2 id="1-1-电路和电路模型"><a href="#1-1-电路和电路模型" class="headerlink" title="1.1 电路和电路模型"></a>1.1 电路和电路模型</h2><p>实际电路：由电工设备和电气器件按预期目的连接构成的电路的通路。</p>
+<p>功能：a 能量的传输、分配与转换</p>
+<p>​              b 信息的传递、控制与处理</p>
+<p>共性：建立在痛一电路理论的基础上。</p>
+<h3 id="1-1-1-电路模型"><a href="#1-1-1-电路模型" class="headerlink" title="1.1.1 电路模型"></a>1.1.1 电路模型</h3><p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E7%94%B5%E8%B7%AF%E6%A8%A1%E5%9E%8B%E5%92%8C%E7%94%B5%E8%B7%AF%E5%AE%9A%E5%BE%8B/1694263535061.png" alt="1694263535061"></p>
+<p>电路模型：反应实际电路部件的主要电磁性质的<strong>理想电路</strong>元件以及组合</p>
+<p>理想电路元件：由某种确定的电磁性能的理想元件。</p>
+<p>电阻元件：表示消耗电能的元件<img lazyload src="/images/loading.svg" data-src="/../assets/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E7%94%B5%E8%B7%AF%E6%A8%A1%E5%9E%8B%E5%92%8C%E7%94%B5%E8%B7%AF%E5%AE%9A%E5%BE%8B/1694263845243.png" alt="1694263845243"></p>
+<p>电感元件：表示产生磁场，存储磁场能量的元件</p>
+<p>电容元件：表示产生电场，存储电厂能量的元件</p>
+<p>电压源与电流源：表示将其它形式的能量转变成电能的元件</p>
+<p><strong>注意：</strong></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E7%94%B5%E8%B7%AF%E6%A8%A1%E5%9E%8B%E5%92%8C%E7%94%B5%E8%B7%AF%E5%AE%9A%E5%BE%8B/1694263950246.png" alt="1694263950246"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E7%94%B5%E8%B7%AF%E6%A8%A1%E5%9E%8B%E5%92%8C%E7%94%B5%E8%B7%AF%E5%AE%9A%E5%BE%8B/1694263974908.png" alt="1694263974908"></p>
+<h2 id="1-2电流和电压的参考方向"><a href="#1-2电流和电压的参考方向" class="headerlink" title="1.2电流和电压的参考方向"></a>1.2电流和电压的参考方向</h2><p>电路中的主要物理量由电压、电流、电荷、磁链、能量、电功率等。在线性电路分析中，主要关心的物理量是<strong>电路、电压和功率</strong>。</p>
+<h3 id="1-电流的参考方向"><a href="#1-电流的参考方向" class="headerlink" title="1.电流的参考方向"></a>1.电流的参考方向</h3><p>电流：带电粒子由规则运动的定向运动</p>
+<p>电流强度：单位时间内通过导体横截面的电荷量</p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E7%94%B5%E8%B7%AF%E6%A8%A1%E5%9E%8B%E5%92%8C%E7%94%B5%E8%B7%AF%E5%AE%9A%E5%BE%8B/1694265050074.png" alt="1694265050074"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E7%94%B5%E8%B7%AF%E6%A8%A1%E5%9E%8B%E5%92%8C%E7%94%B5%E8%B7%AF%E5%AE%9A%E5%BE%8B/1694265100359.png" alt="1694265100359"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E7%94%B5%E8%B7%AF%E6%A8%A1%E5%9E%8B%E5%92%8C%E7%94%B5%E8%B7%AF%E5%AE%9A%E5%BE%8B/1694265136194.png" alt="1694265136194"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E7%94%B5%E8%B7%AF%E6%A8%A1%E5%9E%8B%E5%92%8C%E7%94%B5%E8%B7%AF%E5%AE%9A%E5%BE%8B/1694265155728.png" alt="1694265155728"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E7%94%B5%E8%B7%AF%E6%A8%A1%E5%9E%8B%E5%92%8C%E7%94%B5%E8%B7%AF%E5%AE%9A%E5%BE%8B/1694265184041.png" alt="1694265184041"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E7%94%B5%E8%B7%AF%E6%A8%A1%E5%9E%8B%E5%92%8C%E7%94%B5%E8%B7%AF%E5%AE%9A%E5%BE%8B/1694265234540.png" alt="1694265234540"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E7%94%B5%E8%B7%AF%E6%A8%A1%E5%9E%8B%E5%92%8C%E7%94%B5%E8%B7%AF%E5%AE%9A%E5%BE%8B/1694265255827.png" alt="1694265255827"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E7%94%B5%E8%B7%AF%E6%A8%A1%E5%9E%8B%E5%92%8C%E7%94%B5%E8%B7%AF%E5%AE%9A%E5%BE%8B/1694265274036.png" alt="1694265274036"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E7%94%B5%E8%B7%AF%E6%A8%A1%E5%9E%8B%E5%92%8C%E7%94%B5%E8%B7%AF%E5%AE%9A%E5%BE%8B/1694265285159.png" alt="1694265285159"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E7%94%B5%E8%B7%AF%E6%A8%A1%E5%9E%8B%E5%92%8C%E7%94%B5%E8%B7%AF%E5%AE%9A%E5%BE%8B/1694265305717.png" alt="1694265305717"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E7%94%B5%E8%B7%AF%E6%A8%A1%E5%9E%8B%E5%92%8C%E7%94%B5%E8%B7%AF%E5%AE%9A%E5%BE%8B/1694265329854.png" alt="1694265329854"></p>
+]]></content>
+      <categories>
+        <category>电路原理、电工学</category>
+      </categories>
+      <tags>
+        <tag>电路和电路模型</tag>
       </tags>
   </entry>
 </search>

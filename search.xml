@@ -1118,4 +1118,69 @@
         <tag>嵌入式C</tag>
       </tags>
   </entry>
+  <entry>
+    <title>HTML第一天</title>
+    <url>/2023/08/29/HTML%E7%AC%AC%E4%B8%80%E5%A4%A9/</url>
+    <content><![CDATA[<h2 id="HTML语法规范"><a href="#HTML语法规范" class="headerlink" title="HTML语法规范"></a>HTML语法规范</h2><div class="highlight-container" data-rel="Html"><figure class="iseeu highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span><span class="tag">&lt;/<span class="name">html</span>&gt;</span> //html标签</span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span><span class="tag">&lt;/<span class="name">head</span>&gt;</span> //文档的头部</span><br><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span><span class="tag">&lt;/<span class="name">title</span>&gt;</span> //文档的标签</span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span><span class="tag">&lt;/<span class="name">body</span>&gt;</span> //文档的主体</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="1-包含关系"><a href="#1-包含关系" class="headerlink" title="1.包含关系"></a>1.包含关系</h3><head>
+    <title></title>
+</head>
+
+<h3 id="2-并列关系"><a href="#2-并列关系" class="headerlink" title="2.并列关系"></a>2.并列关系</h3><div class="highlight-container" data-rel="Html"><figure class="iseeu highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+<h3 id="3-文档类型声明标签"><a href="#3-文档类型声明标签" class="headerlink" title="3.文档类型声明标签"></a>3.文档类型声明标签</h3><p>采取的是html5版本的显示网页</p>
+<div class="highlight-container" data-rel="Html"><figure class="iseeu highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+<h3 id="4-标题标签"><a href="#4-标题标签" class="headerlink" title="4.标题标签"></a>4.标题标签</h3><div class="highlight-container" data-rel="Html"><figure class="iseeu highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">H1</span>&gt;</span> -- <span class="tag">&lt;<span class="name">H6</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+<h3 id="5-段落和换行标签"><a href="#5-段落和换行标签" class="headerlink" title="5.段落和换行标签"></a>5.段落和换行标签</h3><div class="highlight-container" data-rel="Html"><figure class="iseeu highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>段落标签<span class="tag">&lt;/<span class="name">p</span>&gt;</span> //根据浏览器窗口的大小自行换行</span><br><span class="line"><span class="tag">&lt;<span class="name">br</span> /&gt;</span> //换行标签</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="6-文本格式化标签"><a href="#6-文本格式化标签" class="headerlink" title="6.文本格式化标签"></a>6.文本格式化标签</h3><div class="highlight-container" data-rel="Html"><figure class="iseeu highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">strong</span>&gt;</span><span class="tag">&lt;/<span class="name">strong</span>&gt;</span>  <span class="tag">&lt;<span class="name">b</span>&gt;</span><span class="tag">&lt;/<span class="name">b</span>&gt;</span>  //加粗</span><br><span class="line"><span class="tag">&lt;<span class="name">em</span>&gt;</span><span class="tag">&lt;/<span class="name">em</span>&gt;</span>       <span class="tag">&lt;<span class="name">i</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span>  //倾斜</span><br><span class="line"><span class="tag">&lt;<span class="name">del</span>&gt;</span><span class="tag">&lt;/<span class="name">del</span>&gt;</span>  <span class="tag">&lt;<span class="name">s</span>&gt;</span><span class="tag">&lt;/<span class="name">s</span>&gt;</span> //删除线</span><br><span class="line"><span class="tag">&lt;<span class="name">ins</span>&gt;</span><span class="tag">&lt;/<span class="name">ins</span>&gt;</span> <span class="tag">&lt;<span class="name">u</span>&gt;</span><span class="tag">&lt;/<span class="name">u</span>&gt;</span> //下划线</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="7-div和span标签"><a href="#7-div和span标签" class="headerlink" title="7.div和span标签"></a>7.div和span标签</h3><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;div&gt;这是盒子&lt;/div&gt;  //分割</span><br><span class="line">&lt;span&gt;这也是盒子&lt;/span&gt; //跨度</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="8-图像标签和路径"><a href="#8-图像标签和路径" class="headerlink" title="8.图像标签和路径"></a>8.图像标签和路径</h3><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;img src=&quot;图像url&quot; /&gt;</span><br><span class="line"></span><br><span class="line">key=&quot;value&quot;</span><br></pre></td></tr></table></figure></div>
+
+<table>
+<thead>
+<tr>
+<th>src</th>
+<th>必须属性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>alt</td>
+<td>替换文本。图像不能显示文字</td>
+</tr>
+<tr>
+<td>title</td>
+<td>提示文本。在图像上显示文字</td>
+</tr>
+<tr>
+<td>width</td>
+<td>图像的宽度</td>
+</tr>
+<tr>
+<td>height</td>
+<td>图像的盖度</td>
+</tr>
+<tr>
+<td>border</td>
+<td>边框粗细</td>
+</tr>
+</tbody></table>
+<h3 id="9-超链接标签"><a href="#9-超链接标签" class="headerlink" title="9.超链接标签"></a>9.超链接标签</h3><div class="highlight-container" data-rel="Html"><figure class="iseeu highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;跳转目标&quot;</span> <span class="attr">target</span>=<span class="string">&quot;目标窗口的弹出方式&quot;</span>&gt;</span>文本或者图像<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+<h3 id="10-特殊字符"><a href="#10-特殊字符" class="headerlink" title="10.特殊字符"></a>10.特殊字符</h3><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">&amp;nbsp; //空格</span><br><span class="line">&amp;ly;  //小于号</span><br><span class="line">&amp;gt;  //大于号</span><br></pre></td></tr></table></figure></div>
+
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>第一天</category>
+      </categories>
+      <tags>
+        <tag>标签</tag>
+      </tags>
+  </entry>
 </search>

@@ -1120,7 +1120,7 @@
   </entry>
   <entry>
     <title>HTML第一天</title>
-    <url>/2023/08/29/HTML%E7%AC%AC%E4%B8%80%E5%A4%A9/</url>
+    <url>/2023/10/11/HTML%E7%AC%AC%E4%B8%80%E5%A4%A9/</url>
     <content><![CDATA[<h2 id="HTML语法规范"><a href="#HTML语法规范" class="headerlink" title="HTML语法规范"></a>HTML语法规范</h2><div class="highlight-container" data-rel="Html"><figure class="iseeu highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span><span class="tag">&lt;/<span class="name">html</span>&gt;</span> //html标签</span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span><span class="tag">&lt;/<span class="name">head</span>&gt;</span> //文档的头部</span><br><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span><span class="tag">&lt;/<span class="name">title</span>&gt;</span> //文档的标签</span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span><span class="tag">&lt;/<span class="name">body</span>&gt;</span> //文档的主体</span><br></pre></td></tr></table></figure></div>
 
 <h3 id="1-包含关系"><a href="#1-包含关系" class="headerlink" title="1.包含关系"></a>1.包含关系</h3><head>

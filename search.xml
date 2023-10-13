@@ -1277,6 +1277,7 @@
 </tbody></table>
 <p>checked:规定此input元素怒首次加载时应当呗选中</p>
 <p>maxlength：输入字段中字符的最大长度</p>
+<p>placeholder:占位符</p>
 <h3 id="8-label标签"><a href="#8-label标签" class="headerlink" title="8.label标签"></a>8.label标签</h3><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;label for=&quot;sex&quot;&gt;男&lt;/label&gt;</span><br><span class="line">&lt;input type=&quot;radio&quot; name=&quot;sex&quot; id=&quot;sex&quot; /&gt;</span><br><span class="line">//一个和id属性相同</span><br></pre></td></tr></table></figure></div>
 
 <h3 id="9-select表单元素"><a href="#9-select表单元素" class="headerlink" title="9.select表单元素"></a>9.select表单元素</h3><p><img lazyload src="/images/loading.svg" data-src="/../assets/HTML%E7%AC%AC%E4%BA%8C%E5%A4%A9/1697079442675.png" alt="1697079442675"></p>
@@ -1287,6 +1288,68 @@
 
 <div class="highlight-container" data-rel="Html"><figure class="iseeu highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">“text</span> &quot; <span class="attr">name</span>=<span class="string">“username”</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">name</span>=<span class="string">“jiguan”</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">option</span>&gt;</span>北京<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">textarea</span> <span class="attr">name</span>= <span class="string">&quot;message&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">textarea</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
 
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>第二天</category>
+      </categories>
+      <tags>
+        <tag>HTML</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>HTML第三天</title>
+    <url>/2023/10/13/HTML%E7%AC%AC%E4%B8%89%E5%A4%A9/</url>
+    <content><![CDATA[<h3 id="1-font-family"><a href="#1-font-family" class="headerlink" title="1.font-family"></a>1.font-family</h3><div class="highlight-container" data-rel="Html"><figure class="iseeu highlight html"><table><tr><td class="code"><pre><span class="line">font-family //定义文本系列</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="2-font-size"><a href="#2-font-size" class="headerlink" title="2. font-size"></a>2. font-size</h3><p>属性定义字体大小。</p>
+<h3 id="3-font-weight"><a href="#3-font-weight" class="headerlink" title="3.font-weight"></a>3.font-weight</h3><p>文本字体的粗细</p>
+<table>
+<thead>
+<tr>
+<th>notmal</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>bold</td>
+<td>加粗</td>
+</tr>
+<tr>
+<td>100-900</td>
+<td>400&#x3D;normal,700&#x3D;bold</td>
+</tr>
+</tbody></table>
+<h3 id="4-font-style"><a href="#4-font-style" class="headerlink" title="4.font-style"></a>4.font-style</h3><p>文本风格</p>
+<div class="highlight-container" data-rel="Html"><figure class="iseeu highlight html"><table><tr><td class="code"><pre><span class="line">normal //默认值 italic//斜体</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/HTML%E7%AC%AC%E4%B8%89%E5%A4%A9/1697178989345.png" alt="1697178989345"></p>
+<h3 id="5-text-align"><a href="#5-text-align" class="headerlink" title="5.text-align"></a>5.text-align</h3><p>文本内容水平对齐方式</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">left //左对齐 right //右对齐 center //居中对齐</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="6-text-decoration"><a href="#6-text-decoration" class="headerlink" title="6.text-decoration"></a>6.text-decoration</h3><p>给文本添加下划线、删除线、上划线等</p>
+<table>
+<thead>
+<tr>
+<th>none</th>
+<th>默认</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>underline</td>
+<td>下划线</td>
+</tr>
+<tr>
+<td>overline</td>
+<td>上划线</td>
+</tr>
+<tr>
+<td>line-through</td>
+<td>删除线</td>
+</tr>
+</tbody></table>
+<h3 id="7-text-indent"><a href="#7-text-indent" class="headerlink" title="7.text-indent"></a>7.text-indent</h3><p>段落首行缩进</p>
+<h3 id="8-line-height"><a href="#8-line-height" class="headerlink" title="8.line-height"></a>8.line-height</h3><p>设置行间的距离（行高）</p>
 ]]></content>
       <categories>
         <category>前端</category>

@@ -1379,4 +1379,101 @@
         <tag>接线</tag>
       </tags>
   </entry>
+  <entry>
+    <title>CSS第一天</title>
+    <url>/2023/10/24/CSS%E7%AC%AC%E4%B8%80%E5%A4%A9/</url>
+    <content><![CDATA[<h2 id="1-CSS语法规范"><a href="#1-CSS语法规范" class="headerlink" title="1.CSS语法规范"></a>1.CSS语法规范</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">h1&#123;color:red; font-size:25px;&#125;</span><br><span class="line">选择器 属性 值</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="2-类选择器"><a href="#2-类选择器" class="headerlink" title="2.类选择器"></a>2.类选择器</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;div class=&quot;red font20&quot;&gt;亚瑟&lt;/div&gt;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="3-id选择器"><a href="#3-id选择器" class="headerlink" title="3.id选择器"></a>3.id选择器</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">#id名&#123;</span><br><span class="line">	属性1：属性值1；</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="4-通配符选择器"><a href="#4-通配符选择器" class="headerlink" title="4.通配符选择器"></a>4.通配符选择器</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">*&#123;</span><br><span class="line">	属性1：属性值1；</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>第一天</category>
+      </categories>
+      <tags>
+        <tag>CSS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CSS第二天</title>
+    <url>/2023/10/24/CSS%E7%AC%AC%E4%BA%8C%E5%A4%A9/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>技能大赛之Ubuntu维护</title>
+    <url>/2023/10/30/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/</url>
+    <content><![CDATA[<p><strong>如果是首次进入需要sudo passwd root启用root用户</strong></p>
+<h2 id="一、修改网络IP地址"><a href="#一、修改网络IP地址" class="headerlink" title="一、修改网络IP地址"></a>一、修改网络IP地址</h2><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">1、lm@lm-virtual-machine:~/桌面$ su root</span><br><span class="line">密码： </span><br><span class="line">2、root@lm-virtual-machine:/home/lm/桌面<span class="comment"># cd /etc/netplan/</span></span><br><span class="line">3、root@lm-virtual-machine:/etc/netplan<span class="comment"># ls</span></span><br><span class="line">01-network-manager-all.yaml</span><br><span class="line">4、root@lm-virtual-machine:/etc/netplan<span class="comment"># vim 01-network-manager-all.yaml</span></span><br><span class="line"><span class="comment">#键盘点击i，进行修改，&quot;esc&quot;退出编辑，输入&quot;:wq&quot;退出回车保存。输入&quot;netplan apply&quot;,ifconfig可以查看是否修改成功</span></span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">network:</span><br><span class="line">　version: 2</span><br><span class="line">　ethernets:</span><br><span class="line">　　ens5:</span><br><span class="line">　　dhcp4: no</span><br><span class="line">　　addresses: [192.168.1.230/24]</span><br><span class="line">　　gateway4: 192.168.1.254</span><br><span class="line">　　nameservers:</span><br><span class="line">　　　addresses: [8.8.4.4,8.8.8.8]</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="二、使用命令查询磁盘空间使用情况-【df】"><a href="#二、使用命令查询磁盘空间使用情况-【df】" class="headerlink" title="二、使用命令查询磁盘空间使用情况 【df】"></a>二、使用命令查询磁盘空间使用情况 【df】</h2><p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/1698852278392.png" alt="1698852278392"></p>
+<h2 id="三、命令执行的历史记录【history】"><a href="#三、命令执行的历史记录【history】" class="headerlink" title="三、命令执行的历史记录【history】"></a>三、命令执行的历史记录【history】</h2><p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/1698852341664.png" alt="1698852341664"></p>
+<h2 id="四、配置允许tcp协议通过eth0网卡的80端口进入服务器"><a href="#四、配置允许tcp协议通过eth0网卡的80端口进入服务器" class="headerlink" title="四、配置允许tcp协议通过eth0网卡的80端口进入服务器"></a>四、配置允许tcp协议通过eth0网卡的80端口进入服务器</h2><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">iptables -A INPUT -p tcp --dport 80 -i th0 -j ACCEPT</span><br><span class="line">iptables -L -n</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/1698852524750.png" alt="1698852524750"></p>
+<h2 id="五、开启系统简单防火墙功能"><a href="#五、开启系统简单防火墙功能" class="headerlink" title="五、开启系统简单防火墙功能"></a>五、开启系统简单防火墙功能</h2><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">ufw <span class="built_in">enable</span></span><br><span class="line">ufw status</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/1698852634735.png" alt="1698852634735"></p>
+<h2 id="六、修改时区为中国"><a href="#六、修改时区为中国" class="headerlink" title="六、修改时区为中国"></a>六、修改时区为中国</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">tzselect</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/1698852764405.png" alt="1698852764405"></p>
+<h2 id="七、查看当前系统的内核版本"><a href="#七、查看当前系统的内核版本" class="headerlink" title="七、查看当前系统的内核版本"></a>七、查看当前系统的内核版本</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">uname -a</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/1698852836682.png" alt="1698852836682"></p>
+<h2 id="八、查看系统安装包的统计信息"><a href="#八、查看系统安装包的统计信息" class="headerlink" title="八、查看系统安装包的统计信息"></a>八、查看系统安装包的统计信息</h2><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">apt -ache stats</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/1698853016548.png" alt="1698853016548"></p>
+<h2 id="九、查看-home目录占用空间"><a href="#九、查看-home目录占用空间" class="headerlink" title="九、查看&#x2F;home目录占用空间"></a>九、查看&#x2F;home目录占用空间</h2><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">du</span> -sh</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/1698853060624.png" alt="1698853060624"></p>
+<h2 id="十、系统内存的使用情况"><a href="#十、系统内存的使用情况" class="headerlink" title="十、系统内存的使用情况"></a>十、系统内存的使用情况</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">free</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/1698853106741.png" alt="1698853106741"></p>
+<h2 id="十一、修改test文件夹权限为755"><a href="#十一、修改test文件夹权限为755" class="headerlink" title="十一、修改test文件夹权限为755"></a>十一、修改test文件夹权限为755</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">mkdir xxx</span><br><span class="line">      创建文件夹</span><br><span class="line">chmod xxx xxx</span><br><span class="line">    修改后文件夹名字  修改前</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/1698853202599.png" alt="1698853202599"></p>
+<h2 id="十二、配置用户锁策略，用户尝试登录视频5次后锁定用户5分钟"><a href="#十二、配置用户锁策略，用户尝试登录视频5次后锁定用户5分钟" class="headerlink" title="十二、配置用户锁策略，用户尝试登录视频5次后锁定用户5分钟"></a>十二、配置用户锁策略，用户尝试登录视频5次后锁定用户5分钟</h2><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">auth required pam_tallu.so deny=5 unlock_time=300 even_deny_root root_unlock_time=300</span><br><span class="line"><span class="comment">#文件夹在etc/pam.d/login</span></span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/1698853824171.png" alt="1698853824171"></p>
+<h2 id="十三、配置账户密码最短使用期限为10天，最长使用期限为90天"><a href="#十三、配置账户密码最短使用期限为10天，最长使用期限为90天" class="headerlink" title="十三、配置账户密码最短使用期限为10天，最长使用期限为90天"></a>十三、配置账户密码最短使用期限为10天，最长使用期限为90天</h2><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">sudo chage -M 90 -m 10 liu</span><br><span class="line"><span class="comment">#修改</span></span><br><span class="line"><span class="comment">#查看</span></span><br><span class="line">sudo chage -l liu</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="十四、配置用户使用ssh登录边缘服务器有“For-authorized-users-only”"><a href="#十四、配置用户使用ssh登录边缘服务器有“For-authorized-users-only”" class="headerlink" title="十四、配置用户使用ssh登录边缘服务器有“For authorized users only”"></a>十四、配置用户使用ssh登录边缘服务器有“For authorized users only”</h2><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">vim /ect/motd</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/1698884808296.png" alt="1698884808296"></p>
+<h2 id="十五、查询系统运行时间及负载的状态"><a href="#十五、查询系统运行时间及负载的状态" class="headerlink" title="十五、查询系统运行时间及负载的状态"></a>十五、查询系统运行时间及负载的状态</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">uptime</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/1698884864394.png" alt="1698884864394"></p>
+<h2 id="十六、统计系统IO信息（系统资源）"><a href="#十六、统计系统IO信息（系统资源）" class="headerlink" title="十六、统计系统IO信息（系统资源）"></a>十六、统计系统IO信息（系统资源）</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">top</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/1698884920652.png" alt="1698884920652"></p>
+<h2 id="十七、查看当前登录系统的用户信息"><a href="#十七、查看当前登录系统的用户信息" class="headerlink" title="十七、查看当前登录系统的用户信息"></a>十七、查看当前登录系统的用户信息</h2><p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/1698885625168.png" alt="1698885625168"></p>
+<h2 id="十八、ubuntu登录开通ssh-server和root用户登录权限"><a href="#十八、ubuntu登录开通ssh-server和root用户登录权限" class="headerlink" title="十八、ubuntu登录开通ssh-server和root用户登录权限"></a>十八、ubuntu登录开通ssh-server和root用户登录权限</h2><p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/1698886136723.png" alt="1698886136723"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/1698886175641.png" alt="1698886175641"></p>
+<h2 id="十九、修改root用户密码"><a href="#十九、修改root用户密码" class="headerlink" title="十九、修改root用户密码"></a>十九、修改root用户密码</h2><p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/1698886297484.png" alt="1698886297484"></p>
+<h2 id="二十、切换当前用户为root用户"><a href="#二十、切换当前用户为root用户" class="headerlink" title="二十、切换当前用户为root用户"></a>二十、切换当前用户为root用户</h2><p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/1698886334325.png" alt="1698886334325"></p>
+<h2 id="二十一、查看当前所有已连接端口"><a href="#二十一、查看当前所有已连接端口" class="headerlink" title="二十一、查看当前所有已连接端口"></a>二十一、查看当前所有已连接端口</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">netstar -ntlp</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/1698886374037.png" alt="1698886374037"></p>
+<h2 id="二十二、查看指定端口状态"><a href="#二十二、查看指定端口状态" class="headerlink" title="二十二、查看指定端口状态"></a>二十二、查看指定端口状态</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">netstat -ntlplgrep 3306</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/1698888006633.png" alt="1698888006633"></p>
+<h2 id="二十三、查看所有进程信息"><a href="#二十三、查看所有进程信息" class="headerlink" title="二十三、查看所有进程信息"></a>二十三、查看所有进程信息</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">pa -aux</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/1698888087310.png" alt="1698888087310"></p>
+<h2 id="二十四、查看指定进程信息"><a href="#二十四、查看指定进程信息" class="headerlink" title="二十四、查看指定进程信息"></a>二十四、查看指定进程信息</h2><p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/1698888389492.png" alt="1698888389492"></p>
+]]></content>
+      <categories>
+        <category>技能大赛</category>
+        <category>Ubuntu维护</category>
+      </categories>
+      <tags>
+        <tag>Ubuntu维护</tag>
+      </tags>
+  </entry>
 </search>

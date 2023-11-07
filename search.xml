@@ -562,8 +562,7 @@
 <p>满足条件：</p>
 <p><strong>任意两行都不具有相同的主键值。</strong></p>
 <p><strong>每个行都必须具有一个主键值（主键列不允许null值）</strong></p>
-<h1 id="二、了解mysql"><a href="#二、了解mysql" class="headerlink" title="二、了解mysql"></a>二、了解mysql</h1><h2 id="一、客户机-服务器软件"><a href="#一、客户机-服务器软件" class="headerlink" title="一、客户机-服务器软件"></a>一、客户机-服务器软件</h2><p>MySQL、Oracle以及Microsoft SQL Server等数据库是基于客户机—服 </p>
-<p>务器的数据库</p>
+<h1 id="二、了解mysql"><a href="#二、了解mysql" class="headerlink" title="二、了解mysql"></a>二、了解mysql</h1><h2 id="一、客户机-服务器软件"><a href="#一、客户机-服务器软件" class="headerlink" title="一、客户机-服务器软件"></a>一、客户机-服务器软件</h2><p>MySQL、Oracle以及Microsoft SQL Server等数据库是基于客户机—服务器的数据库</p>
 <p>DBMS（数据库管理系统）可以分为两类：</p>
 <p>（1）基于共享文件系统的DBMS（2）基于客户机-服务器的DBMS</p>
 <ul>
@@ -1474,6 +1473,28 @@
       </categories>
       <tags>
         <tag>Ubuntu维护</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>技能大赛之23年广东省样题</title>
+    <url>/2023/11/07/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8B23%E5%B9%B4%E5%B9%BF%E4%B8%9C%E7%9C%81%E6%A0%B7%E9%A2%98/</url>
+    <content><![CDATA[<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8B23%E5%B9%B4%E5%B9%BF%E4%B8%9C%E7%9C%81%E6%A0%B7%E9%A2%98/1699364397390.png" alt="1699364397390"></p>
+<h1 id="A-Q1"><a href="#A-Q1" class="headerlink" title="A-Q1"></a>A-Q1</h1><p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8B23%E5%B9%B4%E5%B9%BF%E4%B8%9C%E7%9C%81%E6%A0%B7%E9%A2%98/1699364436775.png" alt="1699364436775"></p>
+<h1 id="A-Q2"><a href="#A-Q2" class="headerlink" title="A-Q2"></a>A-Q2</h1><p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8B23%E5%B9%B4%E5%B9%BF%E4%B8%9C%E7%9C%81%E6%A0%B7%E9%A2%98/1699364457689.png" alt="1699364457689"></p>
+<h1 id="A-Q3"><a href="#A-Q3" class="headerlink" title="A-Q3"></a>A-Q3</h1><p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8B23%E5%B9%B4%E5%B9%BF%E4%B8%9C%E7%9C%81%E6%A0%B7%E9%A2%98/1699364491360.png" alt="1699364491360"></p>
+<h1 id="B-Q1"><a href="#B-Q1" class="headerlink" title="B-Q1"></a>B-Q1</h1><p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8B23%E5%B9%B4%E5%B9%BF%E4%B8%9C%E7%9C%81%E6%A0%B7%E9%A2%98/1699364523592.png" alt="1699364523592"></p>
+<h1 id="B-Q2"><a href="#B-Q2" class="headerlink" title="B-Q2"></a>B-Q2</h1><p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8B23%E5%B9%B4%E5%B9%BF%E4%B8%9C%E7%9C%81%E6%A0%B7%E9%A2%98/1699364549705.png" alt="1699364549705"></p>
+<h1 id="C-Q1"><a href="#C-Q1" class="headerlink" title="C-Q1"></a>C-Q1</h1><p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8B23%E5%B9%B4%E5%B9%BF%E4%B8%9C%E7%9C%81%E6%A0%B7%E9%A2%98/1699364578195.png" alt="1699364578195"></p>
+<h1 id="C-Q2"><a href="#C-Q2" class="headerlink" title="C-Q2"></a>C-Q2</h1><p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8B23%E5%B9%B4%E5%B9%BF%E4%B8%9C%E7%9C%81%E6%A0%B7%E9%A2%98/1699364602075.png" alt="1699364602075"></p>
+<h1 id="C-Q3"><a href="#C-Q3" class="headerlink" title="C-Q3"></a>C-Q3</h1><p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8B23%E5%B9%B4%E5%B9%BF%E4%B8%9C%E7%9C%81%E6%A0%B7%E9%A2%98/1699364622892.png" alt="1699364622892"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8B23%E5%B9%B4%E5%B9%BF%E4%B8%9C%E7%9C%81%E6%A0%B7%E9%A2%98/1699364643577.png" alt="1699364643577"></p>
+]]></content>
+      <categories>
+        <category>技能大赛</category>
+        <category>样题</category>
+      </categories>
+      <tags>
+        <tag>样题</tag>
       </tags>
   </entry>
 </search>

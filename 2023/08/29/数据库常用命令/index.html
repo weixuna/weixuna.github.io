@@ -22,16 +22,17 @@
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     
-        <meta name="description" content="修订：查看表中的字段 1show columns from 商品库存;xxxxxxxxxx columnshow columns from 商品库存;    12select 所在区域 from 商品库存 limit 5;  检索此语句使用SELECT语句检索单个列。LIMIT 5指示MySQL返回不多于5行。   一、连接数据库1mysql -h 主机IP -P 端口号 -u 用户名 -p 密码">
+        <meta name="description" content="修订：查看表中的字段 1show columns from 商品库存;xxxxxxxxxx columnshow columns from 商品库存;    12select 所在区域 from 商品库存 limit 5;  检索此语句使用SELECT语句检索单个列。LIMIT 5指示MySQL返回不多于5行。   统计四张表的记录数,要求 SQL 语句禁用联合查询（Union、JOIN、多表 1">
 <meta property="og:type" content="article">
 <meta property="og:title" content="数据库常用命令">
 <meta property="og:url" content="http://example.com/2023/08/29/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="修订：查看表中的字段 1show columns from 商品库存;xxxxxxxxxx columnshow columns from 商品库存;    12select 所在区域 from 商品库存 limit 5;  检索此语句使用SELECT语句检索单个列。LIMIT 5指示MySQL返回不多于5行。   一、连接数据库1mysql -h 主机IP -P 端口号 -u 用户名 -p 密码">
+<meta property="og:description" content="修订：查看表中的字段 1show columns from 商品库存;xxxxxxxxxx columnshow columns from 商品库存;    12select 所在区域 from 商品库存 limit 5;  检索此语句使用SELECT语句检索单个列。LIMIT 5指示MySQL返回不多于5行。   统计四张表的记录数,要求 SQL 语句禁用联合查询（Union、JOIN、多表 1">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1694239120400.png">
 <meta property="og:image" content="http://example.com/assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1694240340953.png">
 <meta property="og:image" content="http://example.com/assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1694240532823.png">
+<meta property="og:image" content="http://example.com/assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1701681099499.png">
 <meta property="og:image" content="http://example.com/assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693301573827.png">
 <meta property="og:image" content="http://example.com/assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693311907411.png">
 <meta property="og:image" content="http://example.com/assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693311993666.png">
@@ -51,7 +52,7 @@
 <meta property="og:image" content="http://example.com/assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693355675932.png">
 <meta property="og:image" content="http://example.com/assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1696756935287.png">
 <meta property="article:published_time" content="2023-08-29T09:28:55.000Z">
-<meta property="article:modified_time" content="2023-11-16T15:10:41.941Z">
+<meta property="article:modified_time" content="2023-12-04T09:25:52.277Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="数据库">
 <meta name="twitter:card" content="summary">
@@ -449,8 +450,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-11-16 23:10:41</span>
-            <span class="mobile">2023-11-16 23:10:41</span>
+            <span class="desktop">2023-12-04 17:25:52</span>
+            <span class="mobile">2023-12-04 17:25:52</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -522,6 +523,10 @@
 <div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select 所在区域 from 商品库存 limit 5;  检索此语句使用SELECT语句检索单个列。LIMIT 5指示MySQL返回</span><br><span class="line">不多于5行。</span><br></pre></td></tr></table></figure></div>
 
 <p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1694240532823.png" alt="1694240532823"></p>
+<p><strong>统计四张表的记录数,要求 SQL 语句禁用联合查询（Union、JOIN、多表</strong></p>
+<div class="highlight-container" data-rel="Sql"><figure class="iseeu highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	(<span class="keyword">SELECT</span> <span class="built_in">COUNT</span>(<span class="operator">*</span>) <span class="keyword">FROM</span> d_3_1) <span class="keyword">AS</span> dcount,</span><br><span class="line">	(<span class="keyword">SELECT</span> <span class="built_in">COUNT</span>(<span class="operator">*</span>) <span class="keyword">FROM</span> 商品库存) <span class="keyword">AS</span> scount</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1701681099499.png" alt="1701681099499"></p>
 <h2 id="一、连接数据库"><a href="#一、连接数据库" class="headerlink" title="一、连接数据库"></a>一、连接数据库</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -h 主机IP -P 端口号 -u 用户名 -p 密码 </span><br></pre></td></tr></table></figure></div>
 
 <h3 id="在Ubuntu"><a href="#在Ubuntu" class="headerlink" title="在Ubuntu"></a>在Ubuntu</h3><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MySQL -u root -p</span><br></pre></td></tr></table></figure></div>
@@ -660,7 +665,7 @@
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-11-16 23:10:41
+                    :</strong> 2023-12-04 17:25:52
             </li>
         
         <li>

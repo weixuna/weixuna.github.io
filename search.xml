@@ -1573,4 +1573,58 @@
 
 ]]></content>
   </entry>
+  <entry>
+    <title>Android Studio开发（常用布局）</title>
+    <url>/2023/12/08/Android-Studio%E5%BC%80%E5%8F%91%EF%BC%88%E5%B8%B8%E7%94%A8%E5%B8%83%E5%B1%80%EF%BC%89/</url>
+    <content><![CDATA[<h1 id="1、常用布局"><a href="#1、常用布局" class="headerlink" title="1、常用布局"></a>1、常用布局</h1><h2 id="（1）layout-width"><a href="#（1）layout-width" class="headerlink" title="（1）layout_width:"></a>（1）layout_width:</h2><p>该视图的宽度。</p>
+<p>match_parent：表示与上级视图一样宽</p>
+<p>warp_content：表示与内部内容一样宽</p>
+<h2 id="（2）layout-height"><a href="#（2）layout-height" class="headerlink" title="（2）layout_height:"></a>（2）layout_height:</h2><p>该视图的高度。</p>
+<p>match_parent：表示与上级视图一样高</p>
+<p>warp_content：表示与内部内容一样高</p>
+<h2 id="（3）layout-margin"><a href="#（3）layout-margin" class="headerlink" title="（3）layout_margin"></a>（3）layout_margin</h2><p>该视图与周围视图之间的空白距离（上，下，左，右）。</p>
+<table>
+<thead>
+<tr>
+<th>layout_marginLeft</th>
+<th>左边</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>layout_marginTop</td>
+<td>上边</td>
+</tr>
+<tr>
+<td>layout_marginButtom</td>
+<td>下边</td>
+</tr>
+<tr>
+<td>layout_marginRight</td>
+<td>右边</td>
+</tr>
+</tbody></table>
+<h2 id="（4）minWidth"><a href="#（4）minWidth" class="headerlink" title="（4）minWidth"></a>（4）minWidth</h2><p>该视图的最小宽度</p>
+<h2 id="（5）minHeight"><a href="#（5）minHeight" class="headerlink" title="（5）minHeight"></a>（5）minHeight</h2><p>该视图的最小高度</p>
+<h2 id="（6）background"><a href="#（6）background" class="headerlink" title="（6）background"></a>（6）background</h2><p>该视图的背景</p>
+<h2 id="（7）layout-gravity"><a href="#（7）layout-gravity" class="headerlink" title="（7）layout_gravity"></a>（7）layout_gravity</h2><p>该视图与上级视图的对齐方式</p>
+<div class="highlight-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MainActivity</span> <span class="keyword">extends</span> <span class="title class_">AppCompatActivity</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">onCreate</span><span class="params">(Bundle savedInstanceState)</span> &#123;</span><br><span class="line"><span class="comment">//        调用onCreate的父类</span></span><br><span class="line">        <span class="built_in">super</span>.onCreate(savedInstanceState);</span><br><span class="line"><span class="comment">//        设置当前活动的布局</span></span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line"><span class="comment">//        从布局文件中获取名为btn_click的按钮</span></span><br><span class="line">        <span class="type">Button</span> <span class="variable">btn_click</span> <span class="operator">=</span> findViewById(R.id.btn_click);</span><br><span class="line"><span class="comment">//        给btn_click设置点击监听器，点击触发onClick方法</span></span><br><span class="line">        btn_click.setOnClickListener(<span class="keyword">new</span> <span class="title class_">MyOnClickListtener</span>());</span><br><span class="line"><span class="comment">//        给btn_click设置长按监听器，长安触发onLongClick</span></span><br><span class="line">        btn_click.setOnLongClickListener(<span class="keyword">new</span> <span class="title class_">MyOnLongClickListtener</span>());</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">//    定义一个监听器</span></span><br><span class="line">    <span class="keyword">class</span> <span class="title class_">MyOnClickListtener</span> <span class="keyword">implements</span> <span class="title class_">View</span>.OnClickListener&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="comment">//点击监听事件</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onClick</span><span class="params">(View v)</span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(v.getId()==R.id.btn_click)&#123; <span class="comment">//判断是否长按</span></span><br><span class="line">                Toast.makeText(MainActivity.<span class="built_in">this</span>,<span class="string">&quot;您点击按键：&quot;</span>+((TextView)v).getText(),Toast.LENGTH_SHORT).show();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+
+<p>你提供的代码片段定义了一个名为 <code>MyOnClickListener</code> 的内部类，该类实现了 <code>View.OnClickListener</code> 接口，并覆盖了 <code>onClick</code> 方法。让我对这段代码进行分析：</p>
+<ol>
+<li><code>class MyOnClickListener implements View.OnClickListener</code>：这是一个内部类，它继承了 <code>View.OnClickListener</code> 接口，表示它是一个用于处理视图点击事件的自定义监听器。</li>
+<li><code>@Override</code>：这是一个注解，表示下面的方法是覆盖（重写）父类或接口中的方法。</li>
+<li><code>public void onClick(View v)</code>：这是 <code>View.OnClickListener</code> 接口中的方法 <code>onClick</code> 的实现。当与 <code>View</code> 绑定的对象被点击时，该方法将被调用。</li>
+<li><code>if(v.getId()==R.id.btn_click)</code>：这行代码检查点击事件的触发源（<code>View v</code>）是否与 <code>R.id.btn_click</code> 相匹配，即是否是按钮 <code>btn_click</code> 被点击。</li>
+<li><code>Toast.makeText(MainActivity.this,&quot;您点击按键：&quot;+((TextView)v).getText(),Toast.LENGTH_SHORT).show();</code>：如果点击事件是由按钮 <code>btn_click</code> 触发的，这段代码将创建一个短时长的 <code>Toast</code> 弹出消息，显示了用户点击了哪个按钮。<code>((TextView)v).getText()</code> 用于获取按钮的文本内容并将其包含在消息中。</li>
+<li><code>return;</code>：这是一个无条件的 <code>return</code> 语句，用于提前结束方法的执行。这里的返回语句没有返回任何值，只是用于退出 <code>onClick</code> 方法。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Android开发</category>
+      </categories>
+      <tags>
+        <tag>Android</tag>
+      </tags>
+  </entry>
 </search>

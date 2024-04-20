@@ -907,76 +907,6 @@
       </tags>
   </entry>
   <entry>
-    <title>第一章 计算机系统基础知识</title>
-    <url>/2024/02/26/%E7%AC%AC%E4%B8%80%E7%AB%A0%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</url>
-    <content><![CDATA[<h1 id="第一章-计算机系统基础知识"><a href="#第一章-计算机系统基础知识" class="headerlink" title="第一章 计算机系统基础知识"></a>第一章 计算机系统基础知识</h1><h2 id="1-1-嵌入式计算机系统概述"><a href="#1-1-嵌入式计算机系统概述" class="headerlink" title="1.1 嵌入式计算机系统概述"></a>1.1 嵌入式计算机系统概述</h2><p>根据 IEEE 的定义，嵌入式系统是“<strong>控制、监视或者辅助设备、机器和车间运行的配置</strong>“。</p>
-<p>国内的系统定义是：以应用为中心、以计算机技术为基础，软件硬件可裁剪，适应应用系统对功能、可靠性、成本、体积、功耗严格要求的专用计算机系统。</p>
-<p>可以认为，是一种专用的计算机系统，作为装置或设备的一部分。通常嵌入式系统是一个控制程序存储在 ROM 中的嵌入式处理器控制板。</p>
-<h3 id="1-计算机硬件"><a href="#1-计算机硬件" class="headerlink" title="1.计算机硬件"></a>1.计算机硬件</h3><p>计算机硬件系统由<strong>运算器、控制器、存储器、输入设备和输出设备</strong>。通信部件也成为计算机系统基本组件。</p>
-<p><strong>中央处理单元：</strong></p>
-<p>运算器和控制器和相关部件集成一起，称为中央处理单元（Central Processing Unit，CPU）。用于数据加工、完成算术、逻辑运算以及控制功能。</p>
-<p><strong>运算器：</strong></p>
-<p>对数据进行加工处理的部件，主要完成算术和逻辑运算。主要功能是从主存中取出指令并进行分析，以控制计算机各个部位完成指令。</p>
-<p><strong>存储器：</strong></p>
-<p>计算机系统的记忆设备，分为<strong>内部存储器，简称内存、主存</strong>和外部存储器，简称外存或者辅存。</p>
-<p>内存速度快、容量小，用于临时存储计算机运行所需要的程序、数据以及运算结果。</p>
-<p>外村容量大、速度慢，用于长期存钱信息。</p>
-<p><strong>寄存器</strong>：</p>
-<p>CPU 存储器件，存放临时少量的数据、运算结果和整在执行的指令，速度快。</p>
-<p>主机：</p>
-<p>CPU 和主存器的有机组合。</p>
-<p><strong>输入&#x2F;输出（I&#x2F;O）：</strong></p>
-<p>设备位于主机之外，是计算机系统和外界交换信息的装置。</p>
-<p>输入：信息输入计算机中。</p>
-<p>输出：运算结果所要求的形式输出到外部设备或存储介质上。</p>
-<h3 id="2-计算机软件"><a href="#2-计算机软件" class="headerlink" title="2.计算机软件"></a>2.计算机软件</h3><p>计算机软件指的是管理、运行、维护以及应用计算机所开发的程序和相关文档的集合。</p>
-<p>分为系统软件、中间件和应用软件等类型。</p>
-<p><strong>系统软件：</strong></p>
-<p>管理系统的硬件和软件资源。</p>
-<p><strong>应用软件：</strong></p>
-<p>解决应用领域的具体问题。</p>
-<p><strong>中间件：</strong></p>
-<p>一类独立的系统软件或者服务程序，用来管理计算机资源和网络通信，提供通信处理、数据存取、事务处理、Web 服务、安全，跨平台等服务。</p>
-<h3 id="3-计算机分类"><a href="#3-计算机分类" class="headerlink" title="3.计算机分类"></a>3.计算机分类</h3><p>（1）个人移动设备：带有多媒体用户界面的无线设备，如手机、平板。</p>
-<p>（2）桌面计算机：台式计算机，笔记本等。</p>
-<p>（3）服务器：服务器代替传统的大型机，主要提供大规模和可靠文件以及计算服务，强调可用性、可扩展性，和很高的吞吐率。</p>
-<p>（4）集群&#x2F;仓库级计算机：一组桌面计算机或者服务器用网络连接起来，类似如大型计算机</p>
-<p>（5）超级计算机：规格高，性能强大。</p>
-<p>（6）嵌入式计算机：针对某个特定的应用，如网络、通信、音频、视频等，对功能、可靠、成本、体积、功耗有严格要求。</p>
-<h2 id="1-2-数据表示"><a href="#1-2-数据表示" class="headerlink" title="1.2 数据表示"></a>1.2 数据表示</h2><p>二进制是计算机采用的一种数制。数值、文字、声音、图形图像等必须经过数值化编码才能被传送、存储和处理。</p>
-<h3 id="1-2-1-进位计数制及转换"><a href="#1-2-1-进位计数制及转换" class="headerlink" title="1.2.1 进位计数制及转换"></a>1.2.1 进位计数制及转换</h3><p>如果只用<strong>r个基本符号</strong>表示<strong>数值</strong>，则称其<strong>r进制</strong>（Radix-r Number System），r称为<strong>改数制的基数</strong>（Radix）。</p>
-<p>不同数制的共同特点：</p>
-<p>（1）有固定的符号集，例如。二进制的基本符号0和1。十进制的基本符号为0-9。</p>
-<p>（2）数制都是用位置表示法。不同位置的数符代表的值不同，与所在位置的权值有关。如<strong>十进制数</strong>1234.55表示为：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/2/image_b50ff6cfb95a61dfe215996203ee8979.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/2/image_b50ff6cfb95a61dfe215996203ee8979.png"></p>
-<p>常用进位数制有二进制、八进制、十进制、十六进制，如图</p>
-<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/2/image_73d4a641b1baacb83fe2ffe08fcbecf5.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/2/image_73d4a641b1baacb83fe2ffe08fcbecf5.png"></p>
-<p>不同数制的相互转换：</p>
-<p>（1）十进制与二进制转换</p>
-<p>在二进制中，r&#x3D;2，基本符号为0和1。二进制中的一个0或者1称为1位（bit）。</p>
-<p>十进制数转换二进制数，整数部分和小数部分<strong>分别转换</strong>，然后<strong>再合并</strong>。</p>
-<p>十进制整数转换二进制整数是“<strong>除2取余</strong>”。</p>
-<p>十进制小数转换二进制小数是“<strong>乘2取整</strong>”。</p>
-<p>例如1：十进制175.71875转换二进制数。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/2/image_c60529d879368a380c37d8040386230b.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/2/image_c60529d879368a380c37d8040386230b.png"></p>
-<p>十进制数写成二进制数权的大小展开的多显示，从高到低按照各项的系数。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/2/image_72972f0515b07707cb1d3bfd8efe40d9.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/2/image_72972f0515b07707cb1d3bfd8efe40d9.png"></p>
-<p>二进制数转成十进制数的方法是：将二进制数的每一位乘以它的权再相加，可以求得对应的十进制数值。</p>
-<p>例如2：将二进制100110.101转换成十进制</p>
-<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/2/image_70bdc308e8b6121aeb50f09955f48622.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/2/image_70bdc308e8b6121aeb50f09955f48622.png"></p>
-<p>（2）八进制计数法与十进制、二进制计数法的相互转换</p>
-<p>八进制计数制的基本符号是0-7。</p>
-<p>十进制转换八进制数的方法：十进制整数采用“<strong>除8取余</strong>”的方法转换八进制整数。</p>
-<p>十进制小数采用“<strong>乘8取整</strong>”的方法转成八进制小数</p>
-]]></content>
-      <categories>
-        <category>嵌入式设计</category>
-      </categories>
-      <tags>
-        <tag>软考</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>第一章 C数据类型及语句01</title>
     <url>/2023/08/06/%E7%AC%AC%E4%B8%80%E7%AB%A0-C%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%8F%8A%E8%AF%AD%E5%8F%A501/</url>
     <content><![CDATA[<h3 id="1-1-C-语言的特点"><a href="#1-1-C-语言的特点" class="headerlink" title="1.1 C 语言的特点"></a>1.1 C 语言的特点</h3><p>1.#include&lt;stdio.h&gt; 头文件包含，一定要有</p>
@@ -1958,6 +1888,76 @@
       </categories>
       <tags>
         <tag>STM32</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>第一章 计算机系统基础知识</title>
+    <url>/2024/02/26/%E7%AC%AC%E4%B8%80%E7%AB%A0%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</url>
+    <content><![CDATA[<h1 id="第一章-计算机系统基础知识"><a href="#第一章-计算机系统基础知识" class="headerlink" title="第一章 计算机系统基础知识"></a>第一章 计算机系统基础知识</h1><h2 id="1-1-嵌入式计算机系统概述"><a href="#1-1-嵌入式计算机系统概述" class="headerlink" title="1.1 嵌入式计算机系统概述"></a>1.1 嵌入式计算机系统概述</h2><p>根据 IEEE 的定义，嵌入式系统是“<strong>控制、监视或者辅助设备、机器和车间运行的配置</strong>“。</p>
+<p>国内的系统定义是：以应用为中心、以计算机技术为基础，软件硬件可裁剪，适应应用系统对功能、可靠性、成本、体积、功耗严格要求的专用计算机系统。</p>
+<p>可以认为，是一种专用的计算机系统，作为装置或设备的一部分。通常嵌入式系统是一个控制程序存储在 ROM 中的嵌入式处理器控制板。</p>
+<h3 id="1-计算机硬件"><a href="#1-计算机硬件" class="headerlink" title="1.计算机硬件"></a>1.计算机硬件</h3><p>计算机硬件系统由<strong>运算器、控制器、存储器、输入设备和输出设备</strong>。通信部件也成为计算机系统基本组件。</p>
+<p><strong>中央处理单元：</strong></p>
+<p>运算器和控制器和相关部件集成一起，称为中央处理单元（Central Processing Unit，CPU）。用于数据加工、完成算术、逻辑运算以及控制功能。</p>
+<p><strong>运算器：</strong></p>
+<p>对数据进行加工处理的部件，主要完成算术和逻辑运算。主要功能是从主存中取出指令并进行分析，以控制计算机各个部位完成指令。</p>
+<p><strong>存储器：</strong></p>
+<p>计算机系统的记忆设备，分为<strong>内部存储器，简称内存、主存</strong>和外部存储器，简称外存或者辅存。</p>
+<p>内存速度快、容量小，用于临时存储计算机运行所需要的程序、数据以及运算结果。</p>
+<p>外村容量大、速度慢，用于长期存钱信息。</p>
+<p><strong>寄存器</strong>：</p>
+<p>CPU 存储器件，存放临时少量的数据、运算结果和整在执行的指令，速度快。</p>
+<p>主机：</p>
+<p>CPU 和主存器的有机组合。</p>
+<p><strong>输入&#x2F;输出（I&#x2F;O）：</strong></p>
+<p>设备位于主机之外，是计算机系统和外界交换信息的装置。</p>
+<p>输入：信息输入计算机中。</p>
+<p>输出：运算结果所要求的形式输出到外部设备或存储介质上。</p>
+<h3 id="2-计算机软件"><a href="#2-计算机软件" class="headerlink" title="2.计算机软件"></a>2.计算机软件</h3><p>计算机软件指的是管理、运行、维护以及应用计算机所开发的程序和相关文档的集合。</p>
+<p>分为系统软件、中间件和应用软件等类型。</p>
+<p><strong>系统软件：</strong></p>
+<p>管理系统的硬件和软件资源。</p>
+<p><strong>应用软件：</strong></p>
+<p>解决应用领域的具体问题。</p>
+<p><strong>中间件：</strong></p>
+<p>一类独立的系统软件或者服务程序，用来管理计算机资源和网络通信，提供通信处理、数据存取、事务处理、Web 服务、安全，跨平台等服务。</p>
+<h3 id="3-计算机分类"><a href="#3-计算机分类" class="headerlink" title="3.计算机分类"></a>3.计算机分类</h3><p>（1）个人移动设备：带有多媒体用户界面的无线设备，如手机、平板。</p>
+<p>（2）桌面计算机：台式计算机，笔记本等。</p>
+<p>（3）服务器：服务器代替传统的大型机，主要提供大规模和可靠文件以及计算服务，强调可用性、可扩展性，和很高的吞吐率。</p>
+<p>（4）集群&#x2F;仓库级计算机：一组桌面计算机或者服务器用网络连接起来，类似如大型计算机</p>
+<p>（5）超级计算机：规格高，性能强大。</p>
+<p>（6）嵌入式计算机：针对某个特定的应用，如网络、通信、音频、视频等，对功能、可靠、成本、体积、功耗有严格要求。</p>
+<h2 id="1-2-数据表示"><a href="#1-2-数据表示" class="headerlink" title="1.2 数据表示"></a>1.2 数据表示</h2><p>二进制是计算机采用的一种数制。数值、文字、声音、图形图像等必须经过数值化编码才能被传送、存储和处理。</p>
+<h3 id="1-2-1-进位计数制及转换"><a href="#1-2-1-进位计数制及转换" class="headerlink" title="1.2.1 进位计数制及转换"></a>1.2.1 进位计数制及转换</h3><p>如果只用<strong>r个基本符号</strong>表示<strong>数值</strong>，则称其<strong>r进制</strong>（Radix-r Number System），r称为<strong>改数制的基数</strong>（Radix）。</p>
+<p>不同数制的共同特点：</p>
+<p>（1）有固定的符号集，例如。二进制的基本符号0和1。十进制的基本符号为0-9。</p>
+<p>（2）数制都是用位置表示法。不同位置的数符代表的值不同，与所在位置的权值有关。如<strong>十进制数</strong>1234.55表示为：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/2/image_b50ff6cfb95a61dfe215996203ee8979.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/2/image_b50ff6cfb95a61dfe215996203ee8979.png"></p>
+<p>常用进位数制有二进制、八进制、十进制、十六进制，如图</p>
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/2/image_73d4a641b1baacb83fe2ffe08fcbecf5.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/2/image_73d4a641b1baacb83fe2ffe08fcbecf5.png"></p>
+<p>不同数制的相互转换：</p>
+<p>（1）十进制与二进制转换</p>
+<p>在二进制中，r&#x3D;2，基本符号为0和1。二进制中的一个0或者1称为1位（bit）。</p>
+<p>十进制数转换二进制数，整数部分和小数部分<strong>分别转换</strong>，然后<strong>再合并</strong>。</p>
+<p>十进制整数转换二进制整数是“<strong>除2取余</strong>”。</p>
+<p>十进制小数转换二进制小数是“<strong>乘2取整</strong>”。</p>
+<p>例如1：十进制175.71875转换二进制数。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/2/image_c60529d879368a380c37d8040386230b.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/2/image_c60529d879368a380c37d8040386230b.png"></p>
+<p>十进制数写成二进制数权的大小展开的多显示，从高到低按照各项的系数。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/2/image_72972f0515b07707cb1d3bfd8efe40d9.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/2/image_72972f0515b07707cb1d3bfd8efe40d9.png"></p>
+<p>二进制数转成十进制数的方法是：将二进制数的每一位乘以它的权再相加，可以求得对应的十进制数值。</p>
+<p>例如2：将二进制100110.101转换成十进制</p>
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/2/image_70bdc308e8b6121aeb50f09955f48622.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/2/image_70bdc308e8b6121aeb50f09955f48622.png"></p>
+<p>（2）八进制计数法与十进制、二进制计数法的相互转换</p>
+<p>八进制计数制的基本符号是0-7。</p>
+<p>十进制转换八进制数的方法：十进制整数采用“<strong>除8取余</strong>”的方法转换八进制整数。</p>
+<p>十进制小数采用“<strong>乘8取整</strong>”的方法转成八进制小数</p>
+]]></content>
+      <categories>
+        <category>嵌入式设计</category>
+      </categories>
+      <tags>
+        <tag>软考</tag>
       </tags>
   </entry>
 </search>

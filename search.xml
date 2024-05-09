@@ -1593,7 +1593,8 @@
   <entry>
     <title>第九章 STM32中断应用</title>
     <url>/2024/05/09/%E7%AC%AC%E4%B9%9D%E7%AB%A0%20STM32%E4%B8%AD%E6%96%AD%E5%BA%94%E7%94%A8/</url>
-    <content><![CDATA[<h1 id="一、中断概述"><a href="#一、中断概述" class="headerlink" title="一、中断概述"></a>一、中断概述</h1><p><strong>异常就是中断，中断就是异常。</strong></p>
+    <content><![CDATA[<h1 id="一、中断概述"><a href="#一、中断概述" class="headerlink" title="一、中断概述"></a>一、中断概述</h1><p>中断时出现某些意外需要主机干预，机器能自动停止运行的程序，转入新的处理的程序，处理完之后返回程序被暂停的程序，继续运行。</p>
+<p><strong>异常就是中断，中断就是异常。</strong></p>
 <p>异常分为：系统异常和外部中断。</p>
 <h1 id="二、NVIC介绍"><a href="#二、NVIC介绍" class="headerlink" title="二、NVIC介绍"></a>二、NVIC介绍</h1><p>NVIC是嵌套向量中断控制器，控制芯片中断的功能。</p>
 <p>一般来说，使用ISER（使能中断）、ICER（失能中断）和IP（设置中断优先级）寄存器。</p>

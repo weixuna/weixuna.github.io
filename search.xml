@@ -1591,6 +1591,27 @@
       </tags>
   </entry>
   <entry>
+    <title>第九章 STM32中断应用</title>
+    <url>/2024/05/09/%E7%AC%AC%E4%B9%9D%E7%AB%A0%20STM32%E4%B8%AD%E6%96%AD%E5%BA%94%E7%94%A8/</url>
+    <content><![CDATA[<h1 id="一、中断概述"><a href="#一、中断概述" class="headerlink" title="一、中断概述"></a>一、中断概述</h1><p><strong>异常就是中断，中断就是异常。</strong></p>
+<p>异常分为：系统异常和外部中断。</p>
+<h1 id="二、NVIC介绍"><a href="#二、NVIC介绍" class="headerlink" title="二、NVIC介绍"></a>二、NVIC介绍</h1><p>NVIC是嵌套向量中断控制器，控制芯片中断的功能。</p>
+<p>一般来说，使用ISER（使能中断）、ICER（失能中断）和IP（设置中断优先级）寄存器。</p>
+<p>（不常用）</p>
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/5/image_a55375ca0cca80086903ef6aa7ee9e07.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/5/image_a55375ca0cca80086903ef6aa7ee9e07.png"></p>
+<h1 id="三、优先级"><a href="#三、优先级" class="headerlink" title="三、优先级"></a>三、优先级</h1><p>中断优先级寄存器NVIC_IPRx，用来配置外部中断的优先级。如果抢占优先级相同，九比较子优先级，如果都相同，比较硬件中断编号，编号越小，优先级越高</p>
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/5/image_de37c45ad3b6423601d0f44213e25f99.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/5/image_de37c45ad3b6423601d0f44213e25f99.png"></p>
+<h1 id="四、优先级分组"><a href="#四、优先级分组" class="headerlink" title="四、优先级分组"></a>四、优先级分组</h1><p>优先级分组由外设SCB的应用程序中断和复位控制寄存器AIRCR的PRIGROUP[10:8]决定，主优先级&#x3D;抢占优先级</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 配置中断优先级分组：抢占优先级和子优先级</span></span><br><span class="line"><span class="comment">* 形参如下：</span></span><br><span class="line"><span class="comment">* @arg NVIC_PriorityGroup_0: 0bit for 抢占优先级</span></span><br><span class="line"><span class="comment">* 4 bits for 子优先级</span></span><br><span class="line"><span class="comment">* @arg NVIC_PriorityGroup_1: 1 bit for 抢占优先级</span></span><br><span class="line"><span class="comment">* 3 bits for 子优先级</span></span><br><span class="line"><span class="comment">* @arg NVIC_PriorityGroup_2: 2 bit for 抢占优先级</span></span><br><span class="line"><span class="comment">* 2 bits for 子优先级</span></span><br><span class="line"><span class="comment">* @arg NVIC_PriorityGroup_3: 3 bit for 抢占优先级</span></span><br><span class="line"><span class="comment">* 1 bits for 子优先级</span></span><br><span class="line"><span class="comment">* @arg NVIC_PriorityGroup_4: 4 bit for 抢占优先级</span></span><br><span class="line"><span class="comment">* 0 bits for 子优先级</span></span><br><span class="line"><span class="comment">* @ 注意 如果优先级分组为 0，则抢占优先级就不存在，优先级就全部由子优先级控制</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">NVIC_PriorityGroupConfig</span><span class="params">(<span class="type">uint32_t</span> PriorityGroup)</span></span><br><span class="line">&#123;</span><br><span class="line">     <span class="comment">// 检查参数</span></span><br><span class="line">     assert_param(IS_NVIC_PRIORITY_GROUP(PriorityGroup));</span><br><span class="line">     <span class="comment">// 设置优先级分组</span></span><br><span class="line">     NVIC_SetPriorityGrouping(PriorityGroup);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/5/image_0779d2ab9fa55ff33a7b9526a2fe24db.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/5/image_0779d2ab9fa55ff33a7b9526a2fe24db.png"></p>
+<h1 id="五、中断编程"><a href="#五、中断编程" class="headerlink" title="五、中断编程"></a>五、中断编程</h1><p>配置中断一般使用三个：</p>
+<p>1、使用 HAL_NVIC_SetPriorityGrouping(uint32_t PriorityGroup) 函数配置中断优先级分组。一般默认是 NVIC_PRIORITYGROUP_4 分组 4。</p>
+<p>2、使用 HAL_NVIC_SetPriority (IRQn_Type IRQn, uint32_t PreemptPriority, uint32_t SubPriority) 函数配置具体外设中断通道的抢占优先级和子优先级。</p>
+<p>3、使用 HAL_NVIC_EnableIRQ 函数使能中断请求。</p>
+]]></content>
+  </entry>
+  <entry>
     <title>第二章-寄存器</title>
     <url>/2023/08/17/%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E5%AF%84%E5%AD%98%E5%99%A8/</url>
     <content><![CDATA[<h2 id="一、芯片组成"><a href="#一、芯片组成" class="headerlink" title="一、芯片组成"></a>一、芯片组成</h2><p>负责在 内核之外设计部件并生产整个芯片，这些内核之外的部件被称为核外外设或片上外设。如 GPIO、 USART（串口）、I2C、SPI 等都叫做片上外设</p>

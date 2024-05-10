@@ -1611,6 +1611,12 @@
 <p>2、使用 HAL_NVIC_SetPriority (IRQn_Type IRQn, uint32_t PreemptPriority, uint32_t SubPriority) 函数配置具体外设中断通道的抢占优先级和子优先级。</p>
 <p>3、使用 HAL_NVIC_EnableIRQ 函数使能中断请求。</p>
 ]]></content>
+      <categories>
+        <category>野火 STM32</category>
+      </categories>
+      <tags>
+        <tag>STM32</tag>
+      </tags>
   </entry>
   <entry>
     <title>第二章-寄存器</title>

@@ -383,6 +383,19 @@
 ]]></content>
   </entry>
   <entry>
+    <title>许久没有发文章了</title>
+    <url>/2024/09/04/%E5%85%B3%E4%BA%8E%E5%9C%A8%E7%89%A9%E8%81%94%E7%BD%91%E7%AB%9E%E8%B5%9B%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E6%84%9F%E6%83%B3/</url>
+    <content><![CDATA[<p>从四月份到八月份的比赛结束，取得了华东赛区一等奖和全国总决赛二等奖。说起来，也是跟在梦中似的~没有想过真的可以进去国赛，也算是吃到了赛道的福利了。在华东赛区和总决赛的作品演示室看到他们的作品，看的我都自卑了，很高级，我们的作品很简陋，太简陋了，搞得我都想跑了 ~</p>
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/9/bc593d6f5bda4e44204e5044a99a5b7_37609e80403560c5c5f3bd8b9a7ee3d1.jpg" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/9/bc593d6f5bda4e44204e5044a99a5b7_37609e80403560c5c5f3bd8b9a7ee3d1.jpg"></p>
+<p>我负责的是写APP和数据大屏，但是连整合单片机的部分都是我来写的，一个字“累”！写鸿蒙APP，也是只学习了三天ArkTs就直接开始写了，ArkTs也是基于TS来的，与JS相对，TS确实简单很多，我主要是有基础啦。总结就是，UI很烦很烦！！！没有艺术细胞的我，画UI简直是酷刑！！！</p>
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/9/image_8070321a721cd749fb34e912d4627942.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/9/image_8070321a721cd749fb34e912d4627942.png"></p>
+<p>整合单片机的也是一个折磨，两个队友的代码习惯不一样，不能直接调用函数，而且出现的bug最多的就是单片机……语音，WIFI，LoRa这部分都是我来的，有时候LoRa很奇怪，节点能发数据，但是网关收不到，在华东赛区的时候出现这个问题，吓得我手都在抖哈哈哈。</p>
+<p>数据大屏这部分没啥好说的，用的是低代码，会搞Http请求就没有任何问题了，挺简单的。</p>
+<p>在总决赛的之前，临时买了一个ESP32Cam，缺点就是卡(供电需要5V2A的，他的烧录板没有！！！)，清晰度倒还好，加入了一个火焰检测，本来是加入烟雾的，摄像头模糊，老是识别到模糊的地方是烟雾，可恶。ESP32Cam视频流转成一个服务器地址，Python再用OpenCV获取，再加入YOLOV8训练的模型就可以了，不过这些部分不是熟悉，实现效果有就行啦。不过在比赛的时候，没有演示出来。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/9/6e93328e4b1f132fcd13d6c4069aab0_93404f4b35ef661ccdc28e12069e98c8.jpg" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/9/6e93328e4b1f132fcd13d6c4069aab0_93404f4b35ef661ccdc28e12069e98c8.jpg"></p>
+]]></content>
+  </entry>
+  <entry>
     <title>利用MQTT连接华为IOT平台，进行数据上报与下发</title>
     <url>/2024/03/09/%E5%88%A9%E7%94%A8MQTT%E8%BF%9E%E6%8E%A5%E5%8D%8E%E4%B8%BAIOT%E5%B9%B3%E5%8F%B0%EF%BC%8C%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E4%B8%8A%E6%8A%A5%E4%B8%8E%E4%B8%8B%E5%8F%91/</url>
     <content><![CDATA[<h1 id="一、查看接入信息"><a href="#一、查看接入信息" class="headerlink" title="一、查看接入信息"></a>一、查看接入信息</h1><p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/image_6721540a5fccd555db65a98741e70716.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/image_6721540a5fccd555db65a98741e70716.png"></p>
@@ -547,159 +560,6 @@
       </categories>
       <tags>
         <tag>Ubuntu维护</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>数据库常用命令</title>
-    <url>/2023/08/29/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</url>
-    <content><![CDATA[<h1 id="修订："><a href="#修订：" class="headerlink" title="修订："></a>修订：</h1><p>查看表中的字段</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">show columns from 商品库存;xxxxxxxxxx columnshow columns from 商品库存;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1694239120400.png" alt="1694239120400"></p>
-<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1694240340953.png" alt="1694240340953"></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">select 所在区域 from 商品库存 limit 5;  检索此语句使用SELECT语句检索单个列。LIMIT 5指示MySQL返回</span><br><span class="line">不多于5行。</span><br></pre></td></tr></table></figure>
-
-<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1694240532823.png" alt="1694240532823"></p>
-<p><strong>统计四张表的记录数,要求 SQL 语句禁用联合查询（Union、JOIN、多表</strong></p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	(<span class="keyword">SELECT</span> <span class="built_in">COUNT</span>(<span class="operator">*</span>) <span class="keyword">FROM</span> d_3_1) <span class="keyword">AS</span> dcount,</span><br><span class="line">	(<span class="keyword">SELECT</span> <span class="built_in">COUNT</span>(<span class="operator">*</span>) <span class="keyword">FROM</span> 商品库存) <span class="keyword">AS</span> scount</span><br></pre></td></tr></table></figure>
-
-<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1701681099499.png" alt="1701681099499"></p>
-<h2 id="一、连接数据库"><a href="#一、连接数据库" class="headerlink" title="一、连接数据库"></a>一、连接数据库</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql -h 主机IP -P 端口号 -u 用户名 -p 密码</span><br></pre></td></tr></table></figure>
-
-<h3 id="在-Ubuntu"><a href="#在-Ubuntu" class="headerlink" title="在 Ubuntu"></a>在 Ubuntu</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MySQL -u root -p</span><br></pre></td></tr></table></figure>
-
-<p><strong>连接远程主机</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql -h110.110.110.110 -u root -p 123;</span><br></pre></td></tr></table></figure>
-
-<h2 id="二、修改用户密码"><a href="#二、修改用户密码" class="headerlink" title="二、修改用户密码"></a>二、修改用户密码</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysqladmin -u root -password ab12</span><br></pre></td></tr></table></figure>
-
-<p>再次修改</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysqladmin -u root -password djg345</span><br></pre></td></tr></table></figure>
-
-<h2 id="三、新增用户"><a href="#三、新增用户" class="headerlink" title="三、新增用户"></a>三、新增用户</h2><p>（1）增加一个用户 test1，密码为 abc</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">grant select,insert,delete on *.*to [email]=test@&quot;%]test1@&quot;[/email]&quot;Indentified by&quot;abc&quot;;</span><br><span class="line"># grant on 命令格式：grant select on 数据库.* to 用户名@登录主机 identified by “密码”;</span><br></pre></td></tr></table></figure>
-
-<p>（2）新增一个 test2 密码为 abc，只能 localhost 登录</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">grant select,insert,update,delete on mydb.* to [email=test2@localhost]test2@localhsot[/email] identified by &quot;abc&quot;;</span><br><span class="line"># 如果不想test有密码可以在用一次打消密码</span><br><span class="line">grant select,insert,update,delete on mydb.* to [email=test2@localhost]test2@localhost[/email] identified by “”;=</span><br></pre></td></tr></table></figure>
-
-<h2 id="四、创建数据库"><a href="#四、创建数据库" class="headerlink" title="四、创建数据库"></a>四、创建数据库</h2><p>（1）create database 命名;</p>
-<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693301573827.png" alt="1693301573827"></p>
-<p>（2）创建数据库并分配用户</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#1</span><br><span class="line">create database 数据库名;</span><br><span class="line">#2</span><br><span class="line">create select,insert,update,delete,create,drop,alter on 数据库名.* to 数据库名@loclhost identified by &#x27;密码&#x27;;</span><br><span class="line">#3</span><br><span class="line">select password por &#x27;数据名&#x27;@&#x27;localhost&#x27; =old_password(&#x27;密码&#x27;);</span><br></pre></td></tr></table></figure>
-
-<h2 id="五、显示数据库"><a href="#五、显示数据库" class="headerlink" title="五、显示数据库"></a>五、显示数据库</h2><p><strong>show databases 显示所有数据库</strong></p>
-<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693311907411.png" alt="1693311907411"></p>
-<h2 id="六、删除数据库"><a href="#六、删除数据库" class="headerlink" title="六、删除数据库"></a>六、删除数据库</h2><p><strong>drop database xhkdb;</strong></p>
-<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693311993666.png" alt="1693311993666"></p>
-<h2 id="七、使用数据库"><a href="#七、使用数据库" class="headerlink" title="七、使用数据库"></a>七、使用数据库</h2><p><strong>use xhkdb;</strong></p>
-<p>（1）use 语句可以通告 mysql 把数据库当作默认使用。知道下一个不同的 use 语句。</p>
-<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693314402433.png" alt="1693314402433"></p>
-<p>（2）use 语句不会阻碍访问其他数据库中的表。ab1 数据库访问 author 表，并从 db2 数据库访问 editor 表</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">use db1;</span><br><span class="line">select author_name,editor_name from author,ab2,editor;</span><br><span class="line">where author.editor_id = ab2.editor.editor_id;</span><br></pre></td></tr></table></figure>
-
-<h2 id="八、当前连接的数据库"><a href="#八、当前连接的数据库" class="headerlink" title="八、当前连接的数据库"></a>八、当前连接的数据库</h2><p><strong>select database();</strong></p>
-<p>（1）显示 mysql 版本</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">select version();</span><br></pre></td></tr></table></figure>
-
-<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693314931707.png" alt="1693314931707"></p>
-<p>（2）显示当前时间</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">select now();</span><br></pre></td></tr></table></figure>
-
-<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693314952201.png" alt="1693314952201"></p>
-<p>（3）显示年月日</p>
-<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693315145115.png" alt="1693315145115"></p>
-<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693315128832.png" alt="1693315128832"></p>
-<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693315054667.png" alt="1693315054667"></p>
-<p>（4）显示字符串</p>
-<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693315209186.png" alt="1693315209186"></p>
-<p>（5）当计算器</p>
-<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693315238981.png" alt="1693315238981"></p>
-<p>（5）串接字符串</p>
-<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693315322414.png" alt="1693315322414"></p>
-<p><strong>&#x2F;&#x2F;这里用到 CONCAT()函数，用来把字符串串接起来。</strong></p>
-<h2 id="九、创建数据库表"><a href="#九、创建数据库表" class="headerlink" title="九、创建数据库表"></a>九、创建数据库表</h2><p>注意：要先使用 use 数据库名；</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">create table 表名</span><br><span class="line">(</span><br><span class="line">	字段名1，数据类型 [列级别约束条件][默认值]，</span><br><span class="line">	字段名2，数据类型 [列级别约束条件][默认值],</span><br><span class="line">	……</span><br><span class="line">	[表级别约束条件]</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-
-<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693315552760.png" alt="1693315552760"></p>
-<p>例如:创建 tb_emp1 表结构</p>
-<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693317121082.png" alt="1693317121082"></p>
-<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693317243938.png" alt="1693317243938"></p>
-<h2 id="十、获取表结构"><a href="#十、获取表结构" class="headerlink" title="十、获取表结构"></a>十、获取表结构</h2><p><strong>查看表结构可以使用 describe 和 show create table；</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">describe 表名;</span><br></pre></td></tr></table></figure>
-
-<p>或</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">desc 表名；</span><br></pre></td></tr></table></figure>
-
-<p>show create table 可以查看显示创建表时的 create table 语句。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">show create table 表名\G;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693317695853.png" alt="1693317695853"></p>
-<h2 id="十一、删除数据表"><a href="#十一、删除数据表" class="headerlink" title="十一、删除数据表"></a>十一、删除数据表</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">drop table if exists 表1，表2,表n</span><br></pre></td></tr></table></figure>
-
-<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693355675932.png" alt="1693355675932"></p>
-<h2 id="十二、向表中插入数据"><a href="#十二、向表中插入数据" class="headerlink" title="十二、向表中插入数据"></a>十二、向表中插入数据</h2><p><strong>insert into 插入新行</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">insert into 表名称 values(值1，值2);</span><br><span class="line"># 也可以指定要插入数据的列</span><br><span class="line">insert into table_name(列1，列2)values(值1，值2)</span><br></pre></td></tr></table></figure>
-
-<h2 id="十三、查询表中数据"><a href="#十三、查询表中数据" class="headerlink" title="十三、查询表中数据"></a>十三、查询表中数据</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line"> &#123;* | &lt;字段列表&gt;&#125;</span><br><span class="line"> [</span><br><span class="line">	 FROM &lt;表 1&gt;,&lt;表 2&gt;...</span><br><span class="line">	 [WHERE &lt;表达式&gt;</span><br><span class="line">	 [GROUP BY &lt;group by definition&gt;]</span><br><span class="line">	 [HAVING &lt;expression&gt; [&#123;&lt;operator&gt;&lt;expression&gt;&#125;...]]</span><br><span class="line"> 	[ORDER BY &lt;order by definition&gt;]</span><br><span class="line"> 	[LIMIT [&lt;offset&gt;,] &lt;row count&gt;]</span><br><span class="line"> ]</span><br><span class="line">SELECT [字段 1,字段 2,…,字段 n]</span><br><span class="line">FROM [表或视图]</span><br><span class="line">WHERE [查询条件];</span><br></pre></td></tr></table></figure>
-
-<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1696756935287.png" alt="1696756935287"></p>
-<h2 id="十四、删除记录"><a href="#十四、删除记录" class="headerlink" title="十四、删除记录"></a>十四、删除记录</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">delete from table_name[where &lt;condition&gt;];</span><br><span class="line">#						指定删除条件</span><br><span class="line">delete from person where id=11;</span><br></pre></td></tr></table></figure>
-
-<h2 id="十五、修改表中的数据"><a href="#十五、修改表中的数据" class="headerlink" title="十五、修改表中的数据"></a>十五、修改表中的数据</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">update table_name</span><br><span class="line">set column_nmael=value1,column_name2=value2</span><br><span class="line">where(condition)</span><br></pre></td></tr></table></figure>
-
-<p>column_name1，为指定更新的字段名称。value 为相对应指定字段的更新值。condition 更新记录需要满足的条件</p>
-<p>【例】在 person 表中，更新 id 值为 11 的记录，将 age 字段值改为 15，将 name 字段值改为 LiMing，SQL 语句如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">update person set age=15,name=&#x27;liming&#x27;where id=11;</span><br></pre></td></tr></table></figure>
-
-<h2 id="十六、增加字段"><a href="#十六、增加字段" class="headerlink" title="十六、增加字段"></a>十六、增加字段</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">alter add 表名 add 新字段 数据类型</span><br><span class="line">	约束条件 first|after 已存在字段名</span><br><span class="line">	        first将新添加的字段设置为表的第一个字段</span><br><span class="line">	        after新添加的字段指定在‘已存在字段名’的后面</span><br></pre></td></tr></table></figure>
-
-<p>【例】在数据表 tb_dept1 中添加一个没有完整性约束的 INT 类型的字段 managerId（部门经理编号），SQL 语句如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ALTER TABLE tb_dept1 ADD managerId INT(10);</span><br></pre></td></tr></table></figure>
-
-<h2 id="十七、修改表名"><a href="#十七、修改表名" class="headerlink" title="十七、修改表名"></a>十七、修改表名</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">alter table 旧表名 rename to新表名</span><br></pre></td></tr></table></figure>
-
-<p>【例】将数据表 tb_dept3 改名为 tb_deptment3，SQL 语句如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ALTER TABLE tb_dept3 RENAME tb_deptment3;</span><br></pre></td></tr></table></figure>
-
-<h2 id="十八、备份数据库"><a href="#十八、备份数据库" class="headerlink" title="十八、备份数据库"></a>十八、备份数据库</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysqldump -u user -h host -p password dbname[tbname,[tbname]]&gt;filename.sql</span><br></pre></td></tr></table></figure>
-
-<h2 id="十九、还原数据库"><a href="#十九、还原数据库" class="headerlink" title="十九、还原数据库"></a>十九、还原数据库</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql -u user -p [dbname]&lt;filename.sql</span><br></pre></td></tr></table></figure>
-
-<p>【例 1】使用 mysql 命令将 C:\backup\booksdb_20130301.sql 文件中的备份导入到数据库中，输入语句如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql –u root –p booksDB &lt; C:/backup/booksdb_20130301.sql</span><br></pre></td></tr></table></figure>
-
-<p>如果已经登录 MySQL 服务器，还可以使用 source 命令导入 sql 文件。source 语句语法如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">source filename</span><br></pre></td></tr></table></figure>
-
-<p>【 例 2 】 使 用 root 用 户 登 录 到 服 务 器 ， 然 后 使 用 source 导 入 本 地 的 备 份 文 件 booksdb_20110101.sql，输入语句如下：</p>
-<p>–选择要恢复到的数据库</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql&gt; use booksDB;</span><br><span class="line"></span><br><span class="line">Database changed</span><br></pre></td></tr></table></figure>
-
-<p>–使用 source 命令导入备份文件</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql&gt; source C:\backup\booksDB_20130301.sql</span><br></pre></td></tr></table></figure>
-
-<h2 id="二十、快速恢复数据库"><a href="#二十、快速恢复数据库" class="headerlink" title="二十、快速恢复数据库"></a>二十、快速恢复数据库</h2><p>在 MySQL 服务器停止运行时，将备份的数据库文件复制到 MySQL 存放数据的位置（MySQL 的 data 文件夹）</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">chown -R mysql.mysql /var/lib/mysql/dbname</span><br></pre></td></tr></table></figure>
-
-<p>【例】从 mysqlhotcopy 复制的备份恢复数据库，输入语句如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cp -R /usr/backup/test usr/local/mysql/data</span><br></pre></td></tr></table></figure>
-
-<h2 id="二十一、在-Ubuntu-下安装-mysql"><a href="#二十一、在-Ubuntu-下安装-mysql" class="headerlink" title="二十一、在 Ubuntu 下安装 mysql"></a>二十一、在 Ubuntu 下安装 mysql</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo apt-get update #更新软件包</span><br><span class="line">sudo apt-get install mysql-server #安装数据库服务器</span><br><span class="line"></span><br><span class="line">启动：sudo /etc/init.d/mysql start</span><br><span class="line">停止：sudo /etc/init.d/mysql stop</span><br><span class="line">重启：sudo /etc/init.d/mysql restart</span><br><span class="line">登录：mysql -u root -p&lt;pwd&gt;</span><br></pre></td></tr></table></figure>
-
-<h2 id="二十二、关闭防火墙"><a href="#二十二、关闭防火墙" class="headerlink" title="二十二、关闭防火墙"></a>二十二、关闭防火墙</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">- sudo apt-get install ufw 安装防火墙</span><br><span class="line">- sudo ufw enable 打开防火墙</span><br><span class="line">- sudo ufw status 查看防火墙状态</span><br><span class="line">- sudo ufw disable 关闭防火墙</span><br></pre></td></tr></table></figure>
-
-<h1 id="MySQL-在-Ubuntu-使用"><a href="#MySQL-在-Ubuntu-使用" class="headerlink" title="MySQL 在 Ubuntu 使用"></a>MySQL 在 Ubuntu 使用</h1><h2 id="二十三、在服务器-SQLSERVER-上，利用-U-盘“U-盘资料-test-sql”还原三张数据"><a href="#二十三、在服务器-SQLSERVER-上，利用-U-盘“U-盘资料-test-sql”还原三张数据" class="headerlink" title="二十三、在服务器 SQLSERVER 上，利用 U 盘“U 盘资料&#x2F;test.sql”还原三张数据"></a>二十三、在服务器 SQLSERVER 上，利用 U 盘“U 盘资料&#x2F;test.sql”还原三张数据</h2><p>表。</p>
-<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1705417667865.png" alt="1705417667865"></p>
-<h2 id="二十四、统计三张表的记录数，查询结果要求如图。"><a href="#二十四、统计三张表的记录数，查询结果要求如图。" class="headerlink" title="二十四、统计三张表的记录数，查询结果要求如图。"></a>二十四、统计三张表的记录数，查询结果要求如图。</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT &#x27;table1&#x27; AS TableName, COUNT(*) AS RecordCount FROM table1</span><br><span class="line">UNION ALL</span><br><span class="line">SELECT &#x27;table2&#x27; AS TableName, COUNT(*) AS RecordCount FROM table2</span><br><span class="line">UNION ALL</span><br><span class="line">SELECT &#x27;table3&#x27; AS TableName, COUNT(*) AS RecordCount FROM table3;</span><br></pre></td></tr></table></figure>
-
-<h2 id="二十五、删除-AD-AccountsRole-表中不属于-AD-Accounts-用户的关系数据。重新查询三张表的记录数。"><a href="#二十五、删除-AD-AccountsRole-表中不属于-AD-Accounts-用户的关系数据。重新查询三张表的记录数。" class="headerlink" title="二十五、删除 AD_AccountsRole 表中不属于 AD_Accounts 用户的关系数据。重新查询三张表的记录数。"></a>二十五、删除 AD_AccountsRole 表中不属于 AD_Accounts 用户的关系数据。重新查询三张表的记录数。</h2><p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1705417785368.png" alt="1705417785368"></p>
-<h2 id="二十六、新建查询窗口，写出查询-nleedge-数据库中所有数据表和每个表的记录"><a href="#二十六、新建查询窗口，写出查询-nleedge-数据库中所有数据表和每个表的记录" class="headerlink" title="二十六、新建查询窗口，写出查询 nleedge 数据库中所有数据表和每个表的记录"></a>二十六、新建查询窗口，写出查询 nleedge 数据库中所有数据表和每个表的记录</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">  (SELECT COUNT(*) FROM d_3_1) AS 表一,</span><br><span class="line">  (SELECT COUNT(*) FROM `商品库存`) AS 表二;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>Mysql</category>
-      </categories>
-      <tags>
-        <tag>数据库</tag>
       </tags>
   </entry>
   <entry>
@@ -1431,134 +1291,6 @@
       </tags>
   </entry>
   <entry>
-    <title>第三章-函数</title>
-    <url>/2023/08/10/%E7%AC%AC%E4%B8%89%E7%AB%A0-%E5%87%BD%E6%95%B0/</url>
-    <content><![CDATA[<h3 id="一、函数的概念"><a href="#一、函数的概念" class="headerlink" title="一、函数的概念"></a>一、函数的概念</h3><p>函数是 c 语言的功能单位，实现一个功能可以封装一个函数来实现。</p>
-<p>定义函数的时候一切以功能为目的，根据功能去定函数的参数和返回值。</p>
-<h3 id="二、函数的分类"><a href="#二、函数的分类" class="headerlink" title="二、函数的分类"></a>二、函数的分类</h3><h4 id="1、定义角度分类"><a href="#1、定义角度分类" class="headerlink" title="1、定义角度分类"></a>1、定义角度分类</h4><p>1、库函数 2、自定义函数 3、系统调用</p>
-<h4 id="2、参数角度分类"><a href="#2、参数角度分类" class="headerlink" title="2、参数角度分类"></a>2、参数角度分类</h4><p>1、有参函数</p>
-<p>​ 函数有形参，可以是一个，也可以是多个，类型随便</p>
-<p>例如：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">fun</span><span class="params">(<span class="type">int</span> a.<span class="type">float</span> b.<span class="type">double</span> c)</span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> <span class="title function_">max</span><span class="params">(<span class="type">int</span> x,<span class="type">int</span> y)</span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>2、无参函数</p>
-<p>函数没有参数，在形参列表的位置写 void 或者不写</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">fun</span><span class="params">(<span class="type">void</span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> <span class="title function_">fun</span><span class="params">()</span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>3、返回值角度分类</p>
-<p>（1）带返回值的函数</p>
-<p>在定义函数的时候，必须带有返回值类型，在函数题，必须有 return，没有返回值类型，默认返回值整形</p>
-<p>例如：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">char</span> <span class="title function_">fun</span><span class="params">()</span> <span class="comment">//定义一个返回字符数据的函数</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">char</span> b = <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">	<span class="keyword">return</span> b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">fun()&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>（2）没有返回值的函数</p>
-<p>在定义函数的时候，函数名字前面加个 void</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">fun</span><span class="params">(形参表)</span>&#123;</span><br><span class="line">	;</span><br><span class="line">	;</span><br><span class="line">	<span class="keyword">return</span> ;</span><br><span class="line">	;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在函数中不需要 return，如果想结束函数，返回到被调用的地方，return ;什么都不返回</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stido.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> x,<span class="type">int</span> y)</span>&#123;</span><br><span class="line">    <span class="type">int</span> z;</span><br><span class="line">    <span class="keyword">if</span>(x&gt;y)</span><br><span class="line">        z=x;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        z=y;</span><br><span class="line">    <span class="keyword">return</span> z;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">help</span><span class="params">(<span class="type">void</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;*********************\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;********帮助信息*****\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;*********************\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="type">int</span> num;</span><br><span class="line">    help();</span><br><span class="line">    num = max(<span class="number">10</span>,<span class="number">10</span>+<span class="number">5</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;num=%d\n&quot;</span>,num);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="三、函数的定义"><a href="#三、函数的定义" class="headerlink" title="三、函数的定义"></a>三、函数的定义</h3><p>1、定义方法</p>
-<p>返回值类型 函数名字（形参列表）{</p>
-<p>​ &#x2F;&#x2F;函数体，函数的功能写在函数体实现</p>
-<p>}</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">//定义一个没有参数也没有返回值的函数</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun1</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;hello world\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> ;</span><br><span class="line"><span class="comment">//定义一个有参数的函数</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun2</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="type">int</span> sum;</span><br><span class="line">    sum = a + b;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d + %d = %d\n&quot;</span>, a , b , sum);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//定义一个有返回值的函数</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">myfun3</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b)</span>&#123;</span><br><span class="line">    <span class="type">int</span> sum;</span><br><span class="line">    sum = a + b;</span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="四、函数的声明"><a href="#四、函数的声明" class="headerlink" title="四、函数的声明"></a>四、函数的声明</h3><p>1、概念</p>
-<p>对已经定义的函数，进行声明，可以多次</p>
-<p>2、为什么声明</p>
-<p>编译器在编译 c 时，上到下编译</p>
-<p>3、声明方法</p>
-<p>（1）主调函数和被调函数在同一个.c 中</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">fun</span><span class="params">(<span class="type">void</span>)</span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;hello world\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">	fun();</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//不需要声明</span></span><br></pre></td></tr></table></figure>
-
-<p>（2）被调函数在下，主函数在上</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    fun();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">fun</span><span class="params">(<span class="type">void</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;hello world\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//需要声明</span></span><br><span class="line"><span class="comment">//1.直接声明</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun1</span><span class="params">()</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun2</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">myfun3</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    myfun1();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun1</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;hello world\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun2</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b)</span>&#123;</span><br><span class="line">    <span class="type">int</span> sum;</span><br><span class="line">    sum = a + b;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d + %d = %d\n&quot;</span>,a,b,sum);</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> <span class="title function_">myfun3</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b)</span>&#123;</span><br><span class="line">    <span class="type">int</span> sum;</span><br><span class="line">    sum = a + b;</span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//2.间接声明</span></span><br><span class="line"><span class="comment">//a.c文件</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;a.h&quot;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    fun();</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">fun</span><span class="params">(<span class="type">void</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;hellow world&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//a.h文件</span></span><br><span class="line"><span class="keyword">extern</span> <span class="type">void</span> <span class="title function_">fun</span><span class="params">(<span class="type">void</span>)</span>;</span><br></pre></td></tr></table></figure>
-
-<p>（2）主调函数和被调函数不在同一个.c 文件</p>
-<p>1.直接声明 2.间接声明</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">//myfun.c</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;myfun.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun1</span><span class="params">()</span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;hellow world\n&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//myfun.h</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> MYFUN_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> MYFUN_H</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun1</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//main.c</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;myfun.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    muyfun1();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="五、函数调用"><a href="#五、函数调用" class="headerlink" title="五、函数调用"></a>五、函数调用</h3><p>变量 &#x3D; 函数名（实参列表）；带返回值</p>
-<p>函数名（实参列表）；不带返回值</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun1</span><span class="params">()</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun2</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">myfun</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="comment">//没有参数也没有返回值</span></span><br><span class="line">    myfun1();</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;*******************\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//有参数，没有返回值，需要在函数名传入实参</span></span><br><span class="line">    myfun2(<span class="number">100</span>,<span class="number">90</span>);</span><br><span class="line">    <span class="type">int</span> x = <span class="number">10</span>, y=<span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//x、y:实参，实际参数，本质就是在被调函数的时候将参数的值传递给形参</span></span><br><span class="line">    myfun2(x,y);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;*******************\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//有参数也有返回值，可以一个变量接收函数执行结果（返回值），或者直接输出</span></span><br><span class="line">    <span class="type">int</span> n;</span><br><span class="line">    n = myfun3(<span class="number">100</span>,<span class="number">90</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;n = %d\n&quot;</span>,n);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;sum=&amp;d\n&quot;</span>,myfun3(<span class="number">90</span>,<span class="number">66</span>));</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun1</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;hello world\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//a、b形参，存在实参的值</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun2</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b)</span>&#123;</span><br><span class="line">    <span class="type">int</span> sum;</span><br><span class="line">    sum = a + b;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d + %d = %d\n&quot;</span>,a,b,sum);</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> <span class="title function_">myfun3</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b)</span>&#123;</span><br><span class="line">    <span class="type">int</span> sum;</span><br><span class="line">    sum = a + b;</span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/../assets/%E7%AC%AC%E4%B8%89%E7%AB%A0-%E5%87%BD%E6%95%B0/1691654665160.png" alt="1691654665160"></p>
-<h3 id="六、变量的存储类别"><a href="#六、变量的存储类别" class="headerlink" title="六、变量的存储类别"></a>六、变量的存储类别</h3><h4 id="1、内存的分区"><a href="#1、内存的分区" class="headerlink" title="1、内存的分区"></a>1、内存的分区</h4><p>物理内存：存储在存储设备</p>
-<p>虚拟内存：操作系统虚拟出来的内存</p>
-<p>操作系统会在物理内存和虚拟内存之间叫映射</p>
-<h4 id="2、运行程序的时候，操作系统会将虚拟内存进行分区"><a href="#2、运行程序的时候，操作系统会将虚拟内存进行分区" class="headerlink" title="2、运行程序的时候，操作系统会将虚拟内存进行分区"></a>2、运行程序的时候，操作系统会将虚拟内存进行分区</h4><p>（1）堆</p>
-<p>在动态申请内存的时候，在堆里开辟内存</p>
-<p>（2）栈</p>
-<p>存放局部变量</p>
-<p>（3）静态全局区</p>
-<p>1：未初始化的静态全局区</p>
-<p>​ 静态变量（就是在前面添加 statiic），或者全局变量，没有初始化，存储在这里</p>
-<p>2：初始化的静态全局区</p>
-<p>​ 全局变量，静态变量，赋值初始值的，存储在这里</p>
-<p>4、代码区</p>
-<p>​ 存储在程序代码</p>
-<p>5、文字常量区</p>
-<p>​ 存放常量的</p>
-<h4 id="3、普通全局变量"><a href="#3、普通全局变量" class="headerlink" title="3、普通全局变量"></a>3、普通全局变量</h4><p>在函数外部定义的变量</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> num =<span class="number">100</span>;<span class="comment">//全局变量,需要声明 extern int num;</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//生命周期：程序运行，整个过程，一直存在，知道程序结束</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//定义一个普通全局变量，在main函数外的变量就是全局变量</span></span><br><span class="line"><span class="comment">//没有赋值，系统将赋值初始化0</span></span><br><span class="line"><span class="type">int</span> num;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun</span><span class="params">()</span>&#123;</span><br><span class="line">    num= <span class="number">888</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;num=%d\n&quot;</span>,num);</span><br><span class="line"></span><br><span class="line">    myfun();</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;num=%d\n&quot;</span>,num);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/../assets/%E7%AC%AC%E4%B8%89%E7%AB%A0-%E5%87%BD%E6%95%B0/1691658185939.png" alt="1691658185939"></p>
-<h4 id="4、静态全局变量"><a href="#4、静态全局变量" class="headerlink" title="4、静态全局变量"></a>4、静态全局变量</h4><p>定义全局变量的时候，用 static</p>
-<p>作用范围：限定了静态全局变量的作业范围</p>
-<p>生命周期：在程序整个运行中，都一直存在</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"> <span class="comment">//定义一个静态全局变量</span></span><br><span class="line"> <span class="comment">//静态全局变量只能在其定义的.c文件中任意位置使用，不能跨文件使用</span></span><br><span class="line"> <span class="type">static</span> <span class="type">int</span> num;</span><br><span class="line"></span><br><span class="line"> <span class="type">void</span> <span class="title function_">myfun</span><span class="params">()</span></span><br><span class="line"> &#123;</span><br><span class="line"> num++;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span></span><br><span class="line"> &#123;</span><br><span class="line"> <span class="built_in">printf</span>(<span class="string">&quot;num = %d\n&quot;</span>, num);</span><br><span class="line"></span><br><span class="line"> myfun();</span><br><span class="line"></span><br><span class="line"> <span class="built_in">printf</span>(<span class="string">&quot;num = %d\n&quot;</span>, num);</span><br><span class="line"></span><br><span class="line"> <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/../assets/%E7%AC%AC%E4%B8%89%E7%AB%A0-%E5%87%BD%E6%95%B0/1691658406783.png" alt="1691658406783"></p>
-<h4 id="5、局部变量"><a href="#5、局部变量" class="headerlink" title="5、局部变量"></a>5、局部变量</h4><p>在函数内部定义，或者复合语句定义的变量</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="type">int</span> num;<span class="comment">//局部</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">int</span> a;<span class="comment">//局部</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>作用范围：</p>
-<p>在函数中定义的变量，在函数中有效</p>
-<p>在复合语句中定义的，在复合语句中有效。</p>
-<p>生命周期：</p>
-<p>在函数调用之前，局部变量不占用空间，调用函数的时候，</p>
-<p>才为局部变量开辟空间，函数结束了，局部变量就释放了。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"> <span class="comment">//定义一个局部变量</span></span><br><span class="line"> <span class="comment">//在函数内部定义的，不加任何修饰的变量都是局部变量</span></span><br><span class="line"> <span class="type">void</span> <span class="title function_">myfun</span><span class="params">()</span></span><br><span class="line"> &#123;</span><br><span class="line"> <span class="type">int</span> num = <span class="number">100</span>;</span><br><span class="line"> num++;</span><br><span class="line"></span><br><span class="line"> <span class="built_in">printf</span>(<span class="string">&quot;num = %d\n&quot;</span>, num);</span><br><span class="line"></span><br><span class="line"> <span class="keyword">return</span> ;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span></span><br><span class="line"> &#123;</span><br><span class="line"> <span class="comment">//局部变量只能在定义的函数内部使用，声明周期相对较短，函数结束，局部变量就会释</span></span><br><span class="line">放</span><br><span class="line"><span class="comment">//printf(&quot;num = %d\n&quot;, num);</span></span><br><span class="line"> myfun();</span><br><span class="line"> myfun();</span><br><span class="line"> myfun();</span><br><span class="line"></span><br><span class="line"> <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/../assets/%E7%AC%AC%E4%B8%89%E7%AB%A0-%E5%87%BD%E6%95%B0/1691658579818.png" alt="1691658579818"></p>
-<h4 id="6、静态的局部变量"><a href="#6、静态的局部变量" class="headerlink" title="6、静态的局部变量"></a>6、静态的局部变量</h4><p>定义局部变量的时候，前面加 static 修饰</p>
-<p>作用范围：</p>
-<p>在它定义的函数或复合语句中有效。</p>
-<p>生命周期：</p>
-<p>第一次调用函数的时候，开辟空间赋值，函数结束后，不释放， 以后再调用函数的时候，就不再为其开辟空间，也不赋初值， 用的是以前的那个变量。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//定义一个静态局部变量</span></span><br><span class="line"><span class="comment">//在函数内部定义的使用static修饰的变量就是静态局部变量</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="comment">//如果普通局部变量不进行初始化，则默认是随机值</span></span><br><span class="line"><span class="comment">//如果静态局部变量不进行初始化，则默认是0</span></span><br><span class="line"> <span class="type">int</span> a; <span class="comment">//普通局部变量</span></span><br><span class="line"> <span class="type">static</span> <span class="type">int</span> num; <span class="comment">//静态局部变量</span></span><br><span class="line"></span><br><span class="line"> <span class="built_in">printf</span>(<span class="string">&quot;a = %d\n&quot;</span>, a);</span><br><span class="line"> <span class="built_in">printf</span>(<span class="string">&quot;num = %d\n&quot;</span>, num);</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="type">void</span> <span class="title function_">myfun1</span><span class="params">()</span></span><br><span class="line"> &#123;</span><br><span class="line"> <span class="comment">//静态局部变量不会随着当前函数执行结束而释放空间，下次使用的函数之前的空间</span></span><br><span class="line"> <span class="comment">//静态局部变量只会初始化一次</span></span><br><span class="line"> <span class="type">static</span> <span class="type">int</span> num1 = <span class="number">100</span>;</span><br><span class="line"> num1++;</span><br><span class="line"></span><br><span class="line"> <span class="built_in">printf</span>(<span class="string">&quot;num1 = %d\n&quot;</span>, num1);</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span></span><br><span class="line"> &#123;</span><br><span class="line">     myfun();</span><br><span class="line"></span><br><span class="line">     myfun1();</span><br><span class="line">     myfun1();</span><br><span class="line">     myfun1();</span><br><span class="line"></span><br><span class="line"> <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/../assets/%E7%AC%AC%E4%B8%89%E7%AB%A0-%E5%87%BD%E6%95%B0/1691658688779.png" alt="1691658688779"></p>
-<p>1：定义普通局部变量，如果不赋初值，它的值是随机的。</p>
-<p>定义静态局部变量，如果不赋初值，它的值是 0</p>
-<p>2：普通全局变量，和静态全局变量如果不赋初值，它的值为 0</p>
-<h4 id="7、外部函数"><a href="#7、外部函数" class="headerlink" title="7、外部函数"></a>7、外部函数</h4><p>咱们定义的普通函数，都是外部函数。 即函数可以在程序的任何一个文件中调用。</p>
-<p>在分文件编程中，只需要将函数的实现过程写在指定的.c 文件中，然后将其声明写在指定</p>
-<p>的.h 文件中，其他文件只要包含了头文件，就可以使用外部函数</p>
-<h4 id="8、内部函数"><a href="#8、内部函数" class="headerlink" title="8、内部函数"></a>8、内部函数</h4><p>内部函数也称之为静态函数，就是用 static 修饰的函数</p>
-<p>在定义函数的时候，返回值类型前面加 static 修饰。这样的函数被称为内部函数。</p>
-<p>static 限定了函数的作用范围，在定义的.c 中有效。</p>
-<p>外部函数，在所有地方都可以调用，</p>
-<p>内部函数，只能在所定义的.c 中的函数调用</p>
-<p>扩展：</p>
-<p>在同一作用范围内，不允许变量重名。</p>
-<p>作用范围不同的可以重名。</p>
-<p>局部范围内，重名的全局变量不起作用。（就近原则）</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> num = <span class="number">100</span>; <span class="comment">//全局变量</span></span><br><span class="line"> <span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line"> &#123;</span><br><span class="line"> <span class="comment">//如果出现可以重名的情况，使用的时候满足向上就近原则</span></span><br><span class="line"> <span class="type">int</span> num = <span class="number">999</span>; <span class="comment">//局部变量</span></span><br><span class="line"></span><br><span class="line"> <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>千锋C语言</category>
-      </categories>
-      <tags>
-        <tag>嵌入式C</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>第三章 寄存器点亮LED</title>
     <url>/2023/09/01/%E7%AC%AC%E4%B8%89%E7%AB%A0-%E5%AF%84%E5%AD%98%E5%99%A8%E7%82%B9%E4%BA%AELED/</url>
     <content><![CDATA[<h2 id="一、GPIO"><a href="#一、GPIO" class="headerlink" title="一、GPIO"></a>一、GPIO</h2><p>GPIO 是通用输入输出端口的简称，就是可控的引脚。</p>
@@ -1956,6 +1688,287 @@
       <categories>
         <category>项目</category>
       </categories>
+  </entry>
+  <entry>
+    <title>数据库常用命令</title>
+    <url>/2023/08/29/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</url>
+    <content><![CDATA[<h1 id="修订："><a href="#修订：" class="headerlink" title="修订："></a>修订：</h1><p>查看表中的字段</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">show columns from 商品库存;xxxxxxxxxx columnshow columns from 商品库存;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1694239120400.png" alt="1694239120400"></p>
+<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1694240340953.png" alt="1694240340953"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">select 所在区域 from 商品库存 limit 5;  检索此语句使用SELECT语句检索单个列。LIMIT 5指示MySQL返回</span><br><span class="line">不多于5行。</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1694240532823.png" alt="1694240532823"></p>
+<p><strong>统计四张表的记录数,要求 SQL 语句禁用联合查询（Union、JOIN、多表</strong></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	(<span class="keyword">SELECT</span> <span class="built_in">COUNT</span>(<span class="operator">*</span>) <span class="keyword">FROM</span> d_3_1) <span class="keyword">AS</span> dcount,</span><br><span class="line">	(<span class="keyword">SELECT</span> <span class="built_in">COUNT</span>(<span class="operator">*</span>) <span class="keyword">FROM</span> 商品库存) <span class="keyword">AS</span> scount</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1701681099499.png" alt="1701681099499"></p>
+<h2 id="一、连接数据库"><a href="#一、连接数据库" class="headerlink" title="一、连接数据库"></a>一、连接数据库</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql -h 主机IP -P 端口号 -u 用户名 -p 密码</span><br></pre></td></tr></table></figure>
+
+<h3 id="在-Ubuntu"><a href="#在-Ubuntu" class="headerlink" title="在 Ubuntu"></a>在 Ubuntu</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MySQL -u root -p</span><br></pre></td></tr></table></figure>
+
+<p><strong>连接远程主机</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql -h110.110.110.110 -u root -p 123;</span><br></pre></td></tr></table></figure>
+
+<h2 id="二、修改用户密码"><a href="#二、修改用户密码" class="headerlink" title="二、修改用户密码"></a>二、修改用户密码</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysqladmin -u root -password ab12</span><br></pre></td></tr></table></figure>
+
+<p>再次修改</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysqladmin -u root -password djg345</span><br></pre></td></tr></table></figure>
+
+<h2 id="三、新增用户"><a href="#三、新增用户" class="headerlink" title="三、新增用户"></a>三、新增用户</h2><p>（1）增加一个用户 test1，密码为 abc</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">grant select,insert,delete on *.*to [email]=test@&quot;%]test1@&quot;[/email]&quot;Indentified by&quot;abc&quot;;</span><br><span class="line"># grant on 命令格式：grant select on 数据库.* to 用户名@登录主机 identified by “密码”;</span><br></pre></td></tr></table></figure>
+
+<p>（2）新增一个 test2 密码为 abc，只能 localhost 登录</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">grant select,insert,update,delete on mydb.* to [email=test2@localhost]test2@localhsot[/email] identified by &quot;abc&quot;;</span><br><span class="line"># 如果不想test有密码可以在用一次打消密码</span><br><span class="line">grant select,insert,update,delete on mydb.* to [email=test2@localhost]test2@localhost[/email] identified by “”;=</span><br></pre></td></tr></table></figure>
+
+<h2 id="四、创建数据库"><a href="#四、创建数据库" class="headerlink" title="四、创建数据库"></a>四、创建数据库</h2><p>（1）create database 命名;</p>
+<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693301573827.png" alt="1693301573827"></p>
+<p>（2）创建数据库并分配用户</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#1</span><br><span class="line">create database 数据库名;</span><br><span class="line">#2</span><br><span class="line">create select,insert,update,delete,create,drop,alter on 数据库名.* to 数据库名@loclhost identified by &#x27;密码&#x27;;</span><br><span class="line">#3</span><br><span class="line">select password por &#x27;数据名&#x27;@&#x27;localhost&#x27; =old_password(&#x27;密码&#x27;);</span><br></pre></td></tr></table></figure>
+
+<h2 id="五、显示数据库"><a href="#五、显示数据库" class="headerlink" title="五、显示数据库"></a>五、显示数据库</h2><p><strong>show databases 显示所有数据库</strong></p>
+<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693311907411.png" alt="1693311907411"></p>
+<h2 id="六、删除数据库"><a href="#六、删除数据库" class="headerlink" title="六、删除数据库"></a>六、删除数据库</h2><p><strong>drop database xhkdb;</strong></p>
+<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693311993666.png" alt="1693311993666"></p>
+<h2 id="七、使用数据库"><a href="#七、使用数据库" class="headerlink" title="七、使用数据库"></a>七、使用数据库</h2><p><strong>use xhkdb;</strong></p>
+<p>（1）use 语句可以通告 mysql 把数据库当作默认使用。知道下一个不同的 use 语句。</p>
+<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693314402433.png" alt="1693314402433"></p>
+<p>（2）use 语句不会阻碍访问其他数据库中的表。ab1 数据库访问 author 表，并从 db2 数据库访问 editor 表</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">use db1;</span><br><span class="line">select author_name,editor_name from author,ab2,editor;</span><br><span class="line">where author.editor_id = ab2.editor.editor_id;</span><br></pre></td></tr></table></figure>
+
+<h2 id="八、当前连接的数据库"><a href="#八、当前连接的数据库" class="headerlink" title="八、当前连接的数据库"></a>八、当前连接的数据库</h2><p><strong>select database();</strong></p>
+<p>（1）显示 mysql 版本</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">select version();</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693314931707.png" alt="1693314931707"></p>
+<p>（2）显示当前时间</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">select now();</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693314952201.png" alt="1693314952201"></p>
+<p>（3）显示年月日</p>
+<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693315145115.png" alt="1693315145115"></p>
+<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693315128832.png" alt="1693315128832"></p>
+<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693315054667.png" alt="1693315054667"></p>
+<p>（4）显示字符串</p>
+<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693315209186.png" alt="1693315209186"></p>
+<p>（5）当计算器</p>
+<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693315238981.png" alt="1693315238981"></p>
+<p>（5）串接字符串</p>
+<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693315322414.png" alt="1693315322414"></p>
+<p><strong>&#x2F;&#x2F;这里用到 CONCAT()函数，用来把字符串串接起来。</strong></p>
+<h2 id="九、创建数据库表"><a href="#九、创建数据库表" class="headerlink" title="九、创建数据库表"></a>九、创建数据库表</h2><p>注意：要先使用 use 数据库名；</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">create table 表名</span><br><span class="line">(</span><br><span class="line">	字段名1，数据类型 [列级别约束条件][默认值]，</span><br><span class="line">	字段名2，数据类型 [列级别约束条件][默认值],</span><br><span class="line">	……</span><br><span class="line">	[表级别约束条件]</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693315552760.png" alt="1693315552760"></p>
+<p>例如:创建 tb_emp1 表结构</p>
+<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693317121082.png" alt="1693317121082"></p>
+<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693317243938.png" alt="1693317243938"></p>
+<h2 id="十、获取表结构"><a href="#十、获取表结构" class="headerlink" title="十、获取表结构"></a>十、获取表结构</h2><p><strong>查看表结构可以使用 describe 和 show create table；</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">describe 表名;</span><br></pre></td></tr></table></figure>
+
+<p>或</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">desc 表名；</span><br></pre></td></tr></table></figure>
+
+<p>show create table 可以查看显示创建表时的 create table 语句。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">show create table 表名\G;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693317695853.png" alt="1693317695853"></p>
+<h2 id="十一、删除数据表"><a href="#十一、删除数据表" class="headerlink" title="十一、删除数据表"></a>十一、删除数据表</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">drop table if exists 表1，表2,表n</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1693355675932.png" alt="1693355675932"></p>
+<h2 id="十二、向表中插入数据"><a href="#十二、向表中插入数据" class="headerlink" title="十二、向表中插入数据"></a>十二、向表中插入数据</h2><p><strong>insert into 插入新行</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">insert into 表名称 values(值1，值2);</span><br><span class="line"># 也可以指定要插入数据的列</span><br><span class="line">insert into table_name(列1，列2)values(值1，值2)</span><br></pre></td></tr></table></figure>
+
+<h2 id="十三、查询表中数据"><a href="#十三、查询表中数据" class="headerlink" title="十三、查询表中数据"></a>十三、查询表中数据</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line"> &#123;* | &lt;字段列表&gt;&#125;</span><br><span class="line"> [</span><br><span class="line">	 FROM &lt;表 1&gt;,&lt;表 2&gt;...</span><br><span class="line">	 [WHERE &lt;表达式&gt;</span><br><span class="line">	 [GROUP BY &lt;group by definition&gt;]</span><br><span class="line">	 [HAVING &lt;expression&gt; [&#123;&lt;operator&gt;&lt;expression&gt;&#125;...]]</span><br><span class="line"> 	[ORDER BY &lt;order by definition&gt;]</span><br><span class="line"> 	[LIMIT [&lt;offset&gt;,] &lt;row count&gt;]</span><br><span class="line"> ]</span><br><span class="line">SELECT [字段 1,字段 2,…,字段 n]</span><br><span class="line">FROM [表或视图]</span><br><span class="line">WHERE [查询条件];</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1696756935287.png" alt="1696756935287"></p>
+<h2 id="十四、删除记录"><a href="#十四、删除记录" class="headerlink" title="十四、删除记录"></a>十四、删除记录</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">delete from table_name[where &lt;condition&gt;];</span><br><span class="line">#						指定删除条件</span><br><span class="line">delete from person where id=11;</span><br></pre></td></tr></table></figure>
+
+<h2 id="十五、修改表中的数据"><a href="#十五、修改表中的数据" class="headerlink" title="十五、修改表中的数据"></a>十五、修改表中的数据</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">update table_name</span><br><span class="line">set column_nmael=value1,column_name2=value2</span><br><span class="line">where(condition)</span><br></pre></td></tr></table></figure>
+
+<p>column_name1，为指定更新的字段名称。value 为相对应指定字段的更新值。condition 更新记录需要满足的条件</p>
+<p>【例】在 person 表中，更新 id 值为 11 的记录，将 age 字段值改为 15，将 name 字段值改为 LiMing，SQL 语句如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">update person set age=15,name=&#x27;liming&#x27;where id=11;</span><br></pre></td></tr></table></figure>
+
+<h2 id="十六、增加字段"><a href="#十六、增加字段" class="headerlink" title="十六、增加字段"></a>十六、增加字段</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">alter add 表名 add 新字段 数据类型</span><br><span class="line">	约束条件 first|after 已存在字段名</span><br><span class="line">	        first将新添加的字段设置为表的第一个字段</span><br><span class="line">	        after新添加的字段指定在‘已存在字段名’的后面</span><br></pre></td></tr></table></figure>
+
+<p>【例】在数据表 tb_dept1 中添加一个没有完整性约束的 INT 类型的字段 managerId（部门经理编号），SQL 语句如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ALTER TABLE tb_dept1 ADD managerId INT(10);</span><br></pre></td></tr></table></figure>
+
+<h2 id="十七、修改表名"><a href="#十七、修改表名" class="headerlink" title="十七、修改表名"></a>十七、修改表名</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">alter table 旧表名 rename to新表名</span><br></pre></td></tr></table></figure>
+
+<p>【例】将数据表 tb_dept3 改名为 tb_deptment3，SQL 语句如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ALTER TABLE tb_dept3 RENAME tb_deptment3;</span><br></pre></td></tr></table></figure>
+
+<h2 id="十八、备份数据库"><a href="#十八、备份数据库" class="headerlink" title="十八、备份数据库"></a>十八、备份数据库</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysqldump -u user -h host -p password dbname[tbname,[tbname]]&gt;filename.sql</span><br></pre></td></tr></table></figure>
+
+<h2 id="十九、还原数据库"><a href="#十九、还原数据库" class="headerlink" title="十九、还原数据库"></a>十九、还原数据库</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql -u user -p [dbname]&lt;filename.sql</span><br></pre></td></tr></table></figure>
+
+<p>【例 1】使用 mysql 命令将 C:\backup\booksdb_20130301.sql 文件中的备份导入到数据库中，输入语句如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql –u root –p booksDB &lt; C:/backup/booksdb_20130301.sql</span><br></pre></td></tr></table></figure>
+
+<p>如果已经登录 MySQL 服务器，还可以使用 source 命令导入 sql 文件。source 语句语法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">source filename</span><br></pre></td></tr></table></figure>
+
+<p>【 例 2 】 使 用 root 用 户 登 录 到 服 务 器 ， 然 后 使 用 source 导 入 本 地 的 备 份 文 件 booksdb_20110101.sql，输入语句如下：</p>
+<p>–选择要恢复到的数据库</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql&gt; use booksDB;</span><br><span class="line"></span><br><span class="line">Database changed</span><br></pre></td></tr></table></figure>
+
+<p>–使用 source 命令导入备份文件</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql&gt; source C:\backup\booksDB_20130301.sql</span><br></pre></td></tr></table></figure>
+
+<h2 id="二十、快速恢复数据库"><a href="#二十、快速恢复数据库" class="headerlink" title="二十、快速恢复数据库"></a>二十、快速恢复数据库</h2><p>在 MySQL 服务器停止运行时，将备份的数据库文件复制到 MySQL 存放数据的位置（MySQL 的 data 文件夹）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">chown -R mysql.mysql /var/lib/mysql/dbname</span><br></pre></td></tr></table></figure>
+
+<p>【例】从 mysqlhotcopy 复制的备份恢复数据库，输入语句如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cp -R /usr/backup/test usr/local/mysql/data</span><br></pre></td></tr></table></figure>
+
+<h2 id="二十一、在-Ubuntu-下安装-mysql"><a href="#二十一、在-Ubuntu-下安装-mysql" class="headerlink" title="二十一、在 Ubuntu 下安装 mysql"></a>二十一、在 Ubuntu 下安装 mysql</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo apt-get update #更新软件包</span><br><span class="line">sudo apt-get install mysql-server #安装数据库服务器</span><br><span class="line"></span><br><span class="line">启动：sudo /etc/init.d/mysql start</span><br><span class="line">停止：sudo /etc/init.d/mysql stop</span><br><span class="line">重启：sudo /etc/init.d/mysql restart</span><br><span class="line">登录：mysql -u root -p&lt;pwd&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="二十二、关闭防火墙"><a href="#二十二、关闭防火墙" class="headerlink" title="二十二、关闭防火墙"></a>二十二、关闭防火墙</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">- sudo apt-get install ufw 安装防火墙</span><br><span class="line">- sudo ufw enable 打开防火墙</span><br><span class="line">- sudo ufw status 查看防火墙状态</span><br><span class="line">- sudo ufw disable 关闭防火墙</span><br></pre></td></tr></table></figure>
+
+<h1 id="MySQL-在-Ubuntu-使用"><a href="#MySQL-在-Ubuntu-使用" class="headerlink" title="MySQL 在 Ubuntu 使用"></a>MySQL 在 Ubuntu 使用</h1><h2 id="二十三、在服务器-SQLSERVER-上，利用-U-盘“U-盘资料-test-sql”还原三张数据"><a href="#二十三、在服务器-SQLSERVER-上，利用-U-盘“U-盘资料-test-sql”还原三张数据" class="headerlink" title="二十三、在服务器 SQLSERVER 上，利用 U 盘“U 盘资料&#x2F;test.sql”还原三张数据"></a>二十三、在服务器 SQLSERVER 上，利用 U 盘“U 盘资料&#x2F;test.sql”还原三张数据</h2><p>表。</p>
+<p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1705417667865.png" alt="1705417667865"></p>
+<h2 id="二十四、统计三张表的记录数，查询结果要求如图。"><a href="#二十四、统计三张表的记录数，查询结果要求如图。" class="headerlink" title="二十四、统计三张表的记录数，查询结果要求如图。"></a>二十四、统计三张表的记录数，查询结果要求如图。</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT &#x27;table1&#x27; AS TableName, COUNT(*) AS RecordCount FROM table1</span><br><span class="line">UNION ALL</span><br><span class="line">SELECT &#x27;table2&#x27; AS TableName, COUNT(*) AS RecordCount FROM table2</span><br><span class="line">UNION ALL</span><br><span class="line">SELECT &#x27;table3&#x27; AS TableName, COUNT(*) AS RecordCount FROM table3;</span><br></pre></td></tr></table></figure>
+
+<h2 id="二十五、删除-AD-AccountsRole-表中不属于-AD-Accounts-用户的关系数据。重新查询三张表的记录数。"><a href="#二十五、删除-AD-AccountsRole-表中不属于-AD-Accounts-用户的关系数据。重新查询三张表的记录数。" class="headerlink" title="二十五、删除 AD_AccountsRole 表中不属于 AD_Accounts 用户的关系数据。重新查询三张表的记录数。"></a>二十五、删除 AD_AccountsRole 表中不属于 AD_Accounts 用户的关系数据。重新查询三张表的记录数。</h2><p><img src="/../assets/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/1705417785368.png" alt="1705417785368"></p>
+<h2 id="二十六、新建查询窗口，写出查询-nleedge-数据库中所有数据表和每个表的记录"><a href="#二十六、新建查询窗口，写出查询-nleedge-数据库中所有数据表和每个表的记录" class="headerlink" title="二十六、新建查询窗口，写出查询 nleedge 数据库中所有数据表和每个表的记录"></a>二十六、新建查询窗口，写出查询 nleedge 数据库中所有数据表和每个表的记录</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">  (SELECT COUNT(*) FROM d_3_1) AS 表一,</span><br><span class="line">  (SELECT COUNT(*) FROM `商品库存`) AS 表二;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>Mysql</category>
+      </categories>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>第三章-函数</title>
+    <url>/2023/08/10/%E7%AC%AC%E4%B8%89%E7%AB%A0-%E5%87%BD%E6%95%B0/</url>
+    <content><![CDATA[<h3 id="一、函数的概念"><a href="#一、函数的概念" class="headerlink" title="一、函数的概念"></a>一、函数的概念</h3><p>函数是 c 语言的功能单位，实现一个功能可以封装一个函数来实现。</p>
+<p>定义函数的时候一切以功能为目的，根据功能去定函数的参数和返回值。</p>
+<h3 id="二、函数的分类"><a href="#二、函数的分类" class="headerlink" title="二、函数的分类"></a>二、函数的分类</h3><h4 id="1、定义角度分类"><a href="#1、定义角度分类" class="headerlink" title="1、定义角度分类"></a>1、定义角度分类</h4><p>1、库函数 2、自定义函数 3、系统调用</p>
+<h4 id="2、参数角度分类"><a href="#2、参数角度分类" class="headerlink" title="2、参数角度分类"></a>2、参数角度分类</h4><p>1、有参函数</p>
+<p>​ 函数有形参，可以是一个，也可以是多个，类型随便</p>
+<p>例如：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">fun</span><span class="params">(<span class="type">int</span> a.<span class="type">float</span> b.<span class="type">double</span> c)</span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> <span class="title function_">max</span><span class="params">(<span class="type">int</span> x,<span class="type">int</span> y)</span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2、无参函数</p>
+<p>函数没有参数，在形参列表的位置写 void 或者不写</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">fun</span><span class="params">(<span class="type">void</span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> <span class="title function_">fun</span><span class="params">()</span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>3、返回值角度分类</p>
+<p>（1）带返回值的函数</p>
+<p>在定义函数的时候，必须带有返回值类型，在函数题，必须有 return，没有返回值类型，默认返回值整形</p>
+<p>例如：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">char</span> <span class="title function_">fun</span><span class="params">()</span> <span class="comment">//定义一个返回字符数据的函数</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">char</span> b = <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">	<span class="keyword">return</span> b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">fun()&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>（2）没有返回值的函数</p>
+<p>在定义函数的时候，函数名字前面加个 void</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">fun</span><span class="params">(形参表)</span>&#123;</span><br><span class="line">	;</span><br><span class="line">	;</span><br><span class="line">	<span class="keyword">return</span> ;</span><br><span class="line">	;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在函数中不需要 return，如果想结束函数，返回到被调用的地方，return ;什么都不返回</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stido.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> x,<span class="type">int</span> y)</span>&#123;</span><br><span class="line">    <span class="type">int</span> z;</span><br><span class="line">    <span class="keyword">if</span>(x&gt;y)</span><br><span class="line">        z=x;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        z=y;</span><br><span class="line">    <span class="keyword">return</span> z;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">help</span><span class="params">(<span class="type">void</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;*********************\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;********帮助信息*****\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;*********************\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="type">int</span> num;</span><br><span class="line">    help();</span><br><span class="line">    num = max(<span class="number">10</span>,<span class="number">10</span>+<span class="number">5</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;num=%d\n&quot;</span>,num);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="三、函数的定义"><a href="#三、函数的定义" class="headerlink" title="三、函数的定义"></a>三、函数的定义</h3><p>1、定义方法</p>
+<p>返回值类型 函数名字（形参列表）{</p>
+<p>​ &#x2F;&#x2F;函数体，函数的功能写在函数体实现</p>
+<p>}</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">//定义一个没有参数也没有返回值的函数</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun1</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;hello world\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> ;</span><br><span class="line"><span class="comment">//定义一个有参数的函数</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun2</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="type">int</span> sum;</span><br><span class="line">    sum = a + b;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d + %d = %d\n&quot;</span>, a , b , sum);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//定义一个有返回值的函数</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">myfun3</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b)</span>&#123;</span><br><span class="line">    <span class="type">int</span> sum;</span><br><span class="line">    sum = a + b;</span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="四、函数的声明"><a href="#四、函数的声明" class="headerlink" title="四、函数的声明"></a>四、函数的声明</h3><p>1、概念</p>
+<p>对已经定义的函数，进行声明，可以多次</p>
+<p>2、为什么声明</p>
+<p>编译器在编译 c 时，上到下编译</p>
+<p>3、声明方法</p>
+<p>（1）主调函数和被调函数在同一个.c 中</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">fun</span><span class="params">(<span class="type">void</span>)</span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;hello world\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">	fun();</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//不需要声明</span></span><br></pre></td></tr></table></figure>
+
+<p>（2）被调函数在下，主函数在上</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    fun();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">fun</span><span class="params">(<span class="type">void</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;hello world\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//需要声明</span></span><br><span class="line"><span class="comment">//1.直接声明</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun1</span><span class="params">()</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun2</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">myfun3</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    myfun1();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun1</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;hello world\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun2</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b)</span>&#123;</span><br><span class="line">    <span class="type">int</span> sum;</span><br><span class="line">    sum = a + b;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d + %d = %d\n&quot;</span>,a,b,sum);</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> <span class="title function_">myfun3</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b)</span>&#123;</span><br><span class="line">    <span class="type">int</span> sum;</span><br><span class="line">    sum = a + b;</span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//2.间接声明</span></span><br><span class="line"><span class="comment">//a.c文件</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;a.h&quot;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    fun();</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">fun</span><span class="params">(<span class="type">void</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;hellow world&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//a.h文件</span></span><br><span class="line"><span class="keyword">extern</span> <span class="type">void</span> <span class="title function_">fun</span><span class="params">(<span class="type">void</span>)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>（2）主调函数和被调函数不在同一个.c 文件</p>
+<p>1.直接声明 2.间接声明</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">//myfun.c</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;myfun.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun1</span><span class="params">()</span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;hellow world\n&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//myfun.h</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> MYFUN_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> MYFUN_H</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun1</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//main.c</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;myfun.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    muyfun1();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="五、函数调用"><a href="#五、函数调用" class="headerlink" title="五、函数调用"></a>五、函数调用</h3><p>变量 &#x3D; 函数名（实参列表）；带返回值</p>
+<p>函数名（实参列表）；不带返回值</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun1</span><span class="params">()</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun2</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">myfun</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="comment">//没有参数也没有返回值</span></span><br><span class="line">    myfun1();</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;*******************\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//有参数，没有返回值，需要在函数名传入实参</span></span><br><span class="line">    myfun2(<span class="number">100</span>,<span class="number">90</span>);</span><br><span class="line">    <span class="type">int</span> x = <span class="number">10</span>, y=<span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//x、y:实参，实际参数，本质就是在被调函数的时候将参数的值传递给形参</span></span><br><span class="line">    myfun2(x,y);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;*******************\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//有参数也有返回值，可以一个变量接收函数执行结果（返回值），或者直接输出</span></span><br><span class="line">    <span class="type">int</span> n;</span><br><span class="line">    n = myfun3(<span class="number">100</span>,<span class="number">90</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;n = %d\n&quot;</span>,n);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;sum=&amp;d\n&quot;</span>,myfun3(<span class="number">90</span>,<span class="number">66</span>));</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun1</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;hello world\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//a、b形参，存在实参的值</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun2</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b)</span>&#123;</span><br><span class="line">    <span class="type">int</span> sum;</span><br><span class="line">    sum = a + b;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d + %d = %d\n&quot;</span>,a,b,sum);</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> <span class="title function_">myfun3</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b)</span>&#123;</span><br><span class="line">    <span class="type">int</span> sum;</span><br><span class="line">    sum = a + b;</span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../assets/%E7%AC%AC%E4%B8%89%E7%AB%A0-%E5%87%BD%E6%95%B0/1691654665160.png" alt="1691654665160"></p>
+<h3 id="六、变量的存储类别"><a href="#六、变量的存储类别" class="headerlink" title="六、变量的存储类别"></a>六、变量的存储类别</h3><h4 id="1、内存的分区"><a href="#1、内存的分区" class="headerlink" title="1、内存的分区"></a>1、内存的分区</h4><p>物理内存：存储在存储设备</p>
+<p>虚拟内存：操作系统虚拟出来的内存</p>
+<p>操作系统会在物理内存和虚拟内存之间叫映射</p>
+<h4 id="2、运行程序的时候，操作系统会将虚拟内存进行分区"><a href="#2、运行程序的时候，操作系统会将虚拟内存进行分区" class="headerlink" title="2、运行程序的时候，操作系统会将虚拟内存进行分区"></a>2、运行程序的时候，操作系统会将虚拟内存进行分区</h4><p>（1）堆</p>
+<p>在动态申请内存的时候，在堆里开辟内存</p>
+<p>（2）栈</p>
+<p>存放局部变量</p>
+<p>（3）静态全局区</p>
+<p>1：未初始化的静态全局区</p>
+<p>​ 静态变量（就是在前面添加 statiic），或者全局变量，没有初始化，存储在这里</p>
+<p>2：初始化的静态全局区</p>
+<p>​ 全局变量，静态变量，赋值初始值的，存储在这里</p>
+<p>4、代码区</p>
+<p>​ 存储在程序代码</p>
+<p>5、文字常量区</p>
+<p>​ 存放常量的</p>
+<h4 id="3、普通全局变量"><a href="#3、普通全局变量" class="headerlink" title="3、普通全局变量"></a>3、普通全局变量</h4><p>在函数外部定义的变量</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> num =<span class="number">100</span>;<span class="comment">//全局变量,需要声明 extern int num;</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//生命周期：程序运行，整个过程，一直存在，知道程序结束</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//定义一个普通全局变量，在main函数外的变量就是全局变量</span></span><br><span class="line"><span class="comment">//没有赋值，系统将赋值初始化0</span></span><br><span class="line"><span class="type">int</span> num;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun</span><span class="params">()</span>&#123;</span><br><span class="line">    num= <span class="number">888</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;num=%d\n&quot;</span>,num);</span><br><span class="line"></span><br><span class="line">    myfun();</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;num=%d\n&quot;</span>,num);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../assets/%E7%AC%AC%E4%B8%89%E7%AB%A0-%E5%87%BD%E6%95%B0/1691658185939.png" alt="1691658185939"></p>
+<h4 id="4、静态全局变量"><a href="#4、静态全局变量" class="headerlink" title="4、静态全局变量"></a>4、静态全局变量</h4><p>定义全局变量的时候，用 static</p>
+<p>作用范围：限定了静态全局变量的作业范围</p>
+<p>生命周期：在程序整个运行中，都一直存在</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"> <span class="comment">//定义一个静态全局变量</span></span><br><span class="line"> <span class="comment">//静态全局变量只能在其定义的.c文件中任意位置使用，不能跨文件使用</span></span><br><span class="line"> <span class="type">static</span> <span class="type">int</span> num;</span><br><span class="line"></span><br><span class="line"> <span class="type">void</span> <span class="title function_">myfun</span><span class="params">()</span></span><br><span class="line"> &#123;</span><br><span class="line"> num++;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span></span><br><span class="line"> &#123;</span><br><span class="line"> <span class="built_in">printf</span>(<span class="string">&quot;num = %d\n&quot;</span>, num);</span><br><span class="line"></span><br><span class="line"> myfun();</span><br><span class="line"></span><br><span class="line"> <span class="built_in">printf</span>(<span class="string">&quot;num = %d\n&quot;</span>, num);</span><br><span class="line"></span><br><span class="line"> <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../assets/%E7%AC%AC%E4%B8%89%E7%AB%A0-%E5%87%BD%E6%95%B0/1691658406783.png" alt="1691658406783"></p>
+<h4 id="5、局部变量"><a href="#5、局部变量" class="headerlink" title="5、局部变量"></a>5、局部变量</h4><p>在函数内部定义，或者复合语句定义的变量</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="type">int</span> num;<span class="comment">//局部</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">int</span> a;<span class="comment">//局部</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>作用范围：</p>
+<p>在函数中定义的变量，在函数中有效</p>
+<p>在复合语句中定义的，在复合语句中有效。</p>
+<p>生命周期：</p>
+<p>在函数调用之前，局部变量不占用空间，调用函数的时候，</p>
+<p>才为局部变量开辟空间，函数结束了，局部变量就释放了。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"> <span class="comment">//定义一个局部变量</span></span><br><span class="line"> <span class="comment">//在函数内部定义的，不加任何修饰的变量都是局部变量</span></span><br><span class="line"> <span class="type">void</span> <span class="title function_">myfun</span><span class="params">()</span></span><br><span class="line"> &#123;</span><br><span class="line"> <span class="type">int</span> num = <span class="number">100</span>;</span><br><span class="line"> num++;</span><br><span class="line"></span><br><span class="line"> <span class="built_in">printf</span>(<span class="string">&quot;num = %d\n&quot;</span>, num);</span><br><span class="line"></span><br><span class="line"> <span class="keyword">return</span> ;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span></span><br><span class="line"> &#123;</span><br><span class="line"> <span class="comment">//局部变量只能在定义的函数内部使用，声明周期相对较短，函数结束，局部变量就会释</span></span><br><span class="line">放</span><br><span class="line"><span class="comment">//printf(&quot;num = %d\n&quot;, num);</span></span><br><span class="line"> myfun();</span><br><span class="line"> myfun();</span><br><span class="line"> myfun();</span><br><span class="line"></span><br><span class="line"> <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../assets/%E7%AC%AC%E4%B8%89%E7%AB%A0-%E5%87%BD%E6%95%B0/1691658579818.png" alt="1691658579818"></p>
+<h4 id="6、静态的局部变量"><a href="#6、静态的局部变量" class="headerlink" title="6、静态的局部变量"></a>6、静态的局部变量</h4><p>定义局部变量的时候，前面加 static 修饰</p>
+<p>作用范围：</p>
+<p>在它定义的函数或复合语句中有效。</p>
+<p>生命周期：</p>
+<p>第一次调用函数的时候，开辟空间赋值，函数结束后，不释放， 以后再调用函数的时候，就不再为其开辟空间，也不赋初值， 用的是以前的那个变量。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//定义一个静态局部变量</span></span><br><span class="line"><span class="comment">//在函数内部定义的使用static修饰的变量就是静态局部变量</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">myfun</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="comment">//如果普通局部变量不进行初始化，则默认是随机值</span></span><br><span class="line"><span class="comment">//如果静态局部变量不进行初始化，则默认是0</span></span><br><span class="line"> <span class="type">int</span> a; <span class="comment">//普通局部变量</span></span><br><span class="line"> <span class="type">static</span> <span class="type">int</span> num; <span class="comment">//静态局部变量</span></span><br><span class="line"></span><br><span class="line"> <span class="built_in">printf</span>(<span class="string">&quot;a = %d\n&quot;</span>, a);</span><br><span class="line"> <span class="built_in">printf</span>(<span class="string">&quot;num = %d\n&quot;</span>, num);</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="type">void</span> <span class="title function_">myfun1</span><span class="params">()</span></span><br><span class="line"> &#123;</span><br><span class="line"> <span class="comment">//静态局部变量不会随着当前函数执行结束而释放空间，下次使用的函数之前的空间</span></span><br><span class="line"> <span class="comment">//静态局部变量只会初始化一次</span></span><br><span class="line"> <span class="type">static</span> <span class="type">int</span> num1 = <span class="number">100</span>;</span><br><span class="line"> num1++;</span><br><span class="line"></span><br><span class="line"> <span class="built_in">printf</span>(<span class="string">&quot;num1 = %d\n&quot;</span>, num1);</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span></span><br><span class="line"> &#123;</span><br><span class="line">     myfun();</span><br><span class="line"></span><br><span class="line">     myfun1();</span><br><span class="line">     myfun1();</span><br><span class="line">     myfun1();</span><br><span class="line"></span><br><span class="line"> <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../assets/%E7%AC%AC%E4%B8%89%E7%AB%A0-%E5%87%BD%E6%95%B0/1691658688779.png" alt="1691658688779"></p>
+<p>1：定义普通局部变量，如果不赋初值，它的值是随机的。</p>
+<p>定义静态局部变量，如果不赋初值，它的值是 0</p>
+<p>2：普通全局变量，和静态全局变量如果不赋初值，它的值为 0</p>
+<h4 id="7、外部函数"><a href="#7、外部函数" class="headerlink" title="7、外部函数"></a>7、外部函数</h4><p>咱们定义的普通函数，都是外部函数。 即函数可以在程序的任何一个文件中调用。</p>
+<p>在分文件编程中，只需要将函数的实现过程写在指定的.c 文件中，然后将其声明写在指定</p>
+<p>的.h 文件中，其他文件只要包含了头文件，就可以使用外部函数</p>
+<h4 id="8、内部函数"><a href="#8、内部函数" class="headerlink" title="8、内部函数"></a>8、内部函数</h4><p>内部函数也称之为静态函数，就是用 static 修饰的函数</p>
+<p>在定义函数的时候，返回值类型前面加 static 修饰。这样的函数被称为内部函数。</p>
+<p>static 限定了函数的作用范围，在定义的.c 中有效。</p>
+<p>外部函数，在所有地方都可以调用，</p>
+<p>内部函数，只能在所定义的.c 中的函数调用</p>
+<p>扩展：</p>
+<p>在同一作用范围内，不允许变量重名。</p>
+<p>作用范围不同的可以重名。</p>
+<p>局部范围内，重名的全局变量不起作用。（就近原则）</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> num = <span class="number">100</span>; <span class="comment">//全局变量</span></span><br><span class="line"> <span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line"> &#123;</span><br><span class="line"> <span class="comment">//如果出现可以重名的情况，使用的时候满足向上就近原则</span></span><br><span class="line"> <span class="type">int</span> num = <span class="number">999</span>; <span class="comment">//局部变量</span></span><br><span class="line"></span><br><span class="line"> <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>千锋C语言</category>
+      </categories>
+      <tags>
+        <tag>嵌入式C</tag>
+      </tags>
   </entry>
   <entry>
     <title>第八章 RCC使用HES/HSI</title>

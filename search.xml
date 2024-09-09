@@ -1632,6 +1632,42 @@
       </tags>
   </entry>
   <entry>
+    <title>第二章 算法</title>
+    <url>/2024/02/29/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<h1 id="2-1-算法定义"><a href="#2-1-算法定义" class="headerlink" title="2.1 算法定义"></a>2.1 算法定义</h1><p>算法是解决特定问题求解步骤的描述，计算机中表现位指令的有限序列，并且每条指令表示一个或多个操作。</p>
+<h1 id="2-2-算法的特性"><a href="#2-2-算法的特性" class="headerlink" title="2.2 算法的特性"></a>2.2 算法的特性</h1><p>算法具有：输入、输出、有穷性、确定性和可行性。</p>
+<h2 id="2-2-1-输入输出"><a href="#2-2-1-输入输出" class="headerlink" title="2.2.1 输入输出"></a>2.2.1 输入输出</h2><p>算法具有<strong>零个或多个输入和至少一个或多个输出</strong>。</p>
+<h2 id="2-2-2-有穷性"><a href="#2-2-2-有穷性" class="headerlink" title="2.2.2 有穷性"></a>2.2.2 有穷性</h2><p>指的是算法在执行有限步骤之后，自动结束而<strong>不会出现无限循环</strong>，并且每一个步骤<strong>可接受在时间内完成</strong>。</p>
+<h2 id="2-2-3-确定性"><a href="#2-2-3-确定性" class="headerlink" title="2.2.3 确定性"></a>2.2.3 确定性</h2><p>算法的每一步骤具<strong>有确定的含义，不会出现二义性</strong>。</p>
+<h2 id="2-2-4-可行性"><a href="#2-2-4-可行性" class="headerlink" title="2.2.4 可行性"></a>2.2.4 可行性</h2><p>算法的每一步都必须可行的，<strong>每一步都能狗通过执行有限次数完成</strong>。</p>
+<h1 id="2-3-算法设计的要求"><a href="#2-3-算法设计的要求" class="headerlink" title="2.3 算法设计的要求"></a>2.3 算法设计的要求</h1><h2 id="2-3-1-正确性"><a href="#2-3-1-正确性" class="headerlink" title="2.3.1 正确性"></a>2.3.1 正确性</h2><p>指的是至少具有输入、输出和加工处理无歧义性，能正确反映问题的需求，能够得到问题的正确答案。</p>
+<h2 id="2-3-2-可读性"><a href="#2-3-2-可读性" class="headerlink" title="2.3.2 可读性"></a>2.3.2 可读性</h2><p>算法设计的另外一个目的，为了便于阅读、理解和交流。</p>
+<h2 id="2-3-3-健壮性"><a href="#2-3-3-健壮性" class="headerlink" title="2.3.3 健壮性"></a>2.3.3 健壮性</h2><p>输入数据不合法，算法也能够做出相关处理，而不是产生异常或者莫名其妙的结果。</p>
+<h2 id="2-3-4-时间效率高和存储量低"><a href="#2-3-4-时间效率高和存储量低" class="headerlink" title="2.3.4 时间效率高和存储量低"></a>2.3.4 时间效率高和存储量低</h2><p>时间效率高：算法的执行时间。存储量低：执行过中需要的最大存储控件，运行时所占用的内存或外部硬盘存储控件。</p>
+<p>应该满足时间效率和存储量低的需求。</p>
+<h1 id="2-4-算法效率的度量方法"><a href="#2-4-算法效率的度量方法" class="headerlink" title="2.4 算法效率的度量方法"></a>2.4 算法效率的度量方法</h1><h2 id="2-4-1-事后统计方法"><a href="#2-4-1-事后统计方法" class="headerlink" title="2.4.1 事后统计方法"></a>2.4.1 事后统计方法</h2><p>通过设计好的测试程序和数据，利用计算机计时器对不同算法编制的程序的运行时间进行对比，确定算法效率的高低。</p>
+<h2 id="2-4-2-事前分析估算方法"><a href="#2-4-2-事前分析估算方法" class="headerlink" title="2.4.2 事前分析估算方法"></a>2.4.2 事前分析估算方法</h2><p>在计算机程序编制前，依据统计方法对算法进行估算。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/2/image_d45f1dfacd356e34e8403f42042e6882.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/2/image_d45f1dfacd356e34e8403f42042e6882.png"></p>
+<p>一个程序的运行时间，依据赖与算法的好坏和问题的输入规模。问题输出规模是指输入量的多少。</p>
+<h1 id="2-5-函数的渐近增长"><a href="#2-5-函数的渐近增长" class="headerlink" title="2.5 函数的渐近增长"></a>2.5 函数的渐近增长</h1><p>给定义两个函数f（n）和g（n），如果存在一个整数N，使得对于所有的n&gt;N，f（n）总是大于g（n），所以f（n）的增长渐近快于g（n）。</p>
+<p><strong>判断一个算法效率时，函数中的常数和其他次要项常常可以忽略，而更应该关注主项（最高阶项） 的阶数。</strong></p>
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/image_78cd7befd497306f3844f4fb583282fd.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/image_78cd7befd497306f3844f4fb583282fd.png"></p>
+<p>可以分析出：某个算法，随着n的增大，它会优越于另外一个算法，或者差于另外一个算法。</p>
+<h1 id="2-6-算法时间的复杂度"><a href="#2-6-算法时间的复杂度" class="headerlink" title="2.6 算法时间的复杂度"></a>2.6 算法时间的复杂度</h1><h2 id="2-6-1-算法时间复杂度定义"><a href="#2-6-1-算法时间复杂度定义" class="headerlink" title="2.6.1 算法时间复杂度定义"></a>2.6.1 算法时间复杂度定义</h2><p><strong>在进行算法分析时，语句总的执行次数T（n）是关于问题规模n的函数，进而分析T（n）随n的变化情况并而确定T（n）的数量级。算法的时间复杂度（时间量度），记作T（n）&#x3D;O（f（n））。表示随着问题规模n的增大，算法执行时间的增长率和f（n）的增长率相同，称为算法的渐近时间赋值度，简称时间复杂度。其中f（n）是问题规模n的某个函数。</strong></p>
+<h2 id="2-6-2-推导大O阶方法"><a href="#2-6-2-推导大O阶方法" class="headerlink" title="2.6.2 推导大O阶方法"></a>2.6.2 推导大O阶方法</h2><p>推导大O阶：</p>
+<p>（1）常数1取代运行时间中的所有加法常数。</p>
+<p>（2）在修改后运行次数函数中，只保留最高阶项。</p>
+<p>（3）如果最高阶项存在且系数不是1，则去除与这个项相乘的系数，得到结果最大O阶。</p>
+<h2 id="2-6-3-常数阶"><a href="#2-6-3-常数阶" class="headerlink" title="2.6.3 常数阶"></a>2.6.3 常数阶</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> sum = <span class="number">0</span>,n = <span class="number">100</span>;  <span class="comment">//一次</span></span><br><span class="line">sum = (<span class="number">1</span> + n) * n /<span class="number">2</span>; <span class="comment">//一次</span></span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>, sum);    <span class="comment">//一次</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>数据结构</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>第二章-寄存器</title>
     <url>/2023/08/17/%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E5%AF%84%E5%AD%98%E5%99%A8/</url>
     <content><![CDATA[<h2 id="一、芯片组成"><a href="#一、芯片组成" class="headerlink" title="一、芯片组成"></a>一、芯片组成</h2><p>负责在 内核之外设计部件并生产整个芯片，这些内核之外的部件被称为核外外设或片上外设。如 GPIO、 USART（串口）、I2C、SPI 等都叫做片上外设</p>

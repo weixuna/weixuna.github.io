@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>CSS第一天</title>
+    <url>/2023/10/24/CSS%E7%AC%AC%E4%B8%80%E5%A4%A9/</url>
+    <content><![CDATA[<h2 id="1-CSS-语法规范"><a href="#1-CSS-语法规范" class="headerlink" title="1.CSS 语法规范"></a>1.CSS 语法规范</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">h1&#123;color:red; font-size:25px;&#125;</span><br><span class="line">选择器 属性 值</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-类选择器"><a href="#2-类选择器" class="headerlink" title="2.类选择器"></a>2.类选择器</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;div class=&quot;red font20&quot;&gt;亚瑟&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-id-选择器"><a href="#3-id-选择器" class="headerlink" title="3.id 选择器"></a>3.id 选择器</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#id名&#123;</span><br><span class="line">	属性1：属性值1；</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-通配符选择器"><a href="#4-通配符选择器" class="headerlink" title="4.通配符选择器"></a>4.通配符选择器</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">*&#123;</span><br><span class="line">	属性1：属性值1；</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>前端</category>
+      </categories>
+      <tags>
+        <tag>CSS</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>24年技能大赛广东样题</title>
     <url>/2024/01/17/24%E5%B9%B4%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E5%B9%BF%E4%B8%9C%E6%A0%B7%E9%A2%98/</url>
     <content><![CDATA[<h1 id="24年样题1"><a href="#24年样题1" class="headerlink" title="24年样题1"></a>24年样题1</h1><h2 id="一、接线"><a href="#一、接线" class="headerlink" title="一、接线"></a>一、接线</h2><h2 id="二、维护"><a href="#二、维护" class="headerlink" title="二、维护"></a>二、维护</h2><h3 id="三、sql-server维护"><a href="#三、sql-server维护" class="headerlink" title="三、sql server维护"></a>三、sql server维护</h3><p><img src="/../assets/24%E5%B9%B4%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E5%B9%BF%E4%B8%9C%E6%A0%B7%E9%A2%98/1705654362719.png" alt="1705654362719"></p>
@@ -37,24 +55,6 @@
       </categories>
       <tags>
         <tag>样题</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>CSS第一天</title>
-    <url>/2023/10/24/CSS%E7%AC%AC%E4%B8%80%E5%A4%A9/</url>
-    <content><![CDATA[<h2 id="1-CSS-语法规范"><a href="#1-CSS-语法规范" class="headerlink" title="1.CSS 语法规范"></a>1.CSS 语法规范</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">h1&#123;color:red; font-size:25px;&#125;</span><br><span class="line">选择器 属性 值</span><br></pre></td></tr></table></figure>
-
-<h2 id="2-类选择器"><a href="#2-类选择器" class="headerlink" title="2.类选择器"></a>2.类选择器</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;div class=&quot;red font20&quot;&gt;亚瑟&lt;/div&gt;</span><br></pre></td></tr></table></figure>
-
-<h2 id="3-id-选择器"><a href="#3-id-选择器" class="headerlink" title="3.id 选择器"></a>3.id 选择器</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#id名&#123;</span><br><span class="line">	属性1：属性值1；</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="4-通配符选择器"><a href="#4-通配符选择器" class="headerlink" title="4.通配符选择器"></a>4.通配符选择器</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">*&#123;</span><br><span class="line">	属性1：属性值1；</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>前端</category>
-      </categories>
-      <tags>
-        <tag>CSS</tag>
       </tags>
   </entry>
   <entry>
@@ -1632,6 +1632,40 @@
       </tags>
   </entry>
   <entry>
+    <title>第二章-寄存器</title>
+    <url>/2023/08/17/%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E5%AF%84%E5%AD%98%E5%99%A8/</url>
+    <content><![CDATA[<h2 id="一、芯片组成"><a href="#一、芯片组成" class="headerlink" title="一、芯片组成"></a>一、芯片组成</h2><p>负责在 内核之外设计部件并生产整个芯片，这些内核之外的部件被称为核外外设或片上外设。如 GPIO、 USART（串口）、I2C、SPI 等都叫做片上外设</p>
+<p><img src="/../assets/%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E5%AF%84%E5%AD%98%E5%99%A8/1692290301872.png" alt="1692290301872"></p>
+<p>芯片内核和外设之间通过各种总线连接，其中主控总线有 8 条，被控总线有 7 条</p>
+<h2 id="二、存储器映射"><a href="#二、存储器映射" class="headerlink" title="二、存储器映射"></a>二、<strong>存储器映射</strong></h2><p>给存储器分配地址的过程就称为存储器映射，具体见图 。给存储器再分配一个地址就叫存储器重映射</p>
+<h2 id="三、寄存器"><a href="#三、寄存器" class="headerlink" title="三、寄存器"></a>三、寄存器</h2><p>以功能为名给这个</p>
+<p>内存单元取一个别名，这个别名就是我们经常说的寄存器，这个给已经分配好地址的有特定功能的内存单元取别名的过程就叫寄存器映射</p>
+<p><strong>寄存器的说明</strong></p>
+<p><img src="/../assets/%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E5%AF%84%E5%AD%98%E5%99%A8/1692290420600.png" alt="1692290420600"></p>
+<p>① 名称</p>
+<p>(GPIOx_BSRR)(x&#x3D;A…I)”是该寄存器名为“GPIOx_BSRR”其中的“x”可以为 A-I，也就是说这个寄存器说明适用于 GPIOA、GPIOB 至 GPIOI，这些 GPIO 端口都有这样的一个寄存器</p>
+<p>② 偏移地址</p>
+<p>偏移地址是指本寄存器相对于这个外设的基地址的偏移。查到 GPIOA 外设的基地址为 0x4002 0000 ，就可以算出 GPIOA 的这个 GPIOA_BSRR 寄存器的地址为：0x4002 0000+0x18</p>
+<p>③ 寄存器位表</p>
+<p>为读写权限，其中 w 表示只写，r 表示只读，rw 表示可读写</p>
+<p>④ 位功能说明</p>
+<p>本寄存器中有</p>
+<p>两种寄存器位，分别为 BRy 及 BSy，其中的 y 数值可以是 0-15，这里的 0-15 表示端口的引脚号，如 BR0、BS0 用于控制 GPIOx 的第 0 个引脚，若 x 表示 GPIOA，那就是控制 GPIOA 的第 0 引脚，而 BR1、BS1 就是控制 GPIOA 第 1 个引脚。</p>
+<p>这里的“复位”是将该位设置为 0 的意思，而“置位”表示将该位设置为 1；</p>
+<h2 id="四、GPIO-输出初始化顺序"><a href="#四、GPIO-输出初始化顺序" class="headerlink" title="四、GPIO 输出初始化顺序"></a>四、GPIO 输出初始化顺序</h2><p>1、确定 GPIO 是输入、通用输出、复用功能还是模拟输入（MODER）</p>
+<p>2、如果是输出还要确定推挽输出还是开漏输出（OTYPER）</p>
+<p>3、配置输出的速度（OSPEEDR）</p>
+<p>4、输出的时候内部是上&#x2F;下拉电阻要不要开启（PUPDR）</p>
+<p>5、具体输出的内容（BSSR 和数据输出 ODR）</p>
+]]></content>
+      <categories>
+        <category>野火STM32</category>
+      </categories>
+      <tags>
+        <tag>STM32</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>第二章 算法</title>
     <url>/2024/02/29/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<h1 id="2-1-算法定义"><a href="#2-1-算法定义" class="headerlink" title="2.1 算法定义"></a>2.1 算法定义</h1><p>算法是解决特定问题求解步骤的描述，计算机中表现位指令的有限序列，并且每条指令表示一个或多个操作。</p>
@@ -1665,40 +1699,6 @@
       </categories>
       <tags>
         <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>第二章-寄存器</title>
-    <url>/2023/08/17/%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E5%AF%84%E5%AD%98%E5%99%A8/</url>
-    <content><![CDATA[<h2 id="一、芯片组成"><a href="#一、芯片组成" class="headerlink" title="一、芯片组成"></a>一、芯片组成</h2><p>负责在 内核之外设计部件并生产整个芯片，这些内核之外的部件被称为核外外设或片上外设。如 GPIO、 USART（串口）、I2C、SPI 等都叫做片上外设</p>
-<p><img src="/../assets/%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E5%AF%84%E5%AD%98%E5%99%A8/1692290301872.png" alt="1692290301872"></p>
-<p>芯片内核和外设之间通过各种总线连接，其中主控总线有 8 条，被控总线有 7 条</p>
-<h2 id="二、存储器映射"><a href="#二、存储器映射" class="headerlink" title="二、存储器映射"></a>二、<strong>存储器映射</strong></h2><p>给存储器分配地址的过程就称为存储器映射，具体见图 。给存储器再分配一个地址就叫存储器重映射</p>
-<h2 id="三、寄存器"><a href="#三、寄存器" class="headerlink" title="三、寄存器"></a>三、寄存器</h2><p>以功能为名给这个</p>
-<p>内存单元取一个别名，这个别名就是我们经常说的寄存器，这个给已经分配好地址的有特定功能的内存单元取别名的过程就叫寄存器映射</p>
-<p><strong>寄存器的说明</strong></p>
-<p><img src="/../assets/%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E5%AF%84%E5%AD%98%E5%99%A8/1692290420600.png" alt="1692290420600"></p>
-<p>① 名称</p>
-<p>(GPIOx_BSRR)(x&#x3D;A…I)”是该寄存器名为“GPIOx_BSRR”其中的“x”可以为 A-I，也就是说这个寄存器说明适用于 GPIOA、GPIOB 至 GPIOI，这些 GPIO 端口都有这样的一个寄存器</p>
-<p>② 偏移地址</p>
-<p>偏移地址是指本寄存器相对于这个外设的基地址的偏移。查到 GPIOA 外设的基地址为 0x4002 0000 ，就可以算出 GPIOA 的这个 GPIOA_BSRR 寄存器的地址为：0x4002 0000+0x18</p>
-<p>③ 寄存器位表</p>
-<p>为读写权限，其中 w 表示只写，r 表示只读，rw 表示可读写</p>
-<p>④ 位功能说明</p>
-<p>本寄存器中有</p>
-<p>两种寄存器位，分别为 BRy 及 BSy，其中的 y 数值可以是 0-15，这里的 0-15 表示端口的引脚号，如 BR0、BS0 用于控制 GPIOx 的第 0 个引脚，若 x 表示 GPIOA，那就是控制 GPIOA 的第 0 引脚，而 BR1、BS1 就是控制 GPIOA 第 1 个引脚。</p>
-<p>这里的“复位”是将该位设置为 0 的意思，而“置位”表示将该位设置为 1；</p>
-<h2 id="四、GPIO-输出初始化顺序"><a href="#四、GPIO-输出初始化顺序" class="headerlink" title="四、GPIO 输出初始化顺序"></a>四、GPIO 输出初始化顺序</h2><p>1、确定 GPIO 是输入、通用输出、复用功能还是模拟输入（MODER）</p>
-<p>2、如果是输出还要确定推挽输出还是开漏输出（OTYPER）</p>
-<p>3、配置输出的速度（OSPEEDR）</p>
-<p>4、输出的时候内部是上&#x2F;下拉电阻要不要开启（PUPDR）</p>
-<p>5、具体输出的内容（BSSR 和数据输出 ODR）</p>
-]]></content>
-      <categories>
-        <category>野火STM32</category>
-      </categories>
-      <tags>
-        <tag>STM32</tag>
       </tags>
   </entry>
   <entry>

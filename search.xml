@@ -1066,6 +1066,39 @@
       </tags>
   </entry>
   <entry>
+    <title>Mysql数据库</title>
+    <url>/2023/08/29/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E4%BA%86%E8%A7%A3%E6%95%B0%E6%8D%AE%E5%BA%93/</url>
+    <content><![CDATA[<h1 id="一、了解-SQL"><a href="#一、了解-SQL" class="headerlink" title="一、了解 SQL"></a>一、了解 SQL</h1><h2 id="1、什么是数据库"><a href="#1、什么是数据库" class="headerlink" title="1、什么是数据库"></a>1、什么是数据库</h2><p>数据库是以某种组织的方式存储的数据集合。</p>
+<p>数据库（database）保存有组织的数据的容器（一个文件或者一组文件）</p>
+<p><strong>更准确的来说，数据库软件称为数据库管理系统（DBMS）。通过 DBMS 创建和操作的容器</strong></p>
+<h2 id="2、什么是表"><a href="#2、什么是表" class="headerlink" title="2、什么是表"></a>2、什么是表</h2><p><strong>表 是一种结构化的文件，用来存储某种特定类型的数据。</strong></p>
+<h2 id="3、什么是模式"><a href="#3、什么是模式" class="headerlink" title="3、什么是模式"></a>3、什么是模式</h2><p><strong>模式 关于数据库和表的布局以及特性的信息。</strong></p>
+<h2 id="4、列和数据类型"><a href="#4、列和数据类型" class="headerlink" title="4、列和数据类型"></a>4、列和数据类型</h2><p>表是由列组成。列中存储这表中某种部分的信息。</p>
+<p><strong>列 表中的一个字段。所有表都是由一个或多个列组成的。</strong></p>
+<p><strong>数据类型 所容许的数据的类型。每个字段都有相应的数据类型。</strong></p>
+<h2 id="5、行"><a href="#5、行" class="headerlink" title="5、行"></a>5、行</h2><p>表中的数据都是按行存储的，保存的记录存储在自己的行内。</p>
+<p><strong>行 表中的一个记录。</strong></p>
+<h2 id="6、主键"><a href="#6、主键" class="headerlink" title="6、主键"></a>6、主键</h2><p><strong>主键（又称键码、码） 一列（一组列），其值能够唯一区分表中的每个行。</strong></p>
+<p>满足条件：</p>
+<p><strong>任意两行都不具有相同的主键值。</strong></p>
+<p><strong>每个行都必须具有一个主键值（主键列不允许 null 值）</strong></p>
+<h1 id="二、了解-mysql"><a href="#二、了解-mysql" class="headerlink" title="二、了解 mysql"></a>二、了解 mysql</h1><h2 id="一、客户机-服务器软件"><a href="#一、客户机-服务器软件" class="headerlink" title="一、客户机-服务器软件"></a>一、客户机-服务器软件</h2><p>MySQL、Oracle 以及 Microsoft SQL Server 等数据库是基于客户机—服务器的数据库</p>
+<p>DBMS（数据库管理系统）可以分为两类：</p>
+<p>（1）基于共享文件系统的 DBMS（2）基于客户机-服务器的 DBMS</p>
+<ul>
+<li><strong>与数据文件打交道的只有服务器软件。关于数据、数据添加、删除和数据更新的所有请求都是由服务器软件完成。</strong></li>
+<li><strong>客户机是与用户打交道的软件。例如：请求一个按字母顺序列出的产品表，则客户机软件通过网阔提交该请求给服务器软件。服务器软件处理这个请求，根据需求过滤、丢弃和排序数据，然后送回客户机软件。</strong></li>
+</ul>
+<h1 id="三、排序索检数据"><a href="#三、排序索检数据" class="headerlink" title="三、排序索检数据"></a>三、排序索检数据</h1><h2 id="一、子句"><a href="#一、子句" class="headerlink" title="一、子句"></a>一、子句</h2><p>有些字句是必需，有一些是可选的。一个子句通常由一个<strong>关键字和所提供的数据</strong>组成。</p>
+]]></content>
+      <categories>
+        <category>Mysql</category>
+      </categories>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>第一章 C数据类型及语句02</title>
     <url>/2023/08/06/%E7%AC%AC%E4%B8%80%E7%AB%A0-C%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%8F%8A%E8%AF%AD%E5%8F%A502/</url>
     <content><![CDATA[<h3 id="1-2-数据类型"><a href="#1-2-数据类型" class="headerlink" title="1.2 数据类型"></a>1.2 数据类型</h3><p><strong>1.2.1 基本类型</strong></p>
@@ -1270,39 +1303,6 @@
       </categories>
       <tags>
         <tag>嵌入式C</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Mysql数据库</title>
-    <url>/2023/08/29/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E4%BA%86%E8%A7%A3%E6%95%B0%E6%8D%AE%E5%BA%93/</url>
-    <content><![CDATA[<h1 id="一、了解-SQL"><a href="#一、了解-SQL" class="headerlink" title="一、了解 SQL"></a>一、了解 SQL</h1><h2 id="1、什么是数据库"><a href="#1、什么是数据库" class="headerlink" title="1、什么是数据库"></a>1、什么是数据库</h2><p>数据库是以某种组织的方式存储的数据集合。</p>
-<p>数据库（database）保存有组织的数据的容器（一个文件或者一组文件）</p>
-<p><strong>更准确的来说，数据库软件称为数据库管理系统（DBMS）。通过 DBMS 创建和操作的容器</strong></p>
-<h2 id="2、什么是表"><a href="#2、什么是表" class="headerlink" title="2、什么是表"></a>2、什么是表</h2><p><strong>表 是一种结构化的文件，用来存储某种特定类型的数据。</strong></p>
-<h2 id="3、什么是模式"><a href="#3、什么是模式" class="headerlink" title="3、什么是模式"></a>3、什么是模式</h2><p><strong>模式 关于数据库和表的布局以及特性的信息。</strong></p>
-<h2 id="4、列和数据类型"><a href="#4、列和数据类型" class="headerlink" title="4、列和数据类型"></a>4、列和数据类型</h2><p>表是由列组成。列中存储这表中某种部分的信息。</p>
-<p><strong>列 表中的一个字段。所有表都是由一个或多个列组成的。</strong></p>
-<p><strong>数据类型 所容许的数据的类型。每个字段都有相应的数据类型。</strong></p>
-<h2 id="5、行"><a href="#5、行" class="headerlink" title="5、行"></a>5、行</h2><p>表中的数据都是按行存储的，保存的记录存储在自己的行内。</p>
-<p><strong>行 表中的一个记录。</strong></p>
-<h2 id="6、主键"><a href="#6、主键" class="headerlink" title="6、主键"></a>6、主键</h2><p><strong>主键（又称键码、码） 一列（一组列），其值能够唯一区分表中的每个行。</strong></p>
-<p>满足条件：</p>
-<p><strong>任意两行都不具有相同的主键值。</strong></p>
-<p><strong>每个行都必须具有一个主键值（主键列不允许 null 值）</strong></p>
-<h1 id="二、了解-mysql"><a href="#二、了解-mysql" class="headerlink" title="二、了解 mysql"></a>二、了解 mysql</h1><h2 id="一、客户机-服务器软件"><a href="#一、客户机-服务器软件" class="headerlink" title="一、客户机-服务器软件"></a>一、客户机-服务器软件</h2><p>MySQL、Oracle 以及 Microsoft SQL Server 等数据库是基于客户机—服务器的数据库</p>
-<p>DBMS（数据库管理系统）可以分为两类：</p>
-<p>（1）基于共享文件系统的 DBMS（2）基于客户机-服务器的 DBMS</p>
-<ul>
-<li><strong>与数据文件打交道的只有服务器软件。关于数据、数据添加、删除和数据更新的所有请求都是由服务器软件完成。</strong></li>
-<li><strong>客户机是与用户打交道的软件。例如：请求一个按字母顺序列出的产品表，则客户机软件通过网阔提交该请求给服务器软件。服务器软件处理这个请求，根据需求过滤、丢弃和排序数据，然后送回客户机软件。</strong></li>
-</ul>
-<h1 id="三、排序索检数据"><a href="#三、排序索检数据" class="headerlink" title="三、排序索检数据"></a>三、排序索检数据</h1><h2 id="一、子句"><a href="#一、子句" class="headerlink" title="一、子句"></a>一、子句</h2><p>有些字句是必需，有一些是可选的。一个子句通常由一个<strong>关键字和所提供的数据</strong>组成。</p>
-]]></content>
-      <categories>
-        <category>Mysql</category>
-      </categories>
-      <tags>
-        <tag>数据库</tag>
       </tags>
   </entry>
   <entry>

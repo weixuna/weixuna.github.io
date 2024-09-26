@@ -63,65 +63,33 @@
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>HTML第三天</title>
-    <url>/2023/10/13/HTML%E7%AC%AC%E4%B8%89%E5%A4%A9/</url>
-    <content><![CDATA[<h3 id="1-font-family"><a href="#1-font-family" class="headerlink" title="1.font-family"></a>1.font-family</h3><figure class="highlight html"><table><tr><td class="code"><pre><span class="line">font-family //定义文本系列</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-font-size"><a href="#2-font-size" class="headerlink" title="2. font-size"></a>2. font-size</h3><p>属性定义字体大小。</p>
-<h3 id="3-font-weight"><a href="#3-font-weight" class="headerlink" title="3.font-weight"></a>3.font-weight</h3><p>文本字体的粗细</p>
-<table>
-<thead>
-<tr>
-<th>notmal</th>
-<th>默认值</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>bold</td>
-<td>加粗</td>
-</tr>
-<tr>
-<td>100-900</td>
-<td>400&#x3D;normal,700&#x3D;bold</td>
-</tr>
-</tbody></table>
-<h3 id="4-font-style"><a href="#4-font-style" class="headerlink" title="4.font-style"></a>4.font-style</h3><p>文本风格</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">normal //默认值 italic//斜体</span><br></pre></td></tr></table></figure>
-
-<p><img src="/../assets/HTML%E7%AC%AC%E4%B8%89%E5%A4%A9/1697178989345.png" alt="1697178989345"></p>
-<h3 id="5-text-align"><a href="#5-text-align" class="headerlink" title="5.text-align"></a>5.text-align</h3><p>文本内容水平对齐方式</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">left //左对齐 right //右对齐 center //居中对齐</span><br></pre></td></tr></table></figure>
-
-<h3 id="6-text-decoration"><a href="#6-text-decoration" class="headerlink" title="6.text-decoration"></a>6.text-decoration</h3><p>给文本添加下划线、删除线、上划线等</p>
-<table>
-<thead>
-<tr>
-<th>none</th>
-<th>默认</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>underline</td>
-<td>下划线</td>
-</tr>
-<tr>
-<td>overline</td>
-<td>上划线</td>
-</tr>
-<tr>
-<td>line-through</td>
-<td>删除线</td>
-</tr>
-</tbody></table>
-<h3 id="7-text-indent"><a href="#7-text-indent" class="headerlink" title="7.text-indent"></a>7.text-indent</h3><p>段落首行缩进</p>
-<h3 id="8-line-height"><a href="#8-line-height" class="headerlink" title="8.line-height"></a>8.line-height</h3><p>设置行间的距离（行高）</p>
+    <title>Dx-C511模块连接华为云</title>
+    <url>/2024/09/26/Dx-C511%E6%A8%A1%E5%9D%97%E8%BF%9E%E6%8E%A5%E5%8D%8E%E4%B8%BA%E4%BA%91%E4%B8%8B%E8%BD%BD%E5%9B%BA%E4%BB%B6/</url>
+    <content><![CDATA[<p>1、配置APN</p>
+<p>AT+QICSGP&#x3D;1,1,”cmnbiot”,””,””</p>
+<p>2、开启移动网络</p>
+<p>AT+NETOPEN</p>
+<p>3、设置客户端ID</p>
+<p>AT+MCONFIG&#x3D;”id”,”用户名”,”密码”<code>AT+MCONFIG=&quot;667145986bc31504f06f60ee_wulianwang_0_0_20&quot;,&quot;667145986bc31504f06f60ee_wulianwang&quot;,&quot;63e106dff798f9ed7d313f33c5e1cffe4ad206abe2121b993d464a8f111a97ba&quot;</code></p>
+<p>4、连接mqtt服务器</p>
+<p>AT+MIPSTART&#x3D;”服务器IP地址”,1883,4</p>
+<p><code>AT+MIPSTART=&quot;0ae1ed433d.st1.iotda-device.cn-north-4.myhuaweicloud.com&quot;,1883,4</code></p>
+<p>5、连接服务器，设置心跳60秒</p>
+<p>AT+MCONNECT&#x3D;1,60</p>
+<p>6、订阅数据</p>
+<p><code>AT+MSUB=&quot;$oc/devices/667145986bc31504f06f6/sys/events/down&quot;,0</code></p>
+<p>7、发布长数据</p>
+<p><code>AT+MPUBEX=&quot;$oc/devices/667145986bc31504f06f/sys/events/up&quot;,0,0,149</code></p>
+<p>{“services”:[{“service_id”:”$ota”,”event_type”:”version_report”,”event_time”:”20151212T121212Z”,”paras”:{“sw_version”:”v1.0”,”fw_version”: “v1.0”}}]}</p>
+<p>8、开启HTTP模式</p>
+<p>AT$HTTPOPEN</p>
+<p>9、发送请求头</p>
+<p>AT$HTTPRQH&#x3D;Authorization,Bearer 627fd1b1a3f07e7e977b388c112a3af8acf60349c885e3d7c4490661e208b64a</p>
+<p>10、发送URL</p>
+<p>AT$HTTPPARA&#x3D;<a href="https://117.78.5.125:8943/iodm/dev/v2.0/upgradefile/applications/d47eeb52098345898ba95b1be5cbd7c4/devices/667145986bc31504f06f60ee_wulianwang/packages/66e2cfd51bd30f6d19a24533,8943,1,0">https://117.78.5.125:8943/iodm/dev/v2.0/upgradefile/applications/d47eeb52098345898ba95b1be5cbd7c4/devices/667145986bc31504f06f60ee_wulianwang/packages/66e2cfd51bd30f6d19a24533,8943,1,0</a></p>
+<p>11、发送get请求</p>
+<p>AT$HTTPACTION&#x3D;0</p>
 ]]></content>
-      <categories>
-        <category>前端</category>
-      </categories>
-      <tags>
-        <tag>HTML</tag>
-      </tags>
   </entry>
   <entry>
     <title>HTML第一天</title>
@@ -178,6 +146,67 @@
 <h3 id="9-超链接标签"><a href="#9-超链接标签" class="headerlink" title="9.超链接标签"></a>9.超链接标签</h3><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;跳转目标&quot;</span> <span class="attr">target</span>=<span class="string">&quot;目标窗口的弹出方式&quot;</span>&gt;</span>文本或者图像<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="10-特殊字符"><a href="#10-特殊字符" class="headerlink" title="10.特殊字符"></a>10.特殊字符</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&amp;nbsp; //空格</span><br><span class="line">&amp;ly;  //小于号</span><br><span class="line">&amp;gt;  //大于号</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>前端</category>
+      </categories>
+      <tags>
+        <tag>HTML</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>HTML第三天</title>
+    <url>/2023/10/13/HTML%E7%AC%AC%E4%B8%89%E5%A4%A9/</url>
+    <content><![CDATA[<h3 id="1-font-family"><a href="#1-font-family" class="headerlink" title="1.font-family"></a>1.font-family</h3><figure class="highlight html"><table><tr><td class="code"><pre><span class="line">font-family //定义文本系列</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-font-size"><a href="#2-font-size" class="headerlink" title="2. font-size"></a>2. font-size</h3><p>属性定义字体大小。</p>
+<h3 id="3-font-weight"><a href="#3-font-weight" class="headerlink" title="3.font-weight"></a>3.font-weight</h3><p>文本字体的粗细</p>
+<table>
+<thead>
+<tr>
+<th>notmal</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>bold</td>
+<td>加粗</td>
+</tr>
+<tr>
+<td>100-900</td>
+<td>400&#x3D;normal,700&#x3D;bold</td>
+</tr>
+</tbody></table>
+<h3 id="4-font-style"><a href="#4-font-style" class="headerlink" title="4.font-style"></a>4.font-style</h3><p>文本风格</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">normal //默认值 italic//斜体</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../assets/HTML%E7%AC%AC%E4%B8%89%E5%A4%A9/1697178989345.png" alt="1697178989345"></p>
+<h3 id="5-text-align"><a href="#5-text-align" class="headerlink" title="5.text-align"></a>5.text-align</h3><p>文本内容水平对齐方式</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">left //左对齐 right //右对齐 center //居中对齐</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-text-decoration"><a href="#6-text-decoration" class="headerlink" title="6.text-decoration"></a>6.text-decoration</h3><p>给文本添加下划线、删除线、上划线等</p>
+<table>
+<thead>
+<tr>
+<th>none</th>
+<th>默认</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>underline</td>
+<td>下划线</td>
+</tr>
+<tr>
+<td>overline</td>
+<td>上划线</td>
+</tr>
+<tr>
+<td>line-through</td>
+<td>删除线</td>
+</tr>
+</tbody></table>
+<h3 id="7-text-indent"><a href="#7-text-indent" class="headerlink" title="7.text-indent"></a>7.text-indent</h3><p>段落首行缩进</p>
+<h3 id="8-line-height"><a href="#8-line-height" class="headerlink" title="8.line-height"></a>8.line-height</h3><p>设置行间的距离（行高）</p>
 ]]></content>
       <categories>
         <category>前端</category>
@@ -339,21 +368,6 @@
       </tags>
   </entry>
   <entry>
-    <title> 一篇牢骚</title>
-    <url>/2024/03/30/%E4%B8%80%E7%AF%87%E7%89%A2%E9%AA%9A/</url>
-    <content><![CDATA[<h1 id="愿我此生脚步不停，览尽世间美景。即使路途遥远且艰难，至少，至少，我经历过。以巽为名，行遍千山万水，看尽人间青山。青山不言，我自知晓其壮美。"><a href="#愿我此生脚步不停，览尽世间美景。即使路途遥远且艰难，至少，至少，我经历过。以巽为名，行遍千山万水，看尽人间青山。青山不言，我自知晓其壮美。" class="headerlink" title="愿我此生脚步不停，览尽世间美景。即使路途遥远且艰难，至少，至少，我经历过。以巽为名，行遍千山万水，看尽人间青山。青山不言，我自知晓其壮美。"></a>愿我此生脚步不停，览尽世间美景。即使路途遥远且艰难，至少，至少，我经历过。以巽为名，行遍千山万水，看尽人间青山。青山不言，我自知晓其壮美。</h1><h1 id="来自抖音博主hx888888000"><a href="#来自抖音博主hx888888000" class="headerlink" title="来自抖音博主hx888888000"></a>来自抖音博主<strong>hx888888000</strong></h1><h2 id="长穿毕"><a href="#长穿毕" class="headerlink" title="长穿毕"></a><strong>长穿毕</strong></h2><p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/1d0eb9af83664b212338faae7d440df_779743451a157de28e8c8829ae4fe605.jpg" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/1d0eb9af83664b212338faae7d440df_779743451a157de28e8c8829ae4fe605.jpg"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/d111f90f43e69bd4d1ea5806caa44f7_1d6a4e76841ff9d93f24f865ab4fa3d9.jpg" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/d111f90f43e69bd4d1ea5806caa44f7_1d6a4e76841ff9d93f24f865ab4fa3d9.jpg"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/5f8bdcb82439a8f5b73a67fff41cb4e_5434663cb0eee6c014428b2bedbf70e7.jpg" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/5f8bdcb82439a8f5b73a67fff41cb4e_5434663cb0eee6c014428b2bedbf70e7.jpg"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/8a8e81c8ca5fbeb9ac2ffe066e46a07_6a781df38e8873e0ad1488fc3151b71e.jpg" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/8a8e81c8ca5fbeb9ac2ffe066e46a07_6a781df38e8873e0ad1488fc3151b71e.jpg"></p>
-<h1 id="来自抖音博主zkai6999"><a href="#来自抖音博主zkai6999" class="headerlink" title="来自抖音博主zkai6999"></a>来自抖音博主zkai6999</h1><h2 id="那拉提"><a href="#那拉提" class="headerlink" title="那拉提"></a>那拉提</h2><p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/6b06a76b99a4f86869845bd01d057d8_e1d5262643ad7aa79e7a2cd1b8f69525.jpg" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/6b06a76b99a4f86869845bd01d057d8_e1d5262643ad7aa79e7a2cd1b8f69525.jpg"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/d2492dba415b90088096ad8e3c5e4a1_4967f91082ce5adfcd8c159b28b723b3.jpg" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/d2492dba415b90088096ad8e3c5e4a1_4967f91082ce5adfcd8c159b28b723b3.jpg"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/c84cd6552b0bc71f923f11c06e15733_32f923434cc1bb7d7d5cac4b5fed3d51.jpg" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/c84cd6552b0bc71f923f11c06e15733_32f923434cc1bb7d7d5cac4b5fed3d51.jpg"></p>
-<h1 id="来自抖音博主zkai6999-1"><a href="#来自抖音博主zkai6999-1" class="headerlink" title="来自抖音博主zkai6999"></a>来自抖音博主zkai6999</h1><h2 id="阿勒泰"><a href="#阿勒泰" class="headerlink" title="阿勒泰"></a>阿勒泰</h2><p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/3b921a2a751f23b2e4618a53af9ff15_8380ac733a7acc2caa084b12cec2eaa6.jpg" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/3b921a2a751f23b2e4618a53af9ff15_8380ac733a7acc2caa084b12cec2eaa6.jpg"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/86a718a9601a2ccea307145ef4e2d65_588dafa448a4d062c41649fc2e4f47c4.jpg" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/86a718a9601a2ccea307145ef4e2d65_588dafa448a4d062c41649fc2e4f47c4.jpg"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/acbdb3a8d851258b290e1754c5c8890_f20bd19c22c344db52714613ba982157.jpg" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/acbdb3a8d851258b290e1754c5c8890_f20bd19c22c344db52714613ba982157.jpg"></p>
-]]></content>
-  </entry>
-  <entry>
     <title>一、harmonyOS开发</title>
     <url>/2024/03/09/%E4%B8%80%E3%80%81HarmonyOS4%E5%BC%80%E5%8F%91/</url>
     <content><![CDATA[<h1 id="一、TS基础语法"><a href="#一、TS基础语法" class="headerlink" title="一、TS基础语法"></a>一、TS基础语法</h1><h2 id="二、声明变量"><a href="#二、声明变量" class="headerlink" title="二、声明变量"></a>二、声明变量</h2><p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/image_4497af838a16322eb31c1c79fe851949.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/image_4497af838a16322eb31c1c79fe851949.png"></p>
@@ -373,6 +387,21 @@
       <tags>
         <tag>APP开发</tag>
       </tags>
+  </entry>
+  <entry>
+    <title> 一篇牢骚</title>
+    <url>/2024/03/30/%E4%B8%80%E7%AF%87%E7%89%A2%E9%AA%9A/</url>
+    <content><![CDATA[<h1 id="愿我此生脚步不停，览尽世间美景。即使路途遥远且艰难，至少，至少，我经历过。以巽为名，行遍千山万水，看尽人间青山。青山不言，我自知晓其壮美。"><a href="#愿我此生脚步不停，览尽世间美景。即使路途遥远且艰难，至少，至少，我经历过。以巽为名，行遍千山万水，看尽人间青山。青山不言，我自知晓其壮美。" class="headerlink" title="愿我此生脚步不停，览尽世间美景。即使路途遥远且艰难，至少，至少，我经历过。以巽为名，行遍千山万水，看尽人间青山。青山不言，我自知晓其壮美。"></a>愿我此生脚步不停，览尽世间美景。即使路途遥远且艰难，至少，至少，我经历过。以巽为名，行遍千山万水，看尽人间青山。青山不言，我自知晓其壮美。</h1><h1 id="来自抖音博主hx888888000"><a href="#来自抖音博主hx888888000" class="headerlink" title="来自抖音博主hx888888000"></a>来自抖音博主<strong>hx888888000</strong></h1><h2 id="长穿毕"><a href="#长穿毕" class="headerlink" title="长穿毕"></a><strong>长穿毕</strong></h2><p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/1d0eb9af83664b212338faae7d440df_779743451a157de28e8c8829ae4fe605.jpg" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/1d0eb9af83664b212338faae7d440df_779743451a157de28e8c8829ae4fe605.jpg"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/d111f90f43e69bd4d1ea5806caa44f7_1d6a4e76841ff9d93f24f865ab4fa3d9.jpg" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/d111f90f43e69bd4d1ea5806caa44f7_1d6a4e76841ff9d93f24f865ab4fa3d9.jpg"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/5f8bdcb82439a8f5b73a67fff41cb4e_5434663cb0eee6c014428b2bedbf70e7.jpg" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/5f8bdcb82439a8f5b73a67fff41cb4e_5434663cb0eee6c014428b2bedbf70e7.jpg"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/8a8e81c8ca5fbeb9ac2ffe066e46a07_6a781df38e8873e0ad1488fc3151b71e.jpg" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/8a8e81c8ca5fbeb9ac2ffe066e46a07_6a781df38e8873e0ad1488fc3151b71e.jpg"></p>
+<h1 id="来自抖音博主zkai6999"><a href="#来自抖音博主zkai6999" class="headerlink" title="来自抖音博主zkai6999"></a>来自抖音博主zkai6999</h1><h2 id="那拉提"><a href="#那拉提" class="headerlink" title="那拉提"></a>那拉提</h2><p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/6b06a76b99a4f86869845bd01d057d8_e1d5262643ad7aa79e7a2cd1b8f69525.jpg" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/6b06a76b99a4f86869845bd01d057d8_e1d5262643ad7aa79e7a2cd1b8f69525.jpg"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/d2492dba415b90088096ad8e3c5e4a1_4967f91082ce5adfcd8c159b28b723b3.jpg" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/d2492dba415b90088096ad8e3c5e4a1_4967f91082ce5adfcd8c159b28b723b3.jpg"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/c84cd6552b0bc71f923f11c06e15733_32f923434cc1bb7d7d5cac4b5fed3d51.jpg" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/c84cd6552b0bc71f923f11c06e15733_32f923434cc1bb7d7d5cac4b5fed3d51.jpg"></p>
+<h1 id="来自抖音博主zkai6999-1"><a href="#来自抖音博主zkai6999-1" class="headerlink" title="来自抖音博主zkai6999"></a>来自抖音博主zkai6999</h1><h2 id="阿勒泰"><a href="#阿勒泰" class="headerlink" title="阿勒泰"></a>阿勒泰</h2><p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/3b921a2a751f23b2e4618a53af9ff15_8380ac733a7acc2caa084b12cec2eaa6.jpg" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/3b921a2a751f23b2e4618a53af9ff15_8380ac733a7acc2caa084b12cec2eaa6.jpg"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/86a718a9601a2ccea307145ef4e2d65_588dafa448a4d062c41649fc2e4f47c4.jpg" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/86a718a9601a2ccea307145ef4e2d65_588dafa448a4d062c41649fc2e4f47c4.jpg"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/acbdb3a8d851258b290e1754c5c8890_f20bd19c22c344db52714613ba982157.jpg" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/acbdb3a8d851258b290e1754c5c8890_f20bd19c22c344db52714613ba982157.jpg"></p>
+]]></content>
   </entry>
   <entry>
     <title>关于使用wsl使用idf提供编译速度遇到的问题</title>
@@ -396,6 +425,14 @@
 ]]></content>
   </entry>
   <entry>
+    <title>大学生活</title>
+    <url>/2024/02/17/%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%B4%BB/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>阅读</category>
+      </categories>
+  </entry>
+  <entry>
     <title>利用MQTT连接华为IOT平台，进行数据上报与下发</title>
     <url>/2024/03/09/%E5%88%A9%E7%94%A8MQTT%E8%BF%9E%E6%8E%A5%E5%8D%8E%E4%B8%BAIOT%E5%B9%B3%E5%8F%B0%EF%BC%8C%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E4%B8%8A%E6%8A%A5%E4%B8%8E%E4%B8%8B%E5%8F%91/</url>
     <content><![CDATA[<h1 id="一、查看接入信息"><a href="#一、查看接入信息" class="headerlink" title="一、查看接入信息"></a>一、查看接入信息</h1><p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/image_6721540a5fccd555db65a98741e70716.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/3/image_6721540a5fccd555db65a98741e70716.png"></p>
@@ -408,14 +445,6 @@
       <tags>
         <tag>HarmonyOS</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>大学生活</title>
-    <url>/2024/02/17/%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%B4%BB/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>阅读</category>
-      </categories>
   </entry>
   <entry>
     <title>技能大赛之Ubuntu维护</title>
@@ -1604,6 +1633,34 @@
       </tags>
   </entry>
   <entry>
+    <title>第九章 STM32中断应用</title>
+    <url>/2024/05/09/%E7%AC%AC%E4%B9%9D%E7%AB%A0%20STM32%E4%B8%AD%E6%96%AD%E5%BA%94%E7%94%A8/</url>
+    <content><![CDATA[<h1 id="一、中断概述"><a href="#一、中断概述" class="headerlink" title="一、中断概述"></a>一、中断概述</h1><p>中断时出现某些意外需要主机干预，机器能自动停止运行的程序，转入新的处理的程序，处理完之后返回程序被暂停的程序，继续运行。</p>
+<p><strong>异常就是中断，中断就是异常。</strong></p>
+<p>异常分为：系统异常和外部中断。</p>
+<h1 id="二、NVIC介绍"><a href="#二、NVIC介绍" class="headerlink" title="二、NVIC介绍"></a>二、NVIC介绍</h1><p>NVIC是嵌套向量中断控制器，控制芯片中断的功能。</p>
+<p>一般来说，使用ISER（使能中断）、ICER（失能中断）和IP（设置中断优先级）寄存器。</p>
+<p>（不常用）</p>
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/5/image_a55375ca0cca80086903ef6aa7ee9e07.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/5/image_a55375ca0cca80086903ef6aa7ee9e07.png"></p>
+<h1 id="三、优先级"><a href="#三、优先级" class="headerlink" title="三、优先级"></a>三、优先级</h1><p>中断优先级寄存器NVIC_IPRx，用来配置外部中断的优先级。如果抢占优先级相同，九比较子优先级，如果都相同，比较硬件中断编号，编号越小，优先级越高</p>
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/5/image_de37c45ad3b6423601d0f44213e25f99.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/5/image_de37c45ad3b6423601d0f44213e25f99.png"></p>
+<h1 id="四、优先级分组"><a href="#四、优先级分组" class="headerlink" title="四、优先级分组"></a>四、优先级分组</h1><p>优先级分组由外设SCB的应用程序中断和复位控制寄存器AIRCR的PRIGROUP[10:8]决定，主优先级&#x3D;抢占优先级</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 配置中断优先级分组：抢占优先级和子优先级</span></span><br><span class="line"><span class="comment">* 形参如下：</span></span><br><span class="line"><span class="comment">* @arg NVIC_PriorityGroup_0: 0bit for 抢占优先级</span></span><br><span class="line"><span class="comment">* 4 bits for 子优先级</span></span><br><span class="line"><span class="comment">* @arg NVIC_PriorityGroup_1: 1 bit for 抢占优先级</span></span><br><span class="line"><span class="comment">* 3 bits for 子优先级</span></span><br><span class="line"><span class="comment">* @arg NVIC_PriorityGroup_2: 2 bit for 抢占优先级</span></span><br><span class="line"><span class="comment">* 2 bits for 子优先级</span></span><br><span class="line"><span class="comment">* @arg NVIC_PriorityGroup_3: 3 bit for 抢占优先级</span></span><br><span class="line"><span class="comment">* 1 bits for 子优先级</span></span><br><span class="line"><span class="comment">* @arg NVIC_PriorityGroup_4: 4 bit for 抢占优先级</span></span><br><span class="line"><span class="comment">* 0 bits for 子优先级</span></span><br><span class="line"><span class="comment">* @ 注意 如果优先级分组为 0，则抢占优先级就不存在，优先级就全部由子优先级控制</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">NVIC_PriorityGroupConfig</span><span class="params">(<span class="type">uint32_t</span> PriorityGroup)</span></span><br><span class="line">&#123;</span><br><span class="line">     <span class="comment">// 检查参数</span></span><br><span class="line">     assert_param(IS_NVIC_PRIORITY_GROUP(PriorityGroup));</span><br><span class="line">     <span class="comment">// 设置优先级分组</span></span><br><span class="line">     NVIC_SetPriorityGrouping(PriorityGroup);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/5/image_0779d2ab9fa55ff33a7b9526a2fe24db.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/5/image_0779d2ab9fa55ff33a7b9526a2fe24db.png"></p>
+<h1 id="五、中断编程"><a href="#五、中断编程" class="headerlink" title="五、中断编程"></a>五、中断编程</h1><p>配置中断一般使用三个：</p>
+<p>1、使用 HAL_NVIC_SetPriorityGrouping(uint32_t PriorityGroup) 函数配置中断优先级分组。一般默认是 NVIC_PRIORITYGROUP_4 分组 4。</p>
+<p>2、使用 HAL_NVIC_SetPriority (IRQn_Type IRQn, uint32_t PreemptPriority, uint32_t SubPriority) 函数配置具体外设中断通道的抢占优先级和子优先级。</p>
+<p>3、使用 HAL_NVIC_EnableIRQ 函数使能中断请求。</p>
+]]></content>
+      <categories>
+        <category>野火 STM32</category>
+      </categories>
+      <tags>
+        <tag>STM32</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>第二章 算法</title>
     <url>/2024/02/29/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<h1 id="2-1-算法定义"><a href="#2-1-算法定义" class="headerlink" title="2.1 算法定义"></a>2.1 算法定义</h1><p>算法是解决特定问题求解步骤的描述，计算机中表现位指令的有限序列，并且每条指令表示一个或多个操作。</p>
@@ -1637,34 +1694,6 @@
       </categories>
       <tags>
         <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>第九章 STM32中断应用</title>
-    <url>/2024/05/09/%E7%AC%AC%E4%B9%9D%E7%AB%A0%20STM32%E4%B8%AD%E6%96%AD%E5%BA%94%E7%94%A8/</url>
-    <content><![CDATA[<h1 id="一、中断概述"><a href="#一、中断概述" class="headerlink" title="一、中断概述"></a>一、中断概述</h1><p>中断时出现某些意外需要主机干预，机器能自动停止运行的程序，转入新的处理的程序，处理完之后返回程序被暂停的程序，继续运行。</p>
-<p><strong>异常就是中断，中断就是异常。</strong></p>
-<p>异常分为：系统异常和外部中断。</p>
-<h1 id="二、NVIC介绍"><a href="#二、NVIC介绍" class="headerlink" title="二、NVIC介绍"></a>二、NVIC介绍</h1><p>NVIC是嵌套向量中断控制器，控制芯片中断的功能。</p>
-<p>一般来说，使用ISER（使能中断）、ICER（失能中断）和IP（设置中断优先级）寄存器。</p>
-<p>（不常用）</p>
-<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/5/image_a55375ca0cca80086903ef6aa7ee9e07.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/5/image_a55375ca0cca80086903ef6aa7ee9e07.png"></p>
-<h1 id="三、优先级"><a href="#三、优先级" class="headerlink" title="三、优先级"></a>三、优先级</h1><p>中断优先级寄存器NVIC_IPRx，用来配置外部中断的优先级。如果抢占优先级相同，九比较子优先级，如果都相同，比较硬件中断编号，编号越小，优先级越高</p>
-<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/5/image_de37c45ad3b6423601d0f44213e25f99.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/5/image_de37c45ad3b6423601d0f44213e25f99.png"></p>
-<h1 id="四、优先级分组"><a href="#四、优先级分组" class="headerlink" title="四、优先级分组"></a>四、优先级分组</h1><p>优先级分组由外设SCB的应用程序中断和复位控制寄存器AIRCR的PRIGROUP[10:8]决定，主优先级&#x3D;抢占优先级</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 配置中断优先级分组：抢占优先级和子优先级</span></span><br><span class="line"><span class="comment">* 形参如下：</span></span><br><span class="line"><span class="comment">* @arg NVIC_PriorityGroup_0: 0bit for 抢占优先级</span></span><br><span class="line"><span class="comment">* 4 bits for 子优先级</span></span><br><span class="line"><span class="comment">* @arg NVIC_PriorityGroup_1: 1 bit for 抢占优先级</span></span><br><span class="line"><span class="comment">* 3 bits for 子优先级</span></span><br><span class="line"><span class="comment">* @arg NVIC_PriorityGroup_2: 2 bit for 抢占优先级</span></span><br><span class="line"><span class="comment">* 2 bits for 子优先级</span></span><br><span class="line"><span class="comment">* @arg NVIC_PriorityGroup_3: 3 bit for 抢占优先级</span></span><br><span class="line"><span class="comment">* 1 bits for 子优先级</span></span><br><span class="line"><span class="comment">* @arg NVIC_PriorityGroup_4: 4 bit for 抢占优先级</span></span><br><span class="line"><span class="comment">* 0 bits for 子优先级</span></span><br><span class="line"><span class="comment">* @ 注意 如果优先级分组为 0，则抢占优先级就不存在，优先级就全部由子优先级控制</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">NVIC_PriorityGroupConfig</span><span class="params">(<span class="type">uint32_t</span> PriorityGroup)</span></span><br><span class="line">&#123;</span><br><span class="line">     <span class="comment">// 检查参数</span></span><br><span class="line">     assert_param(IS_NVIC_PRIORITY_GROUP(PriorityGroup));</span><br><span class="line">     <span class="comment">// 设置优先级分组</span></span><br><span class="line">     NVIC_SetPriorityGrouping(PriorityGroup);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/5/image_0779d2ab9fa55ff33a7b9526a2fe24db.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/5/image_0779d2ab9fa55ff33a7b9526a2fe24db.png"></p>
-<h1 id="五、中断编程"><a href="#五、中断编程" class="headerlink" title="五、中断编程"></a>五、中断编程</h1><p>配置中断一般使用三个：</p>
-<p>1、使用 HAL_NVIC_SetPriorityGrouping(uint32_t PriorityGroup) 函数配置中断优先级分组。一般默认是 NVIC_PRIORITYGROUP_4 分组 4。</p>
-<p>2、使用 HAL_NVIC_SetPriority (IRQn_Type IRQn, uint32_t PreemptPriority, uint32_t SubPriority) 函数配置具体外设中断通道的抢占优先级和子优先级。</p>
-<p>3、使用 HAL_NVIC_EnableIRQ 函数使能中断请求。</p>
-]]></content>
-      <categories>
-        <category>野火 STM32</category>
-      </categories>
-      <tags>
-        <tag>STM32</tag>
       </tags>
   </entry>
   <entry>

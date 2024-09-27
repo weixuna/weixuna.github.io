@@ -63,7 +63,7 @@
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>Dx-C511模块连接华为云</title>
+    <title>Dx-C511模块连接华为云OTA</title>
     <url>/2024/09/26/Dx-C511%E6%A8%A1%E5%9D%97%E8%BF%9E%E6%8E%A5%E5%8D%8E%E4%B8%BA%E4%BA%91%E4%B8%8B%E8%BD%BD%E5%9B%BA%E4%BB%B6/</url>
     <content><![CDATA[<p>1、配置APN</p>
 <p>AT+QICSGP&#x3D;1,1,”cmnbiot”,””,””</p>
@@ -90,6 +90,12 @@
 <p>11、发送get请求</p>
 <p>AT$HTTPACTION&#x3D;0</p>
 ]]></content>
+      <categories>
+        <category>华为云IOT连接</category>
+      </categories>
+      <tags>
+        <tag>华为IOT</tag>
+      </tags>
   </entry>
   <entry>
     <title>HTML第一天</title>

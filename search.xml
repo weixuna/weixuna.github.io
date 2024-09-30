@@ -1491,7 +1491,7 @@
 <p>如果不用被改动可以<strong>直接传递这个参数</strong>。</p>
 <p>总结：需要改动则传递参数的<strong>指针</strong>，不需要则传递这个<strong>参数</strong>。</p>
 <h1 id="3-线性表的顺序存储结构"><a href="#3-线性表的顺序存储结构" class="headerlink" title="3.线性表的顺序存储结构"></a>3.线性表的顺序存储结构</h1><h2 id="顺序存储结构"><a href="#顺序存储结构" class="headerlink" title="顺序存储结构"></a>顺序存储结构</h2><p>线性表的顺序存储结构，指的是<strong><strong>用一段地址连续的存储单元依次存储线性表的数据元素。</strong></strong></p>
-<p>说白了就是：在内存中，占个地方，通过占位的形式，讲一定的内存空间给占，然后把相同数据类型的数据元素一次存放在这里。</p>
+<p>说白了就是：在内存中，占个地方，通过占位的形式，将一定的内存空间给占，然后把相同数据类型的数据元素一次存放在这里。</p>
 <p>使用一维数组来实现顺序存储结构</p>
 <p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/9/image_07d1e446d8b116cfd15553faabca4bdd.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/9/image_07d1e446d8b116cfd15553faabca4bdd.png"></p>
 <h2 id="数据长度与线性表长度的区别"><a href="#数据长度与线性表长度的区别" class="headerlink" title="数据长度与线性表长度的区别"></a>数据长度与线性表长度的区别</h2><p>数组的长度是存放线性表的存储空间长度。</p>

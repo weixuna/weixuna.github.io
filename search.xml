@@ -1578,6 +1578,8 @@
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">typedef struct DulNode</span><br><span class="line">&#123;</span><br><span class="line">        ElemType data;</span><br><span class="line">        struct DuLNode *prior;     //直接前驱指针</span><br><span class="line">        struct DuLNone *next;      //直接后继指针</span><br><span class="line">&#125;DulNode,*DuLinkList;</span><br></pre></td></tr></table></figure>
 
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/9/image_a1421df87866f8fe3001afdcd3585367.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/9/image_a1421df87866f8fe3001afdcd3585367.png"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/9/image_75d63b25107a5df72426d4e9bc78a72f.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/9/image_75d63b25107a5df72426d4e9bc78a72f.png"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/9/image_f9bc45f80a5d7cda3a0012e9c2f44f9f.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/9/image_f9bc45f80a5d7cda3a0012e9c2f44f9f.png"></p>
 ]]></content>
       <categories>
         <category>数据结构</category>

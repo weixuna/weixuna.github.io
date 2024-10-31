@@ -2208,10 +2208,10 @@
 <p>对于队列：为了避免数组插入和删除时需要移动数据，于是引用了循环队列，使得队头和队尾进行数组中循环变化，结局了移动数据的时间损耗。</p>
 ]]></content>
       <categories>
-        <category>算法</category>
+        <category>数据结构</category>
       </categories>
       <tags>
-        <tag>数据结构</tag>
+        <tag>算法</tag>
       </tags>
   </entry>
   <entry>

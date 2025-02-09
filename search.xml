@@ -815,6 +815,31 @@
       </tags>
   </entry>
   <entry>
+    <title>电路基础</title>
+    <url>/2023/08/10/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/</url>
+    <content><![CDATA[<h2 id="一、电流、电压、电功率和能量"><a href="#一、电流、电压、电功率和能量" class="headerlink" title="一、电流、电压、电功率和能量"></a>一、电流、电压、电功率和能量</h2><h2 id="电流："><a href="#电流：" class="headerlink" title="电流："></a>电流：</h2><p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242554424.png" alt="1694242554424"></p>
+<p><strong>i 电流   q 电荷量  t时间</strong></p>
+<h2 id="电压："><a href="#电压：" class="headerlink" title="电压："></a>电压：</h2><p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242617918.png" alt="1694242617918"></p>
+<p><strong>u 电压 w 功 q电荷量</strong></p>
+<h2 id="功率："><a href="#功率：" class="headerlink" title="功率："></a>功率：</h2><p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242654855.png" alt="1694242654855"></p>
+<h2 id="小结："><a href="#小结：" class="headerlink" title="小结："></a>小结：</h2><p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242683878.png" alt="1694242683878"></p>
+<h2 id="二、电流和电压的参考方向"><a href="#二、电流和电压的参考方向" class="headerlink" title="二、电流和电压的参考方向"></a>二、电流和电压的参考方向</h2><p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242819757.png" alt="1694242819757"></p>
+<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242852600.png" alt="1694242852600"></p>
+<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242876285.png" alt="1694242876285"></p>
+<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242905012.png" alt="1694242905012"></p>
+<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242939314.png" alt="1694242939314"></p>
+<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242973674.png" alt="1694242973674"></p>
+<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242986138.png" alt="1694242986138"></p>
+<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694243025513.png" alt="1694243025513"></p>
+]]></content>
+      <categories>
+        <category>罗教授电路</category>
+      </categories>
+      <tags>
+        <tag>电路基础</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>电子工程师入门篇-入门基础</title>
     <url>/2024/02/08/%E7%94%B5%E5%AD%90%E5%B7%A5%E7%A8%8B%E5%B8%88%E5%85%A5%E9%97%A8%E7%AF%87-%E5%85%A5%E9%97%A8%E5%9F%BA%E7%A1%80/</url>
     <content><![CDATA[<h2 id="1-1-1-电路与电路图"><a href="#1-1-1-电路与电路图" class="headerlink" title="1.1.1 电路与电路图"></a>1.1.1 电路与电路图</h2><p>电源的作用是提供电能；开关、导线的作用是控制和传递电能，称为中间环节；灯泡是消耗电能的用电器，它能将电能转变为光能，称为负载。</p>
@@ -903,31 +928,6 @@
       </categories>
       <tags>
         <tag>电子技术</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>电路基础</title>
-    <url>/2023/08/10/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/</url>
-    <content><![CDATA[<h2 id="一、电流、电压、电功率和能量"><a href="#一、电流、电压、电功率和能量" class="headerlink" title="一、电流、电压、电功率和能量"></a>一、电流、电压、电功率和能量</h2><h2 id="电流："><a href="#电流：" class="headerlink" title="电流："></a>电流：</h2><p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242554424.png" alt="1694242554424"></p>
-<p><strong>i 电流   q 电荷量  t时间</strong></p>
-<h2 id="电压："><a href="#电压：" class="headerlink" title="电压："></a>电压：</h2><p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242617918.png" alt="1694242617918"></p>
-<p><strong>u 电压 w 功 q电荷量</strong></p>
-<h2 id="功率："><a href="#功率：" class="headerlink" title="功率："></a>功率：</h2><p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242654855.png" alt="1694242654855"></p>
-<h2 id="小结："><a href="#小结：" class="headerlink" title="小结："></a>小结：</h2><p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242683878.png" alt="1694242683878"></p>
-<h2 id="二、电流和电压的参考方向"><a href="#二、电流和电压的参考方向" class="headerlink" title="二、电流和电压的参考方向"></a>二、电流和电压的参考方向</h2><p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242819757.png" alt="1694242819757"></p>
-<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242852600.png" alt="1694242852600"></p>
-<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242876285.png" alt="1694242876285"></p>
-<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242905012.png" alt="1694242905012"></p>
-<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242939314.png" alt="1694242939314"></p>
-<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242973674.png" alt="1694242973674"></p>
-<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242986138.png" alt="1694242986138"></p>
-<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694243025513.png" alt="1694243025513"></p>
-]]></content>
-      <categories>
-        <category>罗教授电路</category>
-      </categories>
-      <tags>
-        <tag>电路基础</tag>
       </tags>
   </entry>
   <entry>

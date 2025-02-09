@@ -1992,6 +1992,41 @@
       </tags>
   </entry>
   <entry>
+    <title>第五章 串</title>
+    <url>/2024/11/02/%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E4%B8%B2/</url>
+    <content><![CDATA[<h1 id="串的定义"><a href="#串的定义" class="headerlink" title="串的定义"></a>串的定义</h1><p><strong>串是由零个或者多个字符组成的有限序列，又叫字符串。</strong></p>
+<p>一般记为s&#x3D;”a1a2…an”(n≥0)，<strong>s是串的名字，引号中的字符序列是串的值而不是内容</strong>。ai(1≤i≤n)可以是字母、数字等，i是改字符在串中的位置。</p>
+<p>串中的字符数目n称为串的长度，<strong>定义中谈到“有限”指的是长度n是有一个有限的数值</strong>。</p>
+<p>零个字符的串称为空串，长度为0，直接用两个“”””表示。</p>
+<p>所谓的序列，说明串的相邻字符之间有前驱和后继的关系。</p>
+<p>空格串：只是包含空格的串。</p>
+<p>字串和主串：串中任意个数的连续字符组成的子序列称为该串的子串，包含字串的串称为主串。</p>
+<p>字串在珠串的位置就是字串的第一个字符在主串的序号。</p>
+<h1 id="串的比较"><a href="#串的比较" class="headerlink" title="串的比较"></a>串的比较</h1><p>对于两个不相等的串进行判断大小：</p>
+<p>给定义两个串：s&#x3D;“a1a2…an”，t&#x3D;“b1b2…bm”，当满足以下条件之一时，s&lt;t。</p>
+<p>（1）n&lt;m，且ai &#x3D; bi（i&#x3D;1,2,…,n）</p>
+<p>例如：s&#x3D;“hap”，t&#x3D;“happy”，s&lt;t</p>
+<p>（2）存在某个≤min(m,n)，使得ai&#x3D;bi(i&#x3D;1,2,…,k-1),ak&lt;bk</p>
+<p>例如：当s-“happen”，t-“happy”，因为两串的前4个字母均相同，而两串第5个字母(k值)，字母e的ASCII码是101，而字母y的ASCI码是121，显然e&lt;y，所以s&lt;t。</p>
+<h1 id="串的抽象数据类型"><a href="#串的抽象数据类型" class="headerlink" title="串的抽象数据类型"></a>串的抽象数据类型</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ADT 串 (string）</span><br><span class="line">Data</span><br><span class="line">串中元素仅由一个字符组成，相邻元素具有前驱和后继关系</span><br><span class="line">Operation</span><br><span class="line">        StrAssign(T,*chars):生成一个其值等于字符串常量 chars 的串T。</span><br><span class="line">        StrCopy(T,S):串s存在，由串S复制得串T。</span><br><span class="line">        Clearstring(s):串s存在，将串清空。</span><br><span class="line">        stringEmpty(S):若串S为空，返回true，否则返回 false。</span><br><span class="line">        strLength(s):返回串s的元素个数，即串的长度。</span><br><span class="line">        StrCompare(s,T):若S&gt;T,返回值&gt;0,若S=T,返回0,若S&lt;T,返回值&lt;0。</span><br><span class="line">        Concat(T,s1,S2):用T返回由S1和S2联接而成的新串。</span><br><span class="line">        Substring(Sub,s,pos,len):串s存在,1≤pos≤StrLength(s),且            0≤len≤StrLength(s)-pos+1，用Sub返回串s的第pos个字符起长度为 len的子串。 </span><br><span class="line">        Index(S,T,pos):串S和T存在,T是非空串,1≤pos≤StrLength(s)。若主串s中存在和串T值相同的子串，则返回它在主串s中第pos个字符之后第一次出现的位置，否则返回0。</span><br><span class="line">        Replace(s,T,V):串S、T和V存在,T是非空串。用v替换主串s中出现的所有与T相等的不重叠的子串。</span><br><span class="line">        StrInsert(s,pos,T):串S和T存在,1≤pos≤StrLength(s)+1。在串s的第pos个字符之前插入串 T。</span><br><span class="line">        StrDelete(s,pos,len):串s存在,1≤pos&lt;strLength(s)-len+1。从串s中删除第pos个字符起长度为 len 的子串。</span><br><span class="line">endADT</span><br></pre></td></tr></table></figure>
+
+<h2 id="Index算法"><a href="#Index算法" class="headerlink" title="Index算法"></a>Index算法</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">int Index(String S,Strinf T,int pos)</span><br><span class="line">&#123;</span><br><span class="line">    int n,m,i;</span><br><span class="line">    String sub;</span><br><span class="line">    if(pos&gt;0)&#123;</span><br><span class="line">     n = StrLength(S); //得到主串S的长度</span><br><span class="line">     m = StrLength(T); //得到字串T的长度</span><br><span class="line">     i = pos;</span><br><span class="line">     while(i &lt;= n-m+1)&#123;</span><br><span class="line">          SubString(sub,S,i,m);//主串中第i个位置开始长度与T相等的字串给sub</span><br><span class="line">          if(SubString(sub,T)!=0)//如果两串不相等</span><br><span class="line">                  ++i;</span><br><span class="line">          else</span><br><span class="line">                  return i; </span><br><span class="line">       &#125;</span><br><span class="line">    &#125;</span><br><span class="line">reteun 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="串的存储结构"><a href="#串的存储结构" class="headerlink" title="串的存储结构"></a>串的存储结构</h1><h2 id="串的顺序存储结构"><a href="#串的顺序存储结构" class="headerlink" title="串的顺序存储结构"></a>串的顺序存储结构</h2><p>串的顺序存储结构是用一组地址连续的存储单元来存储串中的字符序列的。</p>
+<p>比如：计算机中寸在一个自由存储区，叫做“堆”。这个堆可由C语言的动态分配函数malloc()和free()来管理</p>
+<h2 id="串的链式存储结构"><a href="#串的链式存储结构" class="headerlink" title="串的链式存储结构"></a>串的链式存储结构</h2><p>如果是简单地应用链表存储串值，一个结点对应一个字符，就会存在很大的空间浪费。因此一个结点，可以存放一个字符，也可以考虑放多个字符，最后一个结点若是未被沾满，可以用“#”等非串字符补传，比如：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/11/image_719f922a2a3a5e5ff62159498d7564a9.png" alt="https://cdn.jsdelivr.net/gh/weixuna/MyPic/24/11/image_719f922a2a3a5e5ff62159498d7564a9.png"></p>
+<h1 id="模式匹配算法"><a href="#模式匹配算法" class="headerlink" title="模式匹配算法"></a>模式匹配算法</h1><p>去找一个单词在一篇文章中的定位为，这种字串的定位操作通常称做串的模式匹配。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">int Index(Strinf S,String T,int pos)&#123;</span><br><span class="line">      int i = pos;       //i用于字串S中当前的位置下标值，从pos位置开始匹配</span><br><span class="line">      int j = 1;         //j用于字串T当前位置下标值</span><br><span class="line">      while(i≤S[0]&amp;&amp;j≤T[0])&#123;    //当i小于S的长度并且j小于T的长度是，循环继续</span><br><span class="line">           if(S[i] == T[j])    //两字母相等则继续</span><br><span class="line">           &#123;</span><br><span class="line">               ++i;</span><br><span class="line">               ++j;</span><br><span class="line">           &#125;else&#123;              //指针后退重新开始匹配</span><br><span class="line">                i = i-j+2;     //i退回上次匹配首尾的下一位</span><br><span class="line">                j = i;        //j退回到字串T的首位</span><br><span class="line">            &#125;</span><br><span class="line">     &#125;</span><br><span class="line">      if(j &gt;T[0])&#123;</span><br><span class="line">         return i-T[0];</span><br><span class="line">     &#125;else&#123;</span><br><span class="line">         retrun 0;</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>数据结构</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>第五章-初始HAL库</title>
     <url>/2024/02/06/%E7%AC%AC%E4%BA%94%E7%AB%A0-%E5%88%9D%E5%A7%8BHAL%E5%BA%93/</url>
     <content><![CDATA[<p><img src="/../assets/%E7%AC%AC%E4%BA%94%E7%AB%A0-%E5%88%9D%E5%A7%8BHAL%E5%BA%93/1707232401368.png" alt="1707232401368"></p>

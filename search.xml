@@ -815,31 +815,6 @@
       </tags>
   </entry>
   <entry>
-    <title>电路基础</title>
-    <url>/2023/08/10/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/</url>
-    <content><![CDATA[<h2 id="一、电流、电压、电功率和能量"><a href="#一、电流、电压、电功率和能量" class="headerlink" title="一、电流、电压、电功率和能量"></a>一、电流、电压、电功率和能量</h2><h2 id="电流："><a href="#电流：" class="headerlink" title="电流："></a>电流：</h2><p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242554424.png" alt="1694242554424"></p>
-<p><strong>i 电流   q 电荷量  t时间</strong></p>
-<h2 id="电压："><a href="#电压：" class="headerlink" title="电压："></a>电压：</h2><p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242617918.png" alt="1694242617918"></p>
-<p><strong>u 电压 w 功 q电荷量</strong></p>
-<h2 id="功率："><a href="#功率：" class="headerlink" title="功率："></a>功率：</h2><p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242654855.png" alt="1694242654855"></p>
-<h2 id="小结："><a href="#小结：" class="headerlink" title="小结："></a>小结：</h2><p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242683878.png" alt="1694242683878"></p>
-<h2 id="二、电流和电压的参考方向"><a href="#二、电流和电压的参考方向" class="headerlink" title="二、电流和电压的参考方向"></a>二、电流和电压的参考方向</h2><p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242819757.png" alt="1694242819757"></p>
-<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242852600.png" alt="1694242852600"></p>
-<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242876285.png" alt="1694242876285"></p>
-<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242905012.png" alt="1694242905012"></p>
-<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242939314.png" alt="1694242939314"></p>
-<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242973674.png" alt="1694242973674"></p>
-<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242986138.png" alt="1694242986138"></p>
-<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694243025513.png" alt="1694243025513"></p>
-]]></content>
-      <categories>
-        <category>罗教授电路</category>
-      </categories>
-      <tags>
-        <tag>电路基础</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>电子工程师入门篇-入门基础</title>
     <url>/2024/02/08/%E7%94%B5%E5%AD%90%E5%B7%A5%E7%A8%8B%E5%B8%88%E5%85%A5%E9%97%A8%E7%AF%87-%E5%85%A5%E9%97%A8%E5%9F%BA%E7%A1%80/</url>
     <content><![CDATA[<h2 id="1-1-1-电路与电路图"><a href="#1-1-1-电路与电路图" class="headerlink" title="1.1.1 电路与电路图"></a>1.1.1 电路与电路图</h2><p>电源的作用是提供电能；开关、导线的作用是控制和传递电能，称为中间环节；灯泡是消耗电能的用电器，它能将电能转变为光能，称为负载。</p>
@@ -928,6 +903,31 @@
       </categories>
       <tags>
         <tag>电子技术</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>电路基础</title>
+    <url>/2023/08/10/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/</url>
+    <content><![CDATA[<h2 id="一、电流、电压、电功率和能量"><a href="#一、电流、电压、电功率和能量" class="headerlink" title="一、电流、电压、电功率和能量"></a>一、电流、电压、电功率和能量</h2><h2 id="电流："><a href="#电流：" class="headerlink" title="电流："></a>电流：</h2><p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242554424.png" alt="1694242554424"></p>
+<p><strong>i 电流   q 电荷量  t时间</strong></p>
+<h2 id="电压："><a href="#电压：" class="headerlink" title="电压："></a>电压：</h2><p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242617918.png" alt="1694242617918"></p>
+<p><strong>u 电压 w 功 q电荷量</strong></p>
+<h2 id="功率："><a href="#功率：" class="headerlink" title="功率："></a>功率：</h2><p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242654855.png" alt="1694242654855"></p>
+<h2 id="小结："><a href="#小结：" class="headerlink" title="小结："></a>小结：</h2><p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242683878.png" alt="1694242683878"></p>
+<h2 id="二、电流和电压的参考方向"><a href="#二、电流和电压的参考方向" class="headerlink" title="二、电流和电压的参考方向"></a>二、电流和电压的参考方向</h2><p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242819757.png" alt="1694242819757"></p>
+<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242852600.png" alt="1694242852600"></p>
+<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242876285.png" alt="1694242876285"></p>
+<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242905012.png" alt="1694242905012"></p>
+<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242939314.png" alt="1694242939314"></p>
+<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242973674.png" alt="1694242973674"></p>
+<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694242986138.png" alt="1694242986138"></p>
+<p><img src="/../assets/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/1694243025513.png" alt="1694243025513"></p>
+]]></content>
+      <categories>
+        <category>罗教授电路</category>
+      </categories>
+      <tags>
+        <tag>电路基础</tag>
       </tags>
   </entry>
   <entry>
@@ -2146,6 +2146,73 @@
       </tags>
   </entry>
   <entry>
+    <title>第四章-自己创建函数库</title>
+    <url>/2024/02/02/%E7%AC%AC%E5%9B%9B%E7%AB%A0-%E8%87%AA%E5%B7%B1%E5%88%9B%E5%BB%BA%E5%87%BD%E6%95%B0%E5%BA%93/</url>
+    <content><![CDATA[<p><img src="/../assets/%E7%AC%AC%E5%9B%9B%E7%AB%A0-%E8%87%AA%E5%B7%B1%E5%88%9B%E5%BB%BA%E5%87%BD%E6%95%B0%E5%BA%93/1706848296026.png" alt="1706848296026"></p>
+<p><img src="/../assets/%E7%AC%AC%E5%9B%9B%E7%AB%A0-%E8%87%AA%E5%B7%B1%E5%88%9B%E5%BB%BA%E5%87%BD%E6%95%B0%E5%BA%93/1707148103038.png" alt="1707148103038"></p>
+<h2 id="1、片上外设基地址"><a href="#1、片上外设基地址" class="headerlink" title="1、片上外设基地址"></a>1、片上外设基地址</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#define PERIPH_BASE           ((unsigned int)0x40000000)</span><br></pre></td></tr></table></figure>
+
+<h2 id="2、总线基地址"><a href="#2、总线基地址" class="headerlink" title="2、总线基地址"></a>2、总线基地址</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#define AHB1PERIPH_BASE       (PERIPH_BASE + 0x00020000)</span><br></pre></td></tr></table></figure>
+
+<h2 id="3、GPIO-外设基地址"><a href="#3、GPIO-外设基地址" class="headerlink" title="3、GPIO 外设基地址"></a>3、GPIO 外设基地址</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#define GPIOH_BASE            (AHB1PERIPH_BASE + 0x1C00)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../assets/%E7%AC%AC%E5%9B%9B%E7%AB%A0-%E8%87%AA%E5%B7%B1%E5%88%9B%E5%BB%BA%E5%87%BD%E6%95%B0%E5%BA%93/1706889171120.png" alt="1706889171120"></p>
+<p>&#x2F;&#x2F;H 高十位，L 低十位</p>
+<p><img src="/../assets/%E7%AC%AC%E5%9B%9B%E7%AB%A0-%E8%87%AA%E5%B7%B1%E5%88%9B%E5%BB%BA%E5%87%BD%E6%95%B0%E5%BA%93/1707231761899.png" alt="1707231761899"></p>
+]]></content>
+      <categories>
+        <category>野火STM32</category>
+      </categories>
+      <tags>
+        <tag>STM32</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>第四章-预处理</title>
+    <url>/2023/08/14/%E7%AC%AC%E5%9B%9B%E7%AB%A0-%E9%A2%84%E5%A4%84%E7%90%86/</url>
+    <content><![CDATA[<h3 id="一、C-语言编译过程"><a href="#一、C-语言编译过程" class="headerlink" title="一、C 语言编译过程"></a>一、C 语言编译过程</h3><p>预处理、编译、汇编链接</p>
+<p>gcc -E hello.c -o hello.i 1、预处理</p>
+<p>gcc -S hello.i –o hello.s 2、编译</p>
+<p>gcc -c hello.s -o hello.o 3、汇编</p>
+<p>gcc hello.o -o hello_elf 4、链接</p>
+<p>1、预编译</p>
+<p>​ 将.c 的头文件、宏展开</p>
+<p>​ 生成.i 文件</p>
+<p>2、编译</p>
+<p>​ 将预处理的.i 文件生成 .s 汇编文件</p>
+<p>3、汇编</p>
+<p>​ 将.s 汇编文件生成.o 目标文件</p>
+<p>4、链接</p>
+<p>​ .o 文件链接成目标文件</p>
+<h3 id="二、include"><a href="#二、include" class="headerlink" title="二、include"></a>二、include</h3><p>#include&lt;&gt; 用尖括号包括头文件，在系统指定的路径找到头文件</p>
+<p>#include”” 用双引号包括头文件，先在当前目录下找到头文件，找不到再系统指定的路径下找</p>
+<h3 id="三、define"><a href="#三、define" class="headerlink" title="三、define"></a>三、define</h3><p>定义 宏用 define</p>
+<h4 id="1、不带参数的宏"><a href="#1、不带参数的宏" class="headerlink" title="1、不带参数的宏"></a>1、不带参数的宏</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> PI 3.14</span></span><br><span class="line"><span class="comment">//终止宏的定义 定义</span></span><br><span class="line"><span class="meta">#<span class="keyword">undef</span> PI</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2、带参宏"><a href="#2、带参宏" class="headerlink" title="2、带参宏"></a>2、带参宏</h4><p>#define S(a,b) a*b</p>
+<p>注意带参宏的形参 ab 没有类名</p>
+<p>S(2,4)在预处理代替成字符串的形参 2 * 4</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> S(a,b) ((a)*(b))</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>,S(<span class="number">2</span>,<span class="number">4</span>));</span><br><span class="line">    <span class="comment">//((2+8))*(4))=40</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>,S(<span class="number">2</span> + <span class="number">8</span>,<span class="number">4</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3、带参宏和代餐函数的区"><a href="#3、带参宏和代餐函数的区" class="headerlink" title="3、带参宏和代餐函数的区"></a>3、带参宏和代餐函数的区</h4><p>​ 带参宏被<strong>调用</strong>多少次就会<strong>展开多少次</strong>，执行代码的时候没有函数调用的过程，不需要压栈弹栈。带参宏，浪费空间</p>
+<p>​ 带参函数，代码只有一份，存放在代码段，调用的时候去代码段指令，调用的时候要压栈弹栈。带参函数浪费了时间，节省了空间</p>
+<h3 id="四、选择性编译"><a href="#四、选择性编译" class="headerlink" title="四、选择性编译"></a>四、选择性编译</h3><p>1、</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifdef</span> AAA</span></span><br><span class="line">	代码段一</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">	代码段二</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//如果在当前.c ifdef上边定义AAA，就编译代码段一，否则编译代码段二</span></span><br><span class="line"> <span class="meta">#<span class="keyword">include</span> AAA</span></span><br><span class="line"></span><br><span class="line"> <span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="meta">#<span class="keyword">ifdef</span> AAA</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;hello kitty\n&quot;</span>);</span><br><span class="line">        <span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;hello ddd&quot;</span>);</span><br><span class="line">        <span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>2、</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> AAA</span></span><br><span class="line">	代码段一</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">	代码段二</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"> <span class="comment">//和第一种互补，用在防止头文件重复包含，用于多文件编程中.h的第一行就是#indef #endif结尾</span></span><br></pre></td></tr></table></figure>
+
+<p>3、</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">if</span> 表达式</span></span><br><span class="line">	代码块一</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">	代码块二</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="comment">//如果表达式为真，编译第一段，否则第二段</span></span><br><span class="line"><span class="comment">//多用于注释多行代码</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>千锋C语言</category>
+      </categories>
+      <tags>
+        <tag>嵌入式C</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>第四章 栈与队列</title>
     <url>/2024/10/12/%E7%AC%AC%E5%9B%9B%E7%AB%A0%20%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/</url>
     <content><![CDATA[<h1 id="栈的定义"><a href="#栈的定义" class="headerlink" title="栈的定义"></a>栈的定义</h1><p><strong>栈（stack）是限定仅在表尾进行插入和删除操作的线性表。（指的是栈顶）栈顶：插入和删除的一端栈底：另外一段空栈：不含任何数据元素的栈栈又称：后进先出的线性表，简称LIFO结构</strong></p>
@@ -2247,73 +2314,6 @@
       </categories>
       <tags>
         <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>第四章-自己创建函数库</title>
-    <url>/2024/02/02/%E7%AC%AC%E5%9B%9B%E7%AB%A0-%E8%87%AA%E5%B7%B1%E5%88%9B%E5%BB%BA%E5%87%BD%E6%95%B0%E5%BA%93/</url>
-    <content><![CDATA[<p><img src="/../assets/%E7%AC%AC%E5%9B%9B%E7%AB%A0-%E8%87%AA%E5%B7%B1%E5%88%9B%E5%BB%BA%E5%87%BD%E6%95%B0%E5%BA%93/1706848296026.png" alt="1706848296026"></p>
-<p><img src="/../assets/%E7%AC%AC%E5%9B%9B%E7%AB%A0-%E8%87%AA%E5%B7%B1%E5%88%9B%E5%BB%BA%E5%87%BD%E6%95%B0%E5%BA%93/1707148103038.png" alt="1707148103038"></p>
-<h2 id="1、片上外设基地址"><a href="#1、片上外设基地址" class="headerlink" title="1、片上外设基地址"></a>1、片上外设基地址</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#define PERIPH_BASE           ((unsigned int)0x40000000)</span><br></pre></td></tr></table></figure>
-
-<h2 id="2、总线基地址"><a href="#2、总线基地址" class="headerlink" title="2、总线基地址"></a>2、总线基地址</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#define AHB1PERIPH_BASE       (PERIPH_BASE + 0x00020000)</span><br></pre></td></tr></table></figure>
-
-<h2 id="3、GPIO-外设基地址"><a href="#3、GPIO-外设基地址" class="headerlink" title="3、GPIO 外设基地址"></a>3、GPIO 外设基地址</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#define GPIOH_BASE            (AHB1PERIPH_BASE + 0x1C00)</span><br></pre></td></tr></table></figure>
-
-<p><img src="/../assets/%E7%AC%AC%E5%9B%9B%E7%AB%A0-%E8%87%AA%E5%B7%B1%E5%88%9B%E5%BB%BA%E5%87%BD%E6%95%B0%E5%BA%93/1706889171120.png" alt="1706889171120"></p>
-<p>&#x2F;&#x2F;H 高十位，L 低十位</p>
-<p><img src="/../assets/%E7%AC%AC%E5%9B%9B%E7%AB%A0-%E8%87%AA%E5%B7%B1%E5%88%9B%E5%BB%BA%E5%87%BD%E6%95%B0%E5%BA%93/1707231761899.png" alt="1707231761899"></p>
-]]></content>
-      <categories>
-        <category>野火STM32</category>
-      </categories>
-      <tags>
-        <tag>STM32</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>第四章-预处理</title>
-    <url>/2023/08/14/%E7%AC%AC%E5%9B%9B%E7%AB%A0-%E9%A2%84%E5%A4%84%E7%90%86/</url>
-    <content><![CDATA[<h3 id="一、C-语言编译过程"><a href="#一、C-语言编译过程" class="headerlink" title="一、C 语言编译过程"></a>一、C 语言编译过程</h3><p>预处理、编译、汇编链接</p>
-<p>gcc -E hello.c -o hello.i 1、预处理</p>
-<p>gcc -S hello.i –o hello.s 2、编译</p>
-<p>gcc -c hello.s -o hello.o 3、汇编</p>
-<p>gcc hello.o -o hello_elf 4、链接</p>
-<p>1、预编译</p>
-<p>​ 将.c 的头文件、宏展开</p>
-<p>​ 生成.i 文件</p>
-<p>2、编译</p>
-<p>​ 将预处理的.i 文件生成 .s 汇编文件</p>
-<p>3、汇编</p>
-<p>​ 将.s 汇编文件生成.o 目标文件</p>
-<p>4、链接</p>
-<p>​ .o 文件链接成目标文件</p>
-<h3 id="二、include"><a href="#二、include" class="headerlink" title="二、include"></a>二、include</h3><p>#include&lt;&gt; 用尖括号包括头文件，在系统指定的路径找到头文件</p>
-<p>#include”” 用双引号包括头文件，先在当前目录下找到头文件，找不到再系统指定的路径下找</p>
-<h3 id="三、define"><a href="#三、define" class="headerlink" title="三、define"></a>三、define</h3><p>定义 宏用 define</p>
-<h4 id="1、不带参数的宏"><a href="#1、不带参数的宏" class="headerlink" title="1、不带参数的宏"></a>1、不带参数的宏</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> PI 3.14</span></span><br><span class="line"><span class="comment">//终止宏的定义 定义</span></span><br><span class="line"><span class="meta">#<span class="keyword">undef</span> PI</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="2、带参宏"><a href="#2、带参宏" class="headerlink" title="2、带参宏"></a>2、带参宏</h4><p>#define S(a,b) a*b</p>
-<p>注意带参宏的形参 ab 没有类名</p>
-<p>S(2,4)在预处理代替成字符串的形参 2 * 4</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> S(a,b) ((a)*(b))</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>,S(<span class="number">2</span>,<span class="number">4</span>));</span><br><span class="line">    <span class="comment">//((2+8))*(4))=40</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>,S(<span class="number">2</span> + <span class="number">8</span>,<span class="number">4</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="3、带参宏和代餐函数的区"><a href="#3、带参宏和代餐函数的区" class="headerlink" title="3、带参宏和代餐函数的区"></a>3、带参宏和代餐函数的区</h4><p>​ 带参宏被<strong>调用</strong>多少次就会<strong>展开多少次</strong>，执行代码的时候没有函数调用的过程，不需要压栈弹栈。带参宏，浪费空间</p>
-<p>​ 带参函数，代码只有一份，存放在代码段，调用的时候去代码段指令，调用的时候要压栈弹栈。带参函数浪费了时间，节省了空间</p>
-<h3 id="四、选择性编译"><a href="#四、选择性编译" class="headerlink" title="四、选择性编译"></a>四、选择性编译</h3><p>1、</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifdef</span> AAA</span></span><br><span class="line">	代码段一</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">	代码段二</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//如果在当前.c ifdef上边定义AAA，就编译代码段一，否则编译代码段二</span></span><br><span class="line"> <span class="meta">#<span class="keyword">include</span> AAA</span></span><br><span class="line"></span><br><span class="line"> <span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="meta">#<span class="keyword">ifdef</span> AAA</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;hello kitty\n&quot;</span>);</span><br><span class="line">        <span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;hello ddd&quot;</span>);</span><br><span class="line">        <span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p>2、</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> AAA</span></span><br><span class="line">	代码段一</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">	代码段二</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"> <span class="comment">//和第一种互补，用在防止头文件重复包含，用于多文件编程中.h的第一行就是#indef #endif结尾</span></span><br></pre></td></tr></table></figure>
-
-<p>3、</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">if</span> 表达式</span></span><br><span class="line">	代码块一</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">	代码块二</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="comment">//如果表达式为真，编译第一段，否则第二段</span></span><br><span class="line"><span class="comment">//多用于注释多行代码</span></span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>千锋C语言</category>
-      </categories>
-      <tags>
-        <tag>嵌入式C</tag>
       </tags>
   </entry>
   <entry>

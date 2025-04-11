@@ -2085,6 +2085,106 @@ a[1] [2]
       </tags>
   </entry>
   <entry>
+    <title>第二章内存管理</title>
+    <url>/2025/04/11/%E7%AC%AC%E4%BA%8C%E7%AB%A0%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</url>
+    <content><![CDATA[1.1、堆栈1、堆：即heap，一块空闲的内存，提供管理函数
+malloc：从堆里面划出一块空间给程序使用
+free：用完之后，标记空闲，可以再次使用
+2、栈：即stack，函数调用时局部变量保存在栈中，当前程序环境可以保存在栈中，可以分配一块空间用作栈
+堆（heap）意思就是被管理就叫做堆，栈（stack）就是栈寄存器指向的就叫做栈
+1.3FreeRTOS内存管理方法1、Heap_1只实现了pvPortMalloc，没有实现vPortFree。
+
+**pvPortMalloc**：用来分配内存的函数。你需要多少内存，它就给你分配，并返回一个指针指向这块内存。
+**vPortFree**：用来释放之前分配的内存的函数。当你不再需要某块内存时，调用它把内存还给系统。
+
+即：适合分配一次内存后就一直使用的场景，不需要频繁释放内存。
+（1）数组定义：
+/* Allocate the memory for the heap. */##if ( configAPPLICATION_ALLOCATED_HEAP == 1 )/* The application writer has already defined the array used for the RTOS* heap -  probably so it can be placed in a special segment or address. */    extern uint8_t ucHeap[ configTOTAL_HEAP_SIZE ];##else    static uint8_t ucHeap[ configTOTAL_HEAP_SIZE ];##endif /* configAPPLICATION_ALLOCATED_HEAP */
+
+（2）调用pvPortMalloc，从这个数组中分配空间
+FreeRTOS创建任务的时候，需要两个内核对象：task control block(TCB：任务控制块)，stack（栈）。
+内存分配的过程如下：
+
+2、Heap_2在新设计中不在推荐使用Heap_2，建议使用Heap_4替代。
+Heap_2也是在数组上分配内存，但是跟Heap_2不一样的地方在于：
+
+Heap_2使用最佳匹配算法(best fit)来分配内存
+它支持vPortFree
+
+最佳匹配算法：
+
+假设heap有3块空闲内存：5字节、25字节、100字节
+pvPortMalloc想申请20字节
+找出最小的、能满足pvPortMalloc的内存：25字节
+把它划分为20字节、5字节
+返回这20字节的地址
+剩下的5字节仍然是空闲状态，留给后续的pvPortMalloc使用
+
+
+
+总结：就是根据使用内存的大小，系统分配合适的空闲内存块
+在Heap_2中不会像Heap_4那样合并相邻的空闲内存，所以Heap_2导致严重的“碎片化”问题
+如果在申请、分配内存时大小总是相同的，使用Heap_2没有碎片化的问题，适合在场景例如：频繁创建、删除任务，任务的栈大小都是相同的
+内存分配过程如下：
+
+3、Heap_3Heap_3使用标准的C库中的malloc、free函数，所以堆大小由链接器的配置决定，配置项的congfigTOTAL_HEAP_SIZE不起作用。
+在这两个函数中并没有特别考虑线程安全，Heap_3先暂停FreeRTOS的调度器，再去调用这些函数，实现了线程安全。
+4、Heap_4Heap_4使用首次适应算法（first fit）分配内存。还会把相邻的空闲内存合并为一个更大的空闲内存，可以较少内存的碎片问题
+首次适应算法：
+
+假设堆中有3块空闲内存：5字节、200字节、100字节
+pvPortMalloc想申请20字节
+找出第1个能满足pvPortMalloc的内存：200字节
+把它划分为20字节、180字节
+返回这20字节的地址
+剩下的180字节仍然是空闲状态，留给后续的pvPortMalloc使用
+
+适用场景：频繁分配、频繁释放不同大小的内存
+
+5、Heap_5分配内存、释放内存的算法和Heap_4一样
+相比于Heap_4，Heap_5并不局限于管理一个大数组，可以管理多块、分隔的内存。在嵌入式中，内存地址可能并不连续，这种场景下可以使用Heap_5。
+内存是分隔开的，那么需要进行初始化：确认这些内存块在哪里，多大
+
+在使用pvPortMalloc之前，必须先指定内存块的信息
+使用vPortDefineHeapRegions来指定这些信息
+
+指定一块内存：
+typedef struct HeapRegion&#123;    uint8_t * pucStartAddress; // 起始地址    size_t xSizeInBytes;       // 大小&#125; HeapRegion_t;
+
+指定多块内存，使用一个HeapRegion_t数组，在这个数组中，低地址在前，高地址在后
+HeapRegion_t xHeapRegions[] =&#123;  &#123; ( uint8_t * ) 0x80000000UL, 0x10000 &#125;, // 起始地址0x80000000，大小0x10000  &#123; ( uint8_t * ) 0x90000000UL, 0xa0000 &#125;, // 起始地址0x90000000，大小0xa0000  &#123; NULL, 0 &#125; // 表示数组结束 &#125;;
+
+vPortDefineHeapRegions函数原型
+void vPortDefineHeapRegions( const HeapRegion_t * const pxHeapRegions );
+
+把xHeapRegions数组传给vPortDefineHeapRegions函数，就是先初始化。
+Heap相关的函数pvPortMalloc&#x2F;vPortFreevoid * pvPortMalloc( size_t xWantedSize );void vPortFree( void * pv );
+
+作用：分配内存，释放内存，如果分配内存不成功，返回NULL
+xPortGetFreeHeapSizesize_t xPortGetFreeHeapSize( void );
+
+当前还有多少空闲内存，这函数可以用来优化内存的使用情况。比如当所有内核对象都分配好后，执行此函数返回2000，那么configTOTAL_HEAP_SIZE就可减小2000。
+注意：在heap_3无法使用
+xPortGetMinimumEverFreeHeapSizesize_t xPortGetMinimumEverFreeHeapSize( void );
+
+返回：程序运行中，空闲内存容量的最小值
+注意：只有heap_4,5支持此函数
+malloc失败的钩子函数void * pvPortMalloc( size_t xWantedSize )vPortDefineHeapRegions&#123;    ......    #if ( configUSE_MALLOC_FAILED_HOOK == 1 )        &#123;            if( pvReturn == NULL )            &#123;                extern void vApplicationMallocFailedHook( void );                vApplicationMallocFailedHook();            &#125;        &#125;    #endif      return pvReturn;      &#125;
+
+
+在FreeRTOSConfig.h中，把configUSE_MALLOC_FAILED_HOOK定义为1
+提供vApplicationMallocFailedHook函数
+pvPortMalloc失败时，才会调用此函数
+
+]]></content>
+      <categories>
+        <category>RTOS</category>
+      </categories>
+      <tags>
+        <tag>RTOS</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>第五章 串</title>
     <url>/2024/11/02/%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E4%B8%B2/</url>
     <content><![CDATA[串的定义串是由零个或者多个字符组成的有限序列，又叫字符串。

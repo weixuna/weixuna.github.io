@@ -195,65 +195,23 @@ border
       </tags>
   </entry>
   <entry>
-    <title>HTML第三天</title>
-    <url>/2023/10/13/HTML%E7%AC%AC%E4%B8%89%E5%A4%A9/</url>
-    <content><![CDATA[1.font-familyfont-family //定义文本系列
+    <title>SCREEPS</title>
+    <url>/2023/11/27/SCREEPS/</url>
+    <content><![CDATA[创建机器人var crepp = Game.creeps[&#x27;MiningRobot&#x27;];Game.spawns[&quot;Spawn1&quot;].spawnCreep([WORK, CARRY, MOVE], &quot;Harvester1&quot;);
 
-2. font-size属性定义字体大小。
-3.font-weight文本字体的粗细
+采集能量module.exports.loop = function () &#123;    var creep = Game.creeps[&#x27;Harvester1&#x27;];    var sources = creep.room.find(FIND_SOURCES);    if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) &#123;        creep.moveTo(sources[0]);    &#125;&#125;
 
+采集能量返回module.exports.loop = function () &#123;    var creep = Game.creeps[&#x27;Harvester1&#x27;];    if(creep.store.getFreeCapacity() &gt; 0) &#123;        var sources = creep.room.find(FIND_SOURCES);        if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) &#123;            creep.moveTo(sources[0]);        &#125;    &#125;    else &#123;        if( creep.transfer(Game.spawns[&#x27;Spawn1&#x27;], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) &#123;            creep.moveTo(Game.spawns[&#x27;Spawn1&#x27;]);        &#125;    &#125;&#125;
 
+module.exports.loop = function () &#123;    for(var name in Game.creeps) &#123;        var creep = Game.creeps[name];        if(creep.store.getFreeCapacity() &gt; 0) &#123;            //检查是否又剩余的容量            var sources = creep.room.find(FIND_SOURCES);            //创建能量的变量，指的是找到这所房间的全部能量            if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) &#123;                 //让creep从列表的第一个能源点采集能源                creep.moveTo(sources[0]);                //如果不在能源采集范围，能会走向第一个能源点移动            &#125;        &#125;        else &#123;//当容量已满时，返回Spawn1            if(creep.transfer(Game.spawns[&#x27;Spawn1&#x27;], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) &#123;                creep.moveTo(Game.spawns[&#x27;Spawn1&#x27;]);            &#125;        &#125;    &#125;&#125;
 
-notmal
-默认值
+代码优化var roleHarvester = require(&#x27;role.harvester&#x27;);module.exports.loop = function () &#123;    for(var name in Game.creeps) &#123;        var creep = Game.creeps[name];        roleHarvester.run(creep);    &#125;&#125;var roleHarvester = &#123;    /** @param &#123;Creep&#125; creep **/    run: function(creep) &#123;	    if(creep.store.getFreeCapacity() &gt; 0) &#123;            var sources = creep.room.find(FIND_SOURCES);            if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) &#123;                creep.moveTo(sources[0]);            &#125;        &#125;        else &#123;            if(creep.transfer(Game.spawns[&#x27;Spawn1&#x27;], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) &#123;                creep.moveTo(Game.spawns[&#x27;Spawn1&#x27;]);            &#125;        &#125;	&#125;&#125;;module.exports = roleHarvester;
 
+升级建筑//生成机器人Game.spawns[&#x27;Spawn1&#x27;].spawnCreep( [WORK, CARRY, MOVE], &#x27;Upgrader1&#x27; );var roleHarvester = require(&#x27;role.harvester&#x27;);var roleUpgrader = require(&#x27;role.upgrader&#x27;);module.exports.loop = function () &#123;    for(var name in Game.creeps) &#123;        var creep = Game.creeps[name];        if(creep.memory.role == &#x27;harvester&#x27;) &#123;            roleHarvester.run(creep);        &#125;        if(creep.memory.role == &#x27;upgrader&#x27;) &#123;            roleUpgrader.run(creep);        &#125;    &#125;&#125;
 
+var roleUpgrader = &#123;    /** @param &#123;Creep&#125; creep **/    run: function(creep) &#123;	    if(creep.store[RESOURCE_ENERGY] == 0) &#123;            var sources = creep.room.find(FIND_SOURCES);            if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) &#123;                creep.moveTo(sources[0]);            &#125;        &#125;        else &#123;            if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) &#123;                creep.moveTo(creep.room.controller);            &#125;        &#125;	&#125;&#125;;module.exports = roleUpgrader;//每个 creep 都有的 memory 属性，该属性允许在 creep 的“内存”中写入自定义信息。Game.creeps[&#x27;Harvester1&#x27;].memory.role = &#x27;harvester&#x27;;Game.creeps[&#x27;Upgrader1&#x27;].memory.role = &#x27;upgrader&#x27;;//mainvar roleHarvester = require(&#x27;role.harvester&#x27;);var roleUpgrader = require(&#x27;role.upgrader&#x27;);module.exports.loop = function () &#123;    for(var name in Game.creeps) &#123;        var creep = Game.creeps[name];        if(creep.memory.role == &#x27;harvester&#x27;) &#123;            roleHarvester.run(creep);        &#125;        if(creep.memory.role == &#x27;upgrader&#x27;) &#123;            roleUpgrader.run(creep);        &#125;    &#125;&#125;
 
-bold
-加粗
-
-
-100-900
-400&#x3D;normal,700&#x3D;bold
-
-
-4.font-style文本风格
-normal //默认值 italic//斜体
-
-
-5.text-align文本内容水平对齐方式
-left //左对齐 right //右对齐 center //居中对齐
-
-6.text-decoration给文本添加下划线、删除线、上划线等
-
-
-
-none
-默认
-
-
-
-underline
-下划线
-
-
-overline
-上划线
-
-
-line-through
-删除线
-
-
-7.text-indent段落首行缩进
-8.line-height设置行间的距离（行高）
 ]]></content>
-      <categories>
-        <category>前端</category>
-      </categories>
-      <tags>
-        <tag>HTML</tag>
-      </tags>
   </entry>
   <entry>
     <title>HTML第二天</title>
@@ -369,25 +327,6 @@ placeholder:占位符
       </tags>
   </entry>
   <entry>
-    <title>SCREEPS</title>
-    <url>/2023/11/27/SCREEPS/</url>
-    <content><![CDATA[创建机器人var crepp = Game.creeps[&#x27;MiningRobot&#x27;];Game.spawns[&quot;Spawn1&quot;].spawnCreep([WORK, CARRY, MOVE], &quot;Harvester1&quot;);
-
-采集能量module.exports.loop = function () &#123;    var creep = Game.creeps[&#x27;Harvester1&#x27;];    var sources = creep.room.find(FIND_SOURCES);    if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) &#123;        creep.moveTo(sources[0]);    &#125;&#125;
-
-采集能量返回module.exports.loop = function () &#123;    var creep = Game.creeps[&#x27;Harvester1&#x27;];    if(creep.store.getFreeCapacity() &gt; 0) &#123;        var sources = creep.room.find(FIND_SOURCES);        if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) &#123;            creep.moveTo(sources[0]);        &#125;    &#125;    else &#123;        if( creep.transfer(Game.spawns[&#x27;Spawn1&#x27;], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) &#123;            creep.moveTo(Game.spawns[&#x27;Spawn1&#x27;]);        &#125;    &#125;&#125;
-
-module.exports.loop = function () &#123;    for(var name in Game.creeps) &#123;        var creep = Game.creeps[name];        if(creep.store.getFreeCapacity() &gt; 0) &#123;            //检查是否又剩余的容量            var sources = creep.room.find(FIND_SOURCES);            //创建能量的变量，指的是找到这所房间的全部能量            if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) &#123;                 //让creep从列表的第一个能源点采集能源                creep.moveTo(sources[0]);                //如果不在能源采集范围，能会走向第一个能源点移动            &#125;        &#125;        else &#123;//当容量已满时，返回Spawn1            if(creep.transfer(Game.spawns[&#x27;Spawn1&#x27;], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) &#123;                creep.moveTo(Game.spawns[&#x27;Spawn1&#x27;]);            &#125;        &#125;    &#125;&#125;
-
-代码优化var roleHarvester = require(&#x27;role.harvester&#x27;);module.exports.loop = function () &#123;    for(var name in Game.creeps) &#123;        var creep = Game.creeps[name];        roleHarvester.run(creep);    &#125;&#125;var roleHarvester = &#123;    /** @param &#123;Creep&#125; creep **/    run: function(creep) &#123;	    if(creep.store.getFreeCapacity() &gt; 0) &#123;            var sources = creep.room.find(FIND_SOURCES);            if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) &#123;                creep.moveTo(sources[0]);            &#125;        &#125;        else &#123;            if(creep.transfer(Game.spawns[&#x27;Spawn1&#x27;], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) &#123;                creep.moveTo(Game.spawns[&#x27;Spawn1&#x27;]);            &#125;        &#125;	&#125;&#125;;module.exports = roleHarvester;
-
-升级建筑//生成机器人Game.spawns[&#x27;Spawn1&#x27;].spawnCreep( [WORK, CARRY, MOVE], &#x27;Upgrader1&#x27; );var roleHarvester = require(&#x27;role.harvester&#x27;);var roleUpgrader = require(&#x27;role.upgrader&#x27;);module.exports.loop = function () &#123;    for(var name in Game.creeps) &#123;        var creep = Game.creeps[name];        if(creep.memory.role == &#x27;harvester&#x27;) &#123;            roleHarvester.run(creep);        &#125;        if(creep.memory.role == &#x27;upgrader&#x27;) &#123;            roleUpgrader.run(creep);        &#125;    &#125;&#125;
-
-var roleUpgrader = &#123;    /** @param &#123;Creep&#125; creep **/    run: function(creep) &#123;	    if(creep.store[RESOURCE_ENERGY] == 0) &#123;            var sources = creep.room.find(FIND_SOURCES);            if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) &#123;                creep.moveTo(sources[0]);            &#125;        &#125;        else &#123;            if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) &#123;                creep.moveTo(creep.room.controller);            &#125;        &#125;	&#125;&#125;;module.exports = roleUpgrader;//每个 creep 都有的 memory 属性，该属性允许在 creep 的“内存”中写入自定义信息。Game.creeps[&#x27;Harvester1&#x27;].memory.role = &#x27;harvester&#x27;;Game.creeps[&#x27;Upgrader1&#x27;].memory.role = &#x27;upgrader&#x27;;//mainvar roleHarvester = require(&#x27;role.harvester&#x27;);var roleUpgrader = require(&#x27;role.upgrader&#x27;);module.exports.loop = function () &#123;    for(var name in Game.creeps) &#123;        var creep = Game.creeps[name];        if(creep.memory.role == &#x27;harvester&#x27;) &#123;            roleHarvester.run(creep);        &#125;        if(creep.memory.role == &#x27;upgrader&#x27;) &#123;            roleUpgrader.run(creep);        &#125;    &#125;&#125;
-
-]]></content>
-  </entry>
-  <entry>
     <title>eps32连接华为云iot，并且实现arkts控制点灯</title>
     <url>/2024/04/02/eps32%E8%BF%9E%E6%8E%A5%E5%8D%8E%E4%B8%BA%E4%BA%91iot%EF%BC%8C%E5%B9%B6%E4%B8%94%E5%AE%9E%E7%8E%B0arkts%E6%8E%A7%E5%88%B6%E7%82%B9%E7%81%AF/</url>
     <content><![CDATA[ESP32连接华为云我使用的是arduinoied所写的代码，要注意，在mqtt请求华为云中，需要写心跳间隔，不然上云不了（client.setKeepAlive(60);  &#x2F;&#x2F;心跳间隔，很重要！！！）。代码如下：
@@ -426,6 +365,67 @@ http请求代码：
       </categories>
       <tags>
         <tag>APP开发</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>HTML第三天</title>
+    <url>/2023/10/13/HTML%E7%AC%AC%E4%B8%89%E5%A4%A9/</url>
+    <content><![CDATA[1.font-familyfont-family //定义文本系列
+
+2. font-size属性定义字体大小。
+3.font-weight文本字体的粗细
+
+
+
+notmal
+默认值
+
+
+
+bold
+加粗
+
+
+100-900
+400&#x3D;normal,700&#x3D;bold
+
+
+4.font-style文本风格
+normal //默认值 italic//斜体
+
+
+5.text-align文本内容水平对齐方式
+left //左对齐 right //右对齐 center //居中对齐
+
+6.text-decoration给文本添加下划线、删除线、上划线等
+
+
+
+none
+默认
+
+
+
+underline
+下划线
+
+
+overline
+上划线
+
+
+line-through
+删除线
+
+
+7.text-indent段落首行缩进
+8.line-height设置行间的距离（行高）
+]]></content>
+      <categories>
+        <category>前端</category>
+      </categories>
+      <tags>
+        <tag>HTML</tag>
       </tags>
   </entry>
   <entry>

@@ -2874,6 +2874,7 @@ input::placeholder {
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+  background: var(--anzhiyu-background) url("/img/lxh.jpg") center/cover no-repeat;
 }
 h1,
 h2,

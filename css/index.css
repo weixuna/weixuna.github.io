@@ -2859,22 +2859,19 @@ input::placeholder {
 #web_bg {
   position: fixed;
   z-index: -999;
-  width: 200%;
-  height: 200%;
-  top: -50%;
-  left: -50%;
-  -webkit-transform: rotate(-1deg);
-  -moz-transform: rotate(-1deg);
-  -o-transform: rotate(-1deg);
-  -ms-transform: rotate(-1deg);
-  transform: rotate(-1deg);
-  -webkit-overflow-scrolling: touch;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  opacity: 0.8;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+  filter: alpha(opacity=80);
   background: var(--anzhiyu-background);
-  background-attachment: local;
+  background-attachment: fixed;
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-  background: var(--anzhiyu-background) url("/img/lxh.jpg") center/cover no-repeat;
+  background-image: url("/img/lxh.jpg");
 }
 h1,
 h2,

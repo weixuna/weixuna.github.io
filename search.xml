@@ -132,6 +132,67 @@ AT$HTTPACTION&#x3D;0
       </tags>
   </entry>
   <entry>
+    <title>HTML第三天</title>
+    <url>/2023/10/13/HTML%E7%AC%AC%E4%B8%89%E5%A4%A9/</url>
+    <content><![CDATA[1.font-familyfont-family //定义文本系列
+
+2. font-size属性定义字体大小。
+3.font-weight文本字体的粗细
+
+
+
+notmal
+默认值
+
+
+
+bold
+加粗
+
+
+100-900
+400&#x3D;normal,700&#x3D;bold
+
+
+4.font-style文本风格
+normal //默认值 italic//斜体
+
+
+5.text-align文本内容水平对齐方式
+left //左对齐 right //右对齐 center //居中对齐
+
+6.text-decoration给文本添加下划线、删除线、上划线等
+
+
+
+none
+默认
+
+
+
+underline
+下划线
+
+
+overline
+上划线
+
+
+line-through
+删除线
+
+
+7.text-indent段落首行缩进
+8.line-height设置行间的距离（行高）
+]]></content>
+      <categories>
+        <category>前端</category>
+      </categories>
+      <tags>
+        <tag>HTML</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>HTML第一天</title>
     <url>/2023/10/11/HTML%E7%AC%AC%E4%B8%80%E5%A4%A9/</url>
     <content><![CDATA[HTML 语法规范&lt;html&gt;&lt;/html&gt;//html标签 &lt;head&gt;&lt;/head&gt; //文档的头部 &lt;title&gt;&lt;/title&gt; //文档的标签&lt;body&gt;&lt;/body&gt;//文档的主体
@@ -186,67 +247,6 @@ border
 9.超链接标签&lt;a href=&quot;跳转目标&quot; target=&quot;目标窗口的弹出方式&quot;&gt;文本或者图像&lt;/a&gt;
 
 10.特殊字符&amp;nbsp; //空格&amp;ly;  //小于号&amp;gt;  //大于号
-]]></content>
-      <categories>
-        <category>前端</category>
-      </categories>
-      <tags>
-        <tag>HTML</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>HTML第三天</title>
-    <url>/2023/10/13/HTML%E7%AC%AC%E4%B8%89%E5%A4%A9/</url>
-    <content><![CDATA[1.font-familyfont-family //定义文本系列
-
-2. font-size属性定义字体大小。
-3.font-weight文本字体的粗细
-
-
-
-notmal
-默认值
-
-
-
-bold
-加粗
-
-
-100-900
-400&#x3D;normal,700&#x3D;bold
-
-
-4.font-style文本风格
-normal //默认值 italic//斜体
-
-
-5.text-align文本内容水平对齐方式
-left //左对齐 right //右对齐 center //居中对齐
-
-6.text-decoration给文本添加下划线、删除线、上划线等
-
-
-
-none
-默认
-
-
-
-underline
-下划线
-
-
-overline
-上划线
-
-
-line-through
-删除线
-
-
-7.text-indent段落首行缩进
-8.line-height设置行间的距离（行高）
 ]]></content>
       <categories>
         <category>前端</category>
@@ -444,14 +444,6 @@ http请求代码：
 ]]></content>
   </entry>
   <entry>
-    <title>关于使用wsl使用idf提供编译速度遇到的问题</title>
-    <url>/2024/04/20/%E5%85%B3%E4%BA%8E%E4%BD%BF%E7%94%A8wsl%E4%BD%BF%E7%94%A8idf%E6%8F%90%E4%BE%9B%E7%BC%96%E8%AF%91%E9%80%9F%E5%BA%A6%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[
-在wsl的ubuntu安装idf遇到没有串口的报错，是因为wsl不自带usb的驱动，需要手动安装
-教程使用他人的：https://blog.csdn.net/qq_40695642/article/details/127270039
-]]></content>
-  </entry>
-  <entry>
     <title>许久没有发文章了</title>
     <url>/2024/09/04/%E5%85%B3%E4%BA%8E%E5%9C%A8%E7%89%A9%E8%81%94%E7%BD%91%E7%AB%9E%E8%B5%9B%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E6%84%9F%E6%83%B3/</url>
     <content><![CDATA[从四月份到八月份的比赛结束，取得了华东赛区一等奖和全国总决赛二等奖。说起来，也是跟在梦中似的~没有想过真的可以进去国赛，也算是吃到了赛道的福利了。在华东赛区和总决赛的作品演示室看到他们的作品，看的我都自卑了，很高级，我们的作品很简陋，太简陋了，搞得我都想跑了 ~
@@ -462,6 +454,14 @@ http请求代码：
 数据大屏这部分没啥好说的，用的是低代码，会搞Http请求就没有任何问题了，挺简单的。
 在总决赛的之前，临时买了一个ESP32Cam，缺点就是卡(供电需要5V2A的，他的烧录板没有！！！)，清晰度倒还好，加入了一个火焰检测，本来是加入烟雾的，摄像头模糊，老是识别到模糊的地方是烟雾，可恶。ESP32Cam视频流转成一个服务器地址，Python再用OpenCV获取，再加入YOLOV8训练的模型就可以了，不过这些部分不是熟悉，实现效果有就行啦。不过在比赛的时候，没有演示出来。
 
+]]></content>
+  </entry>
+  <entry>
+    <title>关于使用wsl使用idf提供编译速度遇到的问题</title>
+    <url>/2024/04/20/%E5%85%B3%E4%BA%8E%E4%BD%BF%E7%94%A8wsl%E4%BD%BF%E7%94%A8idf%E6%8F%90%E4%BE%9B%E7%BC%96%E8%AF%91%E9%80%9F%E5%BA%A6%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[
+在wsl的ubuntu安装idf遇到没有串口的报错，是因为wsl不自带usb的驱动，需要手动安装
+教程使用他人的：https://blog.csdn.net/qq_40695642/article/details/127270039
 ]]></content>
   </entry>
   <entry>

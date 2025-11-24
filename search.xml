@@ -388,6 +388,24 @@ var roleUpgrader = &#123;    /** @param &#123;Creep&#125; creep **/    run: func
 ]]></content>
   </entry>
   <entry>
+    <title>SF32LB52—个人毕设笔记—添加Bora及修改PinMux（1）</title>
+    <url>/2025/11/24/SF32LB52%E2%80%94%E4%B8%AA%E4%BA%BA%E6%AF%95%E8%AE%BE%E7%AC%94%E8%AE%B0%EF%BC%881%EF%BC%89/</url>
+    <content><![CDATA[1.在SiFli-SDK中创建Borad请参考SiFli Wiki，链接https://docs.sifli.com/projects/sdk/latest/sf32lb52x/app_development/create_board.html
+2.修改自己Borad中的PinMux以下为本人设计板子所使用的IO
+（1）bsp_lcd_tp.c#include &quot;bsp_board.h&quot;#define LCD_RESET_PIN (0)  //LCD复位#define TP_RESET (41) //TP复位#define LCD_VADD_EN (1) //LCD电源#define LCD_POWER_EN (9) //LCD开关/***************************LCD ***********************************/extern void BSP_PIN_LCD(void);void BSP_LCD_Reset(uint8_t high1_low0)&#123;    BSP_GPIO_Set(LCD_RESET_PIN, high1_low0, 1);&#125;void BSP_LCD_PowerDown(void)&#123;    // TODO: LCD power down    BSP_GPIO_Set(LCD_RESET_PIN, 0, 1);    BSP_GPIO_Set(LCD_VADD_EN, 0, 1); // POwer down VADD EN&#125;void BSP_LCD_PowerUp(void)&#123;    // TODO: LCD power up    HAL_Delay_us(500); // lcd power on finish ,need 500us    BSP_PIN_LCD();    BSP_GPIO_Set(LCD_VADD_EN, 1, 1); // POwer up VADD EN&#125;void BSP_LCD_PowerOff(void)&#123;    BSP_GPIO_Set(LCD_POWER_EN, 0, 1);&#125;void BSP_LCD_PowerOn(void)&#123;    BSP_GPIO_Set(LCD_POWER_EN, 1, 1);&#125;/***************************Touch ***********************************/extern void BSP_PIN_Touch(void);void BSP_TP_PowerUp(void)&#123;    // TODO: Setup TP power up pin    BSP_PIN_Touch();    BSP_GPIO_Set(TP_RESET, 1, 1);&#125;void BSP_TP_PowerDown(void)&#123;    // TODO: Setup TP power down pin    BSP_GPIO_Set(TP_RESET, 0, 1);&#125;void BSP_TP_Reset(uint8_t high1_low0)&#123;    BSP_GPIO_Set(TP_RESET, high1_low0, 1);&#125;
+
+(2)bsp_pinmux.c// LCD_RESETBHAL_PIN_Set(PAD_PA00, GPIO_A0, PIN_PULLDOWN, 1);// AUDIO_PA_CTRL// HAL_PIN_Set(PAD_PA10, GPIO_A10, PIN_PULLDOWN, 1);// UART1 - debugHAL_PIN_Set(PAD_PA18, USART1_RXD, PIN_PULLUP, 1);HAL_PIN_Set(PAD_PA19, USART1_TXD, PIN_PULLUP, 1);// SPI1 - TFcardHAL_PIN_Set(PAD_PA24, SPI1_DI, PIN_PULLDOWN, 1);HAL_PIN_Set(PAD_PA25, SPI1_CLK, PIN_NOPULL, 1);HAL_PIN_Set(PAD_PA27, SPI1_DIO, PIN_NOPULL, 1);HAL_PIN_Set(PAD_PA28, SPI1_CS, PIN_NOPULL, 1);//  #XTAL32K_XI// HAL_PIN_Set(PAD_PA22, GPIO_A22, PIN_NOPULL, 1);//  #XTAL32K_XO// HAL_PIN_Set(PAD_PA23, GPIO_A23, PIN_NOPULL, 1);// I2C2 - SensorHAL_PIN_Set(PAD_PA31, I2C2_SDA, PIN_PULLUP, 1);HAL_PIN_Set(PAD_PA32, I2C2_SCL, PIN_PULLUP, 1);// Key1 - Power key/* Keep default pull-down unchanged. Uart download driver would use this * function, if pulldown is disabled, download driver would not work on the * board without external pull-down */HAL_PIN_Set(PAD_PA34, GPIO_A34, PIN_NOPULL, 1);// Key2HAL_PIN_Set(PAD_PA26, GPIO_A11, PIN_NOPULL, 1);// USBDHAL_PIN_Set_Analog(PAD_PA35, 1); // USB_DPHAL_PIN_Set_Analog(PAD_PA36, 1); // USB_DM#if defined(BSP_USING_PWM3) || defined(BSP_USING_RGBLED_WITCH_PWM3)HAL_PIN_Set(PAD_PA32, GPTIM2_CH1, PIN_PULLUP, 1); // RGB LED#endif// GPIOs
+
+(3)修改触摸中断引脚config ASIC    bool    default yconfig TOUCH_IRQ_PIN    int    default 42config LCD_PWM_BACKLIGHT_INTERFACE_NAME    string    default &quot;pwm2&quot;config LCD_PWM_BACKLIGHT_CHANEL_NUM    int    default 4config LCD_BACKLIGHT_CONTROL_PIN    int    default 1
+]]></content>
+      <categories>
+        <category>SF32</category>
+      </categories>
+      <tags>
+        <tag>SF32</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>eps32连接华为云iot，并且实现arkts控制点灯</title>
     <url>/2024/04/02/eps32%E8%BF%9E%E6%8E%A5%E5%8D%8E%E4%B8%BA%E4%BA%91iot%EF%BC%8C%E5%B9%B6%E4%B8%94%E5%AE%9E%E7%8E%B0arkts%E6%8E%A7%E5%88%B6%E7%82%B9%E7%81%AF/</url>
     <content><![CDATA[ESP32连接华为云我使用的是arduinoied所写的代码，要注意，在mqtt请求华为云中，需要写心跳间隔，不然上云不了（client.setKeepAlive(60);  &#x2F;&#x2F;心跳间隔，很重要！！！）。代码如下：

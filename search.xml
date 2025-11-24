@@ -2540,6 +2540,35 @@ S(2,4)在预处理代替成字符串的形参 2 * 4
       </tags>
   </entry>
   <entry>
+    <title>第十章 EXTI-外部中断/事件控制器</title>
+    <url>/2024/05/09/%E7%AC%AC%E5%8D%81%E7%AB%A0%20EXTI-%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD/%E4%BA%8B%E4%BB%B6%E6%8E%A7%E5%88%B6%E5%99%A8/</url>
+    <content><![CDATA[一、EXTI介绍外部中断&#x2F;事件控制器（EXTI）管理控制器的23个中断&#x2F;时间线，都有一个对应的一个边沿检测器，实现输入信号的上升沿和下降沿检测，都可以实现对每个中断&#x2F;事件进行单独配置，可以单独配置中断或事件和触发事件的属性。
+
+（EXTI是在APB2总线上的）
+1、红色虚线和绿色虚线分别是 产生中断的线路，信号流入到NVIC控制器。
+2、绿色虚线是产生事件的线路，输出一个脉冲信号。
+3、输入线，EXTI有23个中断&#x2F;事件输入先，可以为任意一个GPIO，也可以是外设的事件。
+4、边沿检测电路，根据上升沿触发寄存器（EXTI_RTSR）和下降沿触发选择寄存器（EXTI_FTSR）对应位控制信号触发。
+5、软件中事件寄存器（EXTI_SWIER），允许程序控制可以启动中断&#x2F;时间线。
+6、中断屏蔽寄存器（EXTI_IMR），可以简单控制EXTI_IMR来实现产生中断的目的。
+7、挂起寄存器（EXTI_PR），内容输出到NVIC，实现系统中断事件中断控制。
+8、事件屏蔽寄存器（EXTI_EMR），控制它来实现是否产生事件的目的。
+二、编程要点1、初始化RGB
+2、开启按键GPIO和SYSCFG时钟
+3、配置NVIC
+4、配置按键GPIO为输入
+5、按键连接到EXTI源输入
+6、配置按键EXTI中断&#x2F;事件线
+7、编写EXTI中断服务函数
+]]></content>
+      <categories>
+        <category>野火 STM32</category>
+      </categories>
+      <tags>
+        <tag>STM32</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>第八章 RCC使用HES/HSI</title>
     <url>/2024/03/21/%E7%AC%AC%E5%85%AB%E7%AB%A0%20RCC%E4%BD%BF%E7%94%A8HES/HSI/</url>
     <content><![CDATA[1、RCC主要作用 时钟部分设置系统时钟SYSCLK、设置AHB分频因子（决定HCLK等于多少）、设置APB2分频因子（决定PLCLK2等于多少）、设置APB1分频因子（决定PLK1等于多少）、设置各个外设的分配因子。控制 AHB、APB2 和 APB1 这三条总线时钟的开启、控制每个外设的时钟的开启。对于 SYSCLK、HCLK、PCLK2、PCLK1 这四个时钟的配置一般是：HCLK &#x3D; SYSCLK&#x3D;PLLCLK ，PCLK1&#x3D;HCLK&#x2F;2，PCLK1&#x3D;HCLK&#x2F;4 。
@@ -2565,35 +2594,6 @@ HSE或者HSI经过PLL时钟输出分频因子M（2~63）分频后，称为VCO的
 ]]></content>
       <categories>
         <category>野火STM32</category>
-      </categories>
-      <tags>
-        <tag>STM32</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>第十章 EXTI-外部中断/事件控制器</title>
-    <url>/2024/05/09/%E7%AC%AC%E5%8D%81%E7%AB%A0%20EXTI-%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD/%E4%BA%8B%E4%BB%B6%E6%8E%A7%E5%88%B6%E5%99%A8/</url>
-    <content><![CDATA[一、EXTI介绍外部中断&#x2F;事件控制器（EXTI）管理控制器的23个中断&#x2F;时间线，都有一个对应的一个边沿检测器，实现输入信号的上升沿和下降沿检测，都可以实现对每个中断&#x2F;事件进行单独配置，可以单独配置中断或事件和触发事件的属性。
-
-（EXTI是在APB2总线上的）
-1、红色虚线和绿色虚线分别是 产生中断的线路，信号流入到NVIC控制器。
-2、绿色虚线是产生事件的线路，输出一个脉冲信号。
-3、输入线，EXTI有23个中断&#x2F;事件输入先，可以为任意一个GPIO，也可以是外设的事件。
-4、边沿检测电路，根据上升沿触发寄存器（EXTI_RTSR）和下降沿触发选择寄存器（EXTI_FTSR）对应位控制信号触发。
-5、软件中事件寄存器（EXTI_SWIER），允许程序控制可以启动中断&#x2F;时间线。
-6、中断屏蔽寄存器（EXTI_IMR），可以简单控制EXTI_IMR来实现产生中断的目的。
-7、挂起寄存器（EXTI_PR），内容输出到NVIC，实现系统中断事件中断控制。
-8、事件屏蔽寄存器（EXTI_EMR），控制它来实现是否产生事件的目的。
-二、编程要点1、初始化RGB
-2、开启按键GPIO和SYSCFG时钟
-3、配置NVIC
-4、配置按键GPIO为输入
-5、按键连接到EXTI源输入
-6、配置按键EXTI中断&#x2F;事件线
-7、编写EXTI中断服务函数
-]]></content>
-      <categories>
-        <category>野火 STM32</category>
       </categories>
       <tags>
         <tag>STM32</tag>

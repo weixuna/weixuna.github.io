@@ -388,7 +388,7 @@ var roleUpgrader = &#123;    /** @param &#123;Creep&#125; creep **/    run: func
 ]]></content>
   </entry>
   <entry>
-    <title>SF32LB52—个人毕设笔记—添加Bora及修改PinMux（1）</title>
+    <title>SF32LB52—个人毕设笔记—添加Borad及修改PinMux（1）</title>
     <url>/2025/11/24/SF32LB52%E2%80%94%E4%B8%AA%E4%BA%BA%E6%AF%95%E8%AE%BE%E7%AC%94%E8%AE%B0%EF%BC%881%EF%BC%89/</url>
     <content><![CDATA[1.在SiFli-SDK中创建Borad请参考SiFli Wiki，链接https://docs.sifli.com/projects/sdk/latest/sf32lb52x/app_development/create_board.html
 2.修改自己Borad中的PinMux以下为本人设计板子所使用的IO

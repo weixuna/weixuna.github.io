@@ -1,0 +1,859 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><title>思澈面试笔记-嵌入式C | 为巽</title><meta name="keywords" content="面试"><meta name="author" content="为巽"><meta name="copyright" content="为巽"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="思澈面试笔记-嵌入式C"><meta name="application-name" content="思澈面试笔记-嵌入式C"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="思澈面试笔记-嵌入式C"><meta property="og:url" content="http://example.com/2026/06/17/%E6%80%9D%E6%BE%88%E9%9D%A2%E8%AF%95%E7%AC%94%E8%AE%B0-%E5%B5%8C%E5%85%A5%E5%BC%8FC/index.html"><meta property="og:site_name" content="为巽"><meta property="og:description" content="1234567891011121314151617181920212223242526272829303132# 嵌入式 C 语言高频问点这份笔记面向嵌入式方向面试，重点不是单纯背 C 语言语法，而是把 C 语言和 MCU、寄存器、中断、内存、驱动代码联系起来讲。## 1. 面试回答思路回答嵌入式"><meta property="og:locale" content="en"><meta property="og:image" content="http://example.com/img/touxiang.jpg"><meta property="article:author" content="为巽"><meta property="article:tag"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="http://example.com/img/touxiang.jpg"><meta name="description" content="1234567891011121314151617181920212223242526272829303132# 嵌入式 C 语言高频问点这份笔记面向嵌入式方向面试，重点不是单纯背 C 语言语法，而是把 C 语言和 MCU、寄存器、中断、内存、驱动代码联系起来讲。## 1. 面试回答思路回答嵌入式"><link rel="shortcut icon" href="/img/touxiang.ico"><link rel="canonical" href="http://example.com/2026/06/17/%E6%80%9D%E6%BE%88%E9%9D%A2%E8%AF%95%E7%AC%94%E8%AE%B0-%E5%B5%8C%E5%85%A5%E5%BC%8FC/"><link rel="preconnect" href="//cdn.cbd.int"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="manifest" href="/manifest.json"/><meta name="msapplication-TileColor" content="var(--anzhiyu-main)"/><link rel="mask-icon" href="/img/siteicon/apple-icon-180.png" color="#5bbad5"/><link rel="apple-touch-icon" sizes="180x180" href="/img/siteicon/apple-icon-180.png"/><link rel="apple-touch-icon-precomposed" sizes="180x180" href="/img/siteicon/apple-icon-180.png"/><link rel="icon" type="image/png" sizes="32x32" href="/img/siteicon/32.png"/><link rel="icon" type="image/png" sizes="16x16" href="/img/siteicon/16.png"/><link rel="bookmark" href="/img/siteicon/apple-icon-180.png"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2048-2732.jpg" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2732-2048.jpg" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1668-2388.jpg" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2388-1668.jpg" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1536-2048.jpg" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2048-1536.jpg" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1668-2224.jpg" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2224-1668.jpg" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1620-2160.jpg" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2160-1620.jpg" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1290-2796.jpg" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2796-1290.jpg" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1179-2556.jpg" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2556-1179.jpg" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1284-2778.jpg" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2778-1284.jpg" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1170-2532.jpg" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2532-1170.jpg" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1125-2436.jpg" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2436-1125.jpg" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1242-2688.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2688-1242.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-828-1792.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1792-828.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1242-2208.jpg" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2208-1242.jpg" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-750-1334.jpg" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1334-750.jpg" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-640-1136.jpg" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1136-640.jpg" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.cbd.int/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  linkPageTop: undefined,
+  peoplecanvas: undefined,
+  postHeadAiDescription: {"enable":true,"gptName":"AnZhiYu","mode":"local","switchBtn":false,"btnLink":"https://afdian.net/item/886a79d4db6711eda42a52540025c377","randomNum":3,"basicWordCount":1000,"key":"xxxx","Referer":"https://xx.xx/"},
+  diytitle: undefined,
+  LA51: undefined,
+  greetingBox: {"enable":true,"default":"晚上好👋","list":[{"greeting":"晚安😴","startTime":0,"endTime":5},{"greeting":"早上好鸭👋, 祝你一天好心情！","startTime":6,"endTime":9},{"greeting":"上午好👋, 状态很好，鼓励一下～","startTime":10,"endTime":10},{"greeting":"11点多啦, 在坚持一下就吃饭啦～","startTime":11,"endTime":11},{"greeting":"午安👋","startTime":12,"endTime":14},{"greeting":"充实的一天辛苦啦！","startTime":14,"endTime":18},{"greeting":"19点喽, 奖励一顿丰盛的大餐吧🍔。","startTime":19,"endTime":19},{"greeting":"晚上好👋, 在属于自己的时间好好放松😌~","startTime":20,"endTime":24}]},
+  twikooEnvId: '',
+  commentBarrageConfig:undefined,
+  music_page_default: "nav_music",
+  root: '/',
+  preloader: {"source":3},
+  friends_vue_info: undefined,
+  navMusic: false,
+  mainTone: {"mode":"api","api":"https://img2color-go.vercel.app/api?img=","cover_change":true},
+  authorStatus: {"skills":["🤖️ 数码科技爱好者","🔍 分享与热心帮助","🏠 智能家居小能手","🔨 设计开发一条龙","🤝 专修交互与设计","🏃 脚踏实地行动派","🧱 团队小组发动机","💢 壮汉人狠话不多"]},
+  algolia: {"appId":"71SBKWZYMZ","apiKey":"090032a55c419135ba9c6570d4c7546d","indexName":"hexo","hits":{"per_page":6},"languages":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}.","hits_stats":"${hits} results found in ${time} ms"}},
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简","rightMenuMsgToTraditionalChinese":"转为繁体","rightMenuMsgToSimplifiedChinese":"转为简体"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: true,
+    post: false
+  },
+  runtime: 'days',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: {"copy":true,"copyrightEbable":false,"limitCount":50,"languages":{"author":"Author: 为巽","link":"Link: ","source":"Source: 为巽","info":"Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.","copySuccess":"Copy success, copy and reprint please mark the address of this article"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"Traditional Chinese Activated Manually","cht_to_chs":"Simplified Chinese Activated Manually","day_to_night":"Dark Mode Activated Manually","night_to_day":"Light Mode Activated Manually","bgLight":"#425AEF","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  shortcutKey: undefined,
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  configTitle: '为巽',
+  title: '思澈面试笔记-嵌入式C',
+  postAI: '',
+  pageFillDescription: '高频问点：char 是否一定是有符号？, 高频问点：有符号和无符号混用有什么风险？, 3. 指针, 高频问点：指针是什么？, 高频问点：指针和数组有什么区别？, 高频问点：什么是野指针、空指针、悬空指针？, 高频问点：const 和指针组合怎么理解？, 高频问点：函数指针有什么用？, 4. 结构体、联合体、枚举, 高频问点：结构体有什么用？, 高频问点：结构体为什么会有内存对齐？, 高频问点：联合体有什么用？, 高频问点：枚举有什么用？, 5. 内存布局, 高频问点：C 程序的内存区域有哪些？, 高频问点：全局变量和局部变量有什么区别？, 高频问点：为什么嵌入式里慎用 malloc？, 6. volatile, 高频问点：volatile 的作用是什么？, 高频追问：volatile 能保证线程安全吗？, 7. static、extern、const, 高频问点：static 有哪些作用？, 高频问点：extern 的作用是什么？, 高频问点：const 在嵌入式中有什么意义？, 8. 位运算和寄存器操作, 高频问点：如何置位、清零、翻转、判断某一位？, 高频问点：如何设置多位字段？, 高频问点：为什么寄存器要用 volatile？, 9. 宏、条件编译和 inline, 高频问点：宏有什么优缺点？, 高频问点：ifdef 常用于什么？, 高频问点：头文件为什么要防止重复包含？, 10. 大小端、对齐和字节序, 高频问点：什么是大小端？, 高频问点：未对齐访问有什么问题？, 11. 中断与共享变量, 高频问点：中断函数里为什么不能做太多事？, 高频问点：主循环和中断共享变量要注意什么？, 12. 错误处理和健壮性, 高频问点：嵌入式函数返回值怎么设计？, 高频问点：为什么要检查空指针和长度？, 13. 代码组织, 高频问点：.h 和 .c 分别放什么？, 高频问点：如何设计一个简单驱动接口？, 14. 高频 Bug 场景, 场景 1：程序偶尔 HardFault, 场景 2：优化等级一开程序就异常, 场景 3：局部数组过大导致异常, 15. 嵌入式 C 高频问答速背, volatile、const、static 的区别？, malloc 和静态分配怎么选？, 为什么中断共享变量要加 volatile？, volatile 为什么不等于原子操作？, 如何避免头文件重复包含？, 什么情况下用函数指针？, 为什么协议解析不建议直接强转结构体？, 寄存器操作为什么常用位运算？, 如何看待全局变量？, 嵌入式 C 代码最重要的习惯是什么？嵌入式语言高频问点这份笔记面向嵌入式方向面试重点不是单纯背语言语法而是把语言和寄存器中断内存驱动代码联系起来讲面试回答思路回答嵌入式问题时尽量使用这个结构先说概念这个关键字语法或机制是什么再说嵌入式场景它在寄存器外设中断中怎么用补充风险点容易踩什么坑给一个小例子用代码或排查场景证明自己会用例如回答告诉编译器变量可能被当前代码之外的因素改变不能把读写随意优化掉嵌入式里常用于硬件寄存器中断共享变量缓冲区状态标志它解决的是编译器优化可见性问题不等于线程安全如果多个任务或中断同时修改变量还需要临界区互斥锁或原子操作保护基本数据类型高频问点语言中一定是位吗不一定标准只规定了类型之间的最小范围和大小关系不保证一定是位嵌入式开发中不同编译器不同芯片架构下的大小可能不同为了代码可移植推荐使用中的固定宽度类型面试答法的位宽和平台有关不能假设一定是位在嵌入式项目中如果寄存器协议字段或数据格式要求固定宽度我会使用这类类型避免平台差异导致问题高频问点是否一定是有符号不一定是还是由编译器决定如果需要明确范围应该使用嵌入式场景处理二进制协议传感器原始数据字节流时建议使用处理有符号温度加速度等数据时明确使用高频问点有符号和无符号混用有什么风险语言中表达式计算会发生整数提升和类型转换无符号类型和有符号类型混用时可能把负数转换成很大的无符号数示例这里不一定符合直觉因为可能被转换成嵌入式场景长度数组下标寄存器值通常使用无符号错误码通常使用有符号例如返回表示失败比较长度和错误码时要小心类型转换面试答法有符号和无符号混用可能导致隐式转换尤其是负数会变成很大的无符号值嵌入式里我会尽量让协议长度缓冲区大小寄存器值使用明确的无符号类型错误码使用明确的有符号类型并避免直接混用比较指针高频问点指针是什么指针是保存地址的变量通过指针可以间接访问某块内存嵌入式场景访问寄存器地址传递缓冲区实现驱动回调操作外设接收数据管理链表队列等数据结构面试答法指针本质上保存的是地址嵌入式中指针非常常见例如通过固定地址访问外设寄存器或者把缓冲区地址传给驱动使用指针时要注意空指针野指针越界访问和生命周期高频问点指针和数组有什么区别数组是一段连续内存数组名在多数表达式中会退化为首元素地址指针是一个变量保存某个地址可以重新赋值合法指向下一个元素不合法数组名不能被重新赋值区别得到整个数组大小得到指针变量大小数组名不是普通变量不能重新赋值函数参数中的数组会退化为指针示例这里实际上是是指针大小面试答法数组代表一块连续内存指针是保存地址的变量数组名在大多数表达式中会退化成首元素指针但和这类场景不会简单等同于普通指针嵌入式里处理缓冲区时函数参数最好同时传入指针和长度避免数组退化后丢失长度信息高频问点什么是野指针空指针悬空指针空指针野指针没有初始化的指针里面是随机地址危险悬空指针指向的对象已经失效错误是局部变量函数返回后失效嵌入式风险访问非法地址可能写错地址可能破坏寄存器或内存使用已经失效的缓冲区会导致随机错误高频问点和指针组合怎么理解看修饰谁指向的指针不能通过修改值但可以改指向同上指针不能改指向但可以修改指针和指向内容都不能改面试答法靠近谁就限制谁表示不能通过这个指针修改目标值表示指针变量本身不能再指向别处嵌入式里函数参数如果只读缓冲区我会写成这样接口语义更清楚高频问点函数指针有什么用函数指针保存函数入口地址可以实现回调驱动适配状态机动作表嵌入式场景中断回调接收完成回调定时器超时回调驱动层和应用层解耦面试答法函数指针常用于回调机制驱动层不需要知道应用层具体要做什么只需要在事件发生时调用注册的回调函数这样能降低模块耦合结构体联合体枚举高频问点结构体有什么用结构体把相关数据组织在一起嵌入式场景保存传感器数据描述设备配置封装驱动对象映射寄存器布局示例高频问点结构体为什么会有内存对齐访问对齐地址通常更高效有些架构访问未对齐地址还会异常编译器会在结构体成员之间插入这个结构体大小可能不是而是优化方法把大成员放前面小成员放后面协议结构不要盲目直接强转如确实需要紧凑布局可使用编译器属性但要注意未对齐访问风险面试答法结构体会为了满足对齐访问插入填充字节所以可能大于成员大小之和在嵌入式协议解析和存储中不能随意假设结构体内存布局完全等于通信数据格式必要时要逐字节解析或明确高频问点联合体有什么用联合体中所有成员共享同一块内存大小等于最大成员大小用途节省内存同一数据的不同视图解析寄存器或协议字段风险大小端影响字节顺序可读性不如显式位运算高频问点枚举有什么用枚举用于表示一组有限状态或类型嵌入式场景状态机状态错误码事件类型设备工作模式内存布局高频问点程序的内存区域有哪些常见区域代码段存放程序指令只读数据例如字符串常量常量已初始化的全局变量和静态变量未初始化或初始化为的全局变量和静态变量堆动态分配内存栈函数调用局部变量返回地址示例可能在面试答法嵌入式里通常存放代码和只读数据存放堆和栈启动代码会把从复制到并把清零然后再进入因此理解内存布局有助于分析占用栈溢出和启动过程高频问点全局变量和局部变量有什么区别全局变量生命周期是整个程序运行期间默认初始化为存放在或多个函数都可能访问容易引入耦合局部变量生命周期通常是函数调用期间默认不初始化值不确定通常存放在栈上大数组放局部变量可能导致栈溢出面试答法嵌入式里我会避免在函数里定义很大的局部数组因为栈空间有限较大的缓冲区可以放到静态区但要控制作用域能用限制在当前文件就不要暴露为全局变量高频问点为什么嵌入式里慎用原因小很有限频繁申请释放可能产生内存碎片分配失败需要处理实时系统中动态分配耗时不确定调试内存泄漏比较困难面试答法小型嵌入式项目中我会尽量避免频繁动态分配尤其是在实时路径和中断中常见做法是使用静态缓冲区内存池或固定大小队列如果必须使用动态分配需要检查返回值并明确释放时机高频问点的作用是什么告诉编译器这个变量可能被当前执行流之外的因素改变每次访问都必须真实读写内存不能假设它的值不变常见场景硬件寄存器中断服务函数和主循环共享变量状态标志中某些简单状态标志示例中断共享变量高频追问能保证线程安全吗不能只保证编译器不优化访问不保证操作原子性也不保证多任务互斥可能包含读加写三个步骤不是原子操作如果同时发生在中断和主循环中仍然可能丢失更新面试答法解决的是编译器优化导致的可见性问题不解决并发安全问题多个任务或中断同时读写共享变量时还需要关中断临界区互斥锁或原子操作高频问点有哪些作用修饰局部变量特点生命周期变成整个程序运行期间作用域仍在函数内部只初始化一次修饰全局变量或函数特点只在当前文件可见避免符号污染和命名冲突有利于模块封装面试答法修饰局部变量时改变生命周期修饰全局变量或函数时限制链接作用域嵌入式模块里我会把不需要对外暴露的变量和函数声明为减少全局符号污染高频问点的作用是什么表示声明一个在其他地方定义的变量或函数注意声明不分配存储空间定义才分配存储空间不要在头文件里直接定义普通全局变量错误示例如果多个包含会导致重复定义正确示例高频问点在嵌入式中有什么意义表示对象不应该被修改嵌入式场景查表数据字符串常量设备固定配置函数只读参数面试答法能表达只读语义也可能让数据放到只读存储区域节省函数参数中使用可以告诉调用者这个函数不会修改传入缓冲区位运算和寄存器操作高频问点如何置位清零翻转判断某一位置位清零翻转判断是否为高频问点如何设置多位字段例如要设置寄存器为面试答法设置多位字段时不能直接或上新值否则旧值可能残留正确做法是先用清掉目标位再把新值移位后写进去高频问点为什么寄存器要用硬件寄存器的值可能被硬件改变例如状态寄存器接收数据寄存器编译器无法知道这些变化如果不加编译器可能把寄存器读取优化成一次导致程序看不到状态变化宏条件编译和高频问点宏有什么优缺点优点编译期展开适合定义常量寄存器地址可用于条件编译缺点没有类型检查参数可能被重复求值复杂宏可读性差错误示例展开为改进但仍有重复求值问题会执行两次面试答法简单常量和操作用宏很方便但复杂逻辑我更倾向使用函数因为它有类型检查也更容易调试高频问点常用于什么用途按芯片型号选择代码打开或关闭调试日志配置功能模块适配不同编译器示例高频问点头文件为什么要防止重复包含同一个头文件可能被多个文件间接包含如果没有可能导致重复定义或编译错误或大小端对齐和字节序高频问点什么是大小端多字节数据在内存中的存放顺序不同大端高位字节放低地址小端低位字节放低地址例如大端小端嵌入式场景通信协议解析数据存储传感器寄存器高低字节合成示例大端解析面试答法协议解析时不要直接把字节数组强转成结构体或整数指针因为会受到大小端和对齐影响更稳妥的做法是按协议规定显式移位组合高频问点未对齐访问有什么问题有些支持未对齐访问但效率较低有些访问未对齐地址会产生异常风险场景把强转为结构体中直接访问多字节成员协议缓冲区地址不对齐安全做法使用复制到对齐变量使用字节移位解析中断与共享变量高频问点中断函数里为什么不能做太多事原因中断会打断正常任务中断执行时间过长会影响实时性可能阻塞其他中断不适合做动态内存分配长循环复杂协议解析推荐做法读取必要状态清除中断标志保存少量数据设置标志位释放信号量或发送简短消息给任务面试答法中断里应该快进快出只做必要处理耗时逻辑放到主循环或任务中执行这样可以减少中断延迟提高系统实时性高频问点主循环和中断共享变量要注意什么注意共享变量加多字节变量读写可能不是原子操作读改写操作需要临界区中断标志要及时清除示例错误处理和健壮性高频问点嵌入式函数返回值怎么设计常见方式函数示例面试答法驱动接口要尽量返回明确错误码而不是只返回成功或失败这样上层可以区分参数错误超时忙状态硬件错误并做对应处理高频问点为什么要检查空指针和长度嵌入式系统没有操作系统保护时空指针或越界访问可能直接甚至破坏内存接口设计建议指针参数先判空长度参数检查范围对外接口不要相信调用者一定正确对关键错误可以使用断言代码组织高频问点和分别放什么文件类型定义宏定义对外函数声明对外常量声明文件函数实现私有变量私有函数示例高频问点如何设计一个简单驱动接口建议包含初始化函数配置函数读写函数状态查询函数错误返回值示例面试答法我会把驱动接口设计成清晰的初始化读写和状态查询函数参数尽量明确返回值能表达错误原因模块内部变量用隐藏避免上层直接操作底层状态高频场景场景程序偶尔可能原因空指针栈溢出数组越界未对齐访问函数指针错误中断访问已释放或失效的缓冲区排查方法查看寄存器打开文件看栈和增大任务栈测试检查最近修改加断言和日志场景优化等级一开程序就异常可能原因应该加的变量没加代码依赖未定义行为越界访问未初始化变量延时循环被优化掉面试答法如果不开优化正常开优化异常我会重点怀疑未初始化变量越界访问和未定义行为比如等待中断标志位的循环如果标志变量没有编译器可能把它优化成死循环场景局部数组过大导致异常示例小上很危险解决改为静态缓冲区减小缓冲区使用分块处理检查任务栈大小嵌入式高频问答速背的区别防止编译器优化访问常用于寄存器和中断共享变量表示只读语义防止误修改也可能放入只读区修饰局部变量改变生命周期修饰全局变量或函数限制文件作用域和静态分配怎么选小和实时系统中优先静态分配或内存池动态分配灵活但有碎片失败耗时不确定和泄漏风险为什么中断共享变量要加因为变量可能在中断中被修改主循环如果不加编译器可能缓存变量值导致主循环看不到变化为什么不等于原子操作因为只约束编译器访问不保证这种读改写操作不可打断如何避免头文件重复包含使用或什么情况下用函数指针回调状态机驱动适配事件通知它能降低模块之间的耦合为什么协议解析不建议直接强转结构体因为结构体可能有且大小端对齐方式和编译器实现会影响布局更稳妥的是按字节解析寄存器操作为什么常用位运算寄存器通常每一位或几位代表一个配置项位运算可以只修改目标位不影响其他位如何看待全局变量全局变量方便但容易导致耦合和并发问题能限制作用域就用能通过接口访问就不要直接暴露嵌入式代码最重要的习惯是什么参数检查边界检查清晰的错误码控制作用域避免大栈对象共享变量考虑并发硬件相关变量使用',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-06-17 01:28:58',
+  postMainColor: '',
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.1.1"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" alt="加载头像" src="/img/touxiang.ico"/><div class="loading-image-dot"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.getElementById('loading-box').classList.add("loaded");
+  },
+  initLoading: () => {
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+setTimeout(function(){preloader.endLoading();},10000)
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.10/progress_bar/progress_bar.css"/><script async="async" src="https://cdn.cbd.int/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><div id="nav-group"><span id="blog_name"><div class="back-home-button"><i class="anzhiyufont anzhiyu-icon-grip-vertical"></i><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://zh.annas-archive.org/" title="安娜图书"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/book.png" alt="安娜图书"/><span class="back-menu-item-text">安娜图书</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="https://www.book123.info/" title="无名图书"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/book-open.png" alt="无名图书"/><span class="back-menu-item-text">无名图书</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">项目</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://image.anheyu.com/" title="项目"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://image.anheyu.com/favicon.ico" alt="项目"/><span class="back-menu-item-text">项目</span></a></div></div></div></div><a id="site-name" href="/" accesskey="h"><div class="title">为巽</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/album/"><i class="anzhiyufont anzhiyu-icon-images faa-tada" style="font-size: 0.9em;"></i><span> 相册集</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button only-home" id="travellings_button" title="随机前往一个开往项目网站"><a class="site-page" onclick="anzhiyu.totraveling()" title="随机前往一个开往项目网站" href="javascript:void(0);" rel="external nofollow" data-pjax-state="external"><i class="anzhiyufont anzhiyu-icon-train"></i></a></div><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><div class="nav-button" id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" title="搜索🔍" accesskey="s"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span> Search</span></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" alt="微信" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" alt="支付宝" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> Newest Comments</span></div><div class="aside-list"><span>loading...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/APP%E5%BC%80%E5%8F%91/" style="font-size: 1.05rem;">APP开发<sup>1</sup></a><a href="/tags/CSS/" style="font-size: 1.05rem;">CSS<sup>1</sup></a><a href="/tags/HTML/" style="font-size: 1.05rem;">HTML<sup>3</sup></a><a href="/tags/HarmonyOS/" style="font-size: 1.05rem;">HarmonyOS<sup>1</sup></a><a href="/tags/RTOS/" style="font-size: 1.05rem;">RTOS<sup>2</sup></a><a href="/tags/SF32/" style="font-size: 1.05rem;">SF32<sup>1</sup></a><a href="/tags/STM32/" style="font-size: 1.05rem;">STM32<sup>9</sup></a><a href="/tags/Ubuntu%E7%BB%B4%E6%8A%A4/" style="font-size: 1.05rem;">Ubuntu维护<sup>1</sup></a><a href="/tags/windows%E7%BB%B4%E6%8A%A4/" style="font-size: 1.05rem;">windows维护<sup>1</sup></a><a href="/tags/%E5%8D%8E%E4%B8%BAIOT/" style="font-size: 1.05rem;">华为IOT<sup>1</sup></a><a href="/tags/%E5%8D%8E%E4%B8%BA%E4%BA%91IOT/" style="font-size: 1.05rem;">华为云IOT<sup>1</sup></a><a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/" style="font-size: 1.05rem;">嵌入式<sup>1</sup></a><a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8FC/" style="font-size: 1.05rem;">嵌入式C<sup>6</sup></a><a href="/tags/%E6%80%9D%E6%BE%88/" style="font-size: 1.05rem;">思澈<sup>1</sup></a><a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 1.05rem;">数据库<sup>2</sup></a><a href="/tags/%E6%A0%B7%E9%A2%98/" style="font-size: 1.05rem;">样题<sup>1</sup></a><a href="/tags/%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/" style="font-size: 1.05rem;">电子技术<sup>1</sup></a><a href="/tags/%E7%94%B5%E8%B7%AF%E5%92%8C%E7%94%B5%E8%B7%AF%E6%A8%A1%E5%9E%8B/" style="font-size: 1.05rem;">电路和电路模型<sup>1</sup></a><a href="/tags/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/" style="font-size: 1.05rem;">电路基础<sup>1</sup></a><a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 1.05rem;">算法<sup>5</sup></a><a href="/tags/%E8%BD%AF%E8%80%83/" style="font-size: 1.05rem;">软考<sup>1</sup></a><a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 1.05rem;">面试<sup>2</sup></a><a href="/tags/%E9%BB%84%E5%B1%B1%E6%B4%BE/" style="font-size: 1.05rem;">黄山派<sup>1</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>Archives</span><a class="card-more-btn" href="/archives/" title="More">
+    <i class="anzhiyufont anzhiyu-icon-angle-right"></i></a></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2026/06/"><span class="card-archive-list-date">June 2026</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/11/"><span class="card-archive-list-date">November 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/08/"><span class="card-archive-list-date">August 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/04/"><span class="card-archive-list-date">April 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/11/"><span class="card-archive-list-date">November 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/10/"><span class="card-archive-list-date">October 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/09/"><span class="card-archive-list-date">September 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">3</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/05/"><span class="card-archive-list-date">May 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="切换"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">原创</a><span class="post-meta-categories"><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B1%82%E8%81%8C/" itemprop="url">求职</a></span><span class="article-meta tags"><a class="article-meta__tags" href="/tags/%E9%9D%A2%E8%AF%95/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>面试</span></a></span></div></div><h1 class="post-title" itemprop="name headline">思澈面试笔记-嵌入式C</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" itemprop="dateCreated datePublished" datetime="2026-06-17T01:28:58.781Z" title="Created 2026-06-17 01:28:58">2026-06-17</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" itemprop="dateCreated datePublished" datetime="2026-06-17T01:28:58.937Z" title="Updated 2026-06-17 01:28:58">2026-06-17</time></span></div><div class="meta-secondline"><span class="post-meta-separator">       </span><span class="post-meta-position" title="作者IP属地为广东"><i class="anzhiyufont anzhiyu-icon-location-dot"></i>广东</span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src=""></div></header><main id="blog-container"><div class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container" itemscope itemtype="http://example.com/2026/06/17/%E6%80%9D%E6%BE%88%E9%9D%A2%E8%AF%95%E7%AC%94%E8%AE%B0-%E5%B5%8C%E5%85%A5%E5%BC%8FC/"><header><a class="post-meta-categories" href="/categories/%E6%B1%82%E8%81%8C/" itemprop="url">求职</a><a href="/tags/%E9%9D%A2%E8%AF%95/" tabindex="-1" itemprop="url">面试</a><h1 id="CrawlerTitle" itemprop="name headline">思澈面试笔记-嵌入式C</h1><span itemprop="author" itemscope itemtype="http://schema.org/Person">为巽</span><time itemprop="dateCreated datePublished" datetime="2026-06-17T01:28:58.781Z" title="Created 2026-06-17 01:28:58">2026-06-17</time><time itemprop="dateCreated datePublished" datetime="2026-06-17T01:28:58.937Z" title="Updated 2026-06-17 01:28:58">2026-06-17</time></header><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"># 嵌入式 C 语言高频问点</span><br><span class="line"></span><br><span class="line">这份笔记面向嵌入式方向面试，重点不是单纯背 C 语言语法，而是把 C 语言和 MCU、寄存器、中断、内存、驱动代码联系起来讲。</span><br><span class="line"></span><br><span class="line">## 1. 面试回答思路</span><br><span class="line"></span><br><span class="line">回答嵌入式 C 问题时，尽量使用这个结构：</span><br><span class="line"></span><br><span class="line">1. 先说概念：这个关键字、语法或机制是什么。</span><br><span class="line">2. 再说嵌入式场景：它在 MCU、寄存器、外设、中断、RTOS 中怎么用。</span><br><span class="line">3. 补充风险点：容易踩什么坑。</span><br><span class="line">4. 给一个小例子：用代码或排查场景证明自己会用。</span><br><span class="line"></span><br><span class="line">例如回答 `volatile`：</span><br><span class="line"></span><br><span class="line">&gt; `volatile` 告诉编译器变量可能被当前代码之外的因素改变，不能把读写随意优化掉。嵌入式里常用于硬件寄存器、中断共享变量、DMA 缓冲区状态标志。它解决的是编译器优化可见性问题，不等于线程安全；如果多个任务或中断同时修改变量，还需要临界区、互斥锁或原子操作保护。</span><br><span class="line"></span><br><span class="line">## 2. 基本数据类型</span><br><span class="line"></span><br><span class="line">### 高频问点：C 语言中 `int` 一定是 32 位吗？</span><br><span class="line"></span><br><span class="line">不一定。C 标准只规定了类型之间的最小范围和大小关系，不保证 `int` 一定是 32 位。</span><br><span class="line"></span><br><span class="line">嵌入式开发中，不同编译器、不同芯片架构下，`char`、`short`、`int`、`long` 的大小可能不同。为了代码可移植，推荐使用 `&lt;stdint.h&gt;` 中的固定宽度类型：</span><br><span class="line"></span><br><span class="line">```c</span><br><span class="line">#include &lt;stdint.h&gt;</span><br><span class="line"></span><br><span class="line">uint8_t  u8;</span><br><span class="line">uint16_t u16;</span><br><span class="line">uint32_t u32;</span><br><span class="line">int32_t  s32;</span><br></pre></td></tr></table></figure>
+
+<p>面试答法：</p>
+<blockquote>
+<p><code>int</code> 的位宽和平台有关，不能假设一定是 32 位。在嵌入式项目中，如果寄存器、协议字段或 Flash 数据格式要求固定宽度，我会使用 <code>uint8_t</code>、<code>uint16_t</code>、<code>uint32_t</code> 这类类型，避免平台差异导致问题。</p>
+</blockquote>
+<h3 id="高频问点：char-是否一定是有符号？"><a href="#高频问点：char-是否一定是有符号？" class="headerlink" title="高频问点：char 是否一定是有符号？"></a>高频问点：<code>char</code> 是否一定是有符号？</h3><p>不一定。<code>char</code> 是 signed 还是 unsigned 由编译器决定。</p>
+<p>如果需要明确范围，应该使用：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">signed</span> <span class="type">char</span> a;</span><br><span class="line"><span class="type">unsigned</span> <span class="type">char</span> b;</span><br><span class="line"><span class="type">uint8_t</span> c;</span><br><span class="line"><span class="type">int8_t</span> d;</span><br></pre></td></tr></table></figure>
+
+<p>嵌入式场景：</p>
+<ul>
+<li>处理二进制协议、传感器原始数据、Flash 字节流时，建议使用 <code>uint8_t</code>。</li>
+<li>处理有符号温度、加速度等数据时，明确使用 <code>int8_t</code>、<code>int16_t</code>。</li>
+</ul>
+<h3 id="高频问点：有符号和无符号混用有什么风险？"><a href="#高频问点：有符号和无符号混用有什么风险？" class="headerlink" title="高频问点：有符号和无符号混用有什么风险？"></a>高频问点：有符号和无符号混用有什么风险？</h3><p>C 语言中，表达式计算会发生整数提升和类型转换。无符号类型和有符号类型混用时，可能把负数转换成很大的无符号数。</p>
+<p>示例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> a = <span class="number">-1</span>;</span><br><span class="line"><span class="type">unsigned</span> <span class="type">int</span> b = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (a &lt; b) &#123;</span><br><span class="line">    <span class="comment">// 这里不一定符合直觉，因为 a 可能被转换成 unsigned</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>嵌入式场景：</p>
+<ul>
+<li>长度、数组下标、寄存器值通常使用无符号。</li>
+<li>错误码通常使用有符号，例如返回 <code>-1</code> 表示失败。</li>
+<li>比较长度和错误码时要小心类型转换。</li>
+</ul>
+<p>面试答法：</p>
+<blockquote>
+<p>有符号和无符号混用可能导致隐式转换，尤其是负数会变成很大的无符号值。嵌入式里我会尽量让协议长度、缓冲区大小、寄存器值使用明确的无符号类型，错误码使用明确的有符号类型，并避免直接混用比较。</p>
+</blockquote>
+<h2 id="3-指针"><a href="#3-指针" class="headerlink" title="3. 指针"></a>3. 指针</h2><h3 id="高频问点：指针是什么？"><a href="#高频问点：指针是什么？" class="headerlink" title="高频问点：指针是什么？"></a>高频问点：指针是什么？</h3><p>指针是保存地址的变量。通过指针可以间接访问某块内存。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> a = <span class="number">10</span>;</span><br><span class="line"><span class="type">int</span> *p = &amp;a;</span><br><span class="line">*p = <span class="number">20</span>;</span><br></pre></td></tr></table></figure>
+
+<p>嵌入式场景：</p>
+<ul>
+<li>访问寄存器地址。</li>
+<li>传递缓冲区。</li>
+<li>实现驱动回调。</li>
+<li>操作外设接收数据。</li>
+<li>管理链表、队列等数据结构。</li>
+</ul>
+<p>面试答法：</p>
+<blockquote>
+<p>指针本质上保存的是地址。嵌入式中指针非常常见，例如通过固定地址访问外设寄存器，或者把缓冲区地址传给 UART、SPI、DMA 驱动。使用指针时要注意空指针、野指针、越界访问和生命周期。</p>
+</blockquote>
+<h3 id="高频问点：指针和数组有什么区别？"><a href="#高频问点：指针和数组有什么区别？" class="headerlink" title="高频问点：指针和数组有什么区别？"></a>高频问点：指针和数组有什么区别？</h3><p>数组是一段连续内存，数组名在多数表达式中会退化为首元素地址。指针是一个变量，保存某个地址，可以重新赋值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> arr[<span class="number">4</span>] = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;;</span><br><span class="line"><span class="type">int</span> *p = arr;</span><br><span class="line"></span><br><span class="line">p++;        <span class="comment">// 合法，指向下一个元素</span></span><br><span class="line"><span class="comment">// arr++;   // 不合法，数组名不能被重新赋值</span></span><br></pre></td></tr></table></figure>
+
+<p>区别：</p>
+<ul>
+<li><code>sizeof(arr)</code> 得到整个数组大小。</li>
+<li><code>sizeof(p)</code> 得到指针变量大小。</li>
+<li>数组名不是普通变量，不能重新赋值。</li>
+<li>函数参数中的数组会退化为指针。</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">foo</span><span class="params">(<span class="type">uint8_t</span> buf[<span class="number">16</span>])</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 这里 buf 实际上是 uint8_t *，sizeof(buf) 是指针大小</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>面试答法：</p>
+<blockquote>
+<p>数组代表一块连续内存，指针是保存地址的变量。数组名在大多数表达式中会退化成首元素指针，但 <code>sizeof(arr)</code> 和 <code>&amp;arr</code> 这类场景不会简单等同于普通指针。嵌入式里处理缓冲区时，函数参数最好同时传入指针和长度，避免数组退化后丢失长度信息。</p>
+</blockquote>
+<h3 id="高频问点：什么是野指针、空指针、悬空指针？"><a href="#高频问点：什么是野指针、空指针、悬空指针？" class="headerlink" title="高频问点：什么是野指针、空指针、悬空指针？"></a>高频问点：什么是野指针、空指针、悬空指针？</h3><p>空指针：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> *p = <span class="literal">NULL</span>;</span><br></pre></td></tr></table></figure>
+
+<p>野指针：没有初始化的指针，里面是随机地址。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> *p;</span><br><span class="line">*p = <span class="number">10</span>; <span class="comment">// 危险</span></span><br></pre></td></tr></table></figure>
+
+<p>悬空指针：指向的对象已经失效。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> *<span class="title function_">foo</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> x = <span class="number">10</span>;</span><br><span class="line">    <span class="keyword">return</span> &amp;x; <span class="comment">// 错误，x 是局部变量，函数返回后失效</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>嵌入式风险：</p>
+<ul>
+<li>访问非法地址可能 HardFault。</li>
+<li>写错地址可能破坏寄存器或内存。</li>
+<li>DMA 使用已经失效的缓冲区会导致随机错误。</li>
+</ul>
+<h3 id="高频问点：const-和指针组合怎么理解？"><a href="#高频问点：const-和指针组合怎么理解？" class="headerlink" title="高频问点：const 和指针组合怎么理解？"></a>高频问点：<code>const</code> 和指针组合怎么理解？</h3><p>看 <code>const</code> 修饰谁。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">int</span> *p1;       <span class="comment">// 指向 const int 的指针，不能通过 p1 修改值，但 p1 可以改指向</span></span><br><span class="line"><span class="type">int</span> <span class="type">const</span> *p2;       <span class="comment">// 同上</span></span><br><span class="line"><span class="type">int</span> * <span class="type">const</span> p3 = &amp;x; <span class="comment">// const 指针，p3 不能改指向，但可以修改 *p3</span></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> * <span class="type">const</span> p4 = &amp;x; <span class="comment">// 指针和指向内容都不能改</span></span><br></pre></td></tr></table></figure>
+
+<p>面试答法：</p>
+<blockquote>
+<p><code>const</code> 靠近谁就限制谁。<code>const int *p</code> 表示不能通过这个指针修改目标值；<code>int * const p</code> 表示指针变量本身不能再指向别处。嵌入式里函数参数如果只读缓冲区，我会写成 <code>const uint8_t *buf</code>，这样接口语义更清楚。</p>
+</blockquote>
+<h3 id="高频问点：函数指针有什么用？"><a href="#高频问点：函数指针有什么用？" class="headerlink" title="高频问点：函数指针有什么用？"></a>高频问点：函数指针有什么用？</h3><p>函数指针保存函数入口地址，可以实现回调、驱动适配、状态机动作表。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="title function_">void</span> <span class="params">(*<span class="type">irq_callback_t</span>)</span><span class="params">(<span class="type">void</span> *arg)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">irq_callback_t</span> cb;</span><br><span class="line"><span class="type">static</span> <span class="type">void</span> *cb_arg;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">register_callback</span><span class="params">(<span class="type">irq_callback_t</span> callback, <span class="type">void</span> *arg)</span></span><br><span class="line">&#123;</span><br><span class="line">    cb = callback;</span><br><span class="line">    cb_arg = arg;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">irq_handler</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (cb) &#123;</span><br><span class="line">        cb(cb_arg);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>嵌入式场景：</p>
+<ul>
+<li>GPIO 中断回调。</li>
+<li>UART 接收完成回调。</li>
+<li>定时器超时回调。</li>
+<li>驱动层和应用层解耦。</li>
+</ul>
+<p>面试答法：</p>
+<blockquote>
+<p>函数指针常用于回调机制。驱动层不需要知道应用层具体要做什么，只需要在事件发生时调用注册的回调函数，这样能降低模块耦合。</p>
+</blockquote>
+<h2 id="4-结构体、联合体、枚举"><a href="#4-结构体、联合体、枚举" class="headerlink" title="4. 结构体、联合体、枚举"></a>4. 结构体、联合体、枚举</h2><h3 id="高频问点：结构体有什么用？"><a href="#高频问点：结构体有什么用？" class="headerlink" title="高频问点：结构体有什么用？"></a>高频问点：结构体有什么用？</h3><p>结构体把相关数据组织在一起。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">uint8_t</span> id;</span><br><span class="line">    <span class="type">uint16_t</span> value;</span><br><span class="line">    <span class="type">uint32_t</span> timestamp;</span><br><span class="line">&#125; <span class="type">sensor_data_t</span>;</span><br></pre></td></tr></table></figure>
+
+<p>嵌入式场景：</p>
+<ul>
+<li>保存传感器数据。</li>
+<li>描述设备配置。</li>
+<li>封装驱动对象。</li>
+<li>映射寄存器布局。</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">volatile</span> <span class="type">uint32_t</span> MODER;</span><br><span class="line">    <span class="keyword">volatile</span> <span class="type">uint32_t</span> OTYPER;</span><br><span class="line">    <span class="keyword">volatile</span> <span class="type">uint32_t</span> OSPEEDR;</span><br><span class="line">    <span class="keyword">volatile</span> <span class="type">uint32_t</span> PUPDR;</span><br><span class="line">    <span class="keyword">volatile</span> <span class="type">uint32_t</span> IDR;</span><br><span class="line">    <span class="keyword">volatile</span> <span class="type">uint32_t</span> ODR;</span><br><span class="line">&#125; GPIO_TypeDef;</span><br></pre></td></tr></table></figure>
+
+<h3 id="高频问点：结构体为什么会有内存对齐？"><a href="#高频问点：结构体为什么会有内存对齐？" class="headerlink" title="高频问点：结构体为什么会有内存对齐？"></a>高频问点：结构体为什么会有内存对齐？</h3><p>CPU 访问对齐地址通常更高效，有些架构访问未对齐地址还会异常。编译器会在结构体成员之间插入 padding。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">uint8_t</span>  a;</span><br><span class="line">    <span class="type">uint32_t</span> b;</span><br><span class="line">    <span class="type">uint8_t</span>  c;</span><br><span class="line">&#125; <span class="type">demo_t</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这个结构体大小可能不是 6，而是 12。</p>
+<p>优化方法：</p>
+<ul>
+<li>把大成员放前面，小成员放后面。</li>
+<li>协议结构不要盲目直接强转。</li>
+<li>如确实需要紧凑布局，可使用编译器 packed 属性，但要注意未对齐访问风险。</li>
+</ul>
+<p>面试答法：</p>
+<blockquote>
+<p>结构体会为了满足 CPU 对齐访问插入填充字节，所以 <code>sizeof(struct)</code> 可能大于成员大小之和。在嵌入式协议解析和 Flash 存储中，不能随意假设结构体内存布局完全等于通信数据格式，必要时要逐字节解析或明确 packed。</p>
+</blockquote>
+<h3 id="高频问点：联合体有什么用？"><a href="#高频问点：联合体有什么用？" class="headerlink" title="高频问点：联合体有什么用？"></a>高频问点：联合体有什么用？</h3><p>联合体中所有成员共享同一块内存，大小等于最大成员大小。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">union</span> &#123;</span></span><br><span class="line">    <span class="type">uint32_t</span> word;</span><br><span class="line">    <span class="type">uint8_t</span>  bytes[<span class="number">4</span>];</span><br><span class="line">&#125; <span class="type">word_bytes_t</span>;</span><br></pre></td></tr></table></figure>
+
+<p>用途：</p>
+<ul>
+<li>节省内存。</li>
+<li>同一数据的不同视图。</li>
+<li>解析寄存器或协议字段。</li>
+</ul>
+<p>风险：</p>
+<ul>
+<li>大小端影响字节顺序。</li>
+<li>可读性不如显式位运算。</li>
+</ul>
+<h3 id="高频问点：枚举有什么用？"><a href="#高频问点：枚举有什么用？" class="headerlink" title="高频问点：枚举有什么用？"></a>高频问点：枚举有什么用？</h3><p>枚举用于表示一组有限状态或类型。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">enum</span> &#123;</span></span><br><span class="line">    LED_OFF = <span class="number">0</span>,</span><br><span class="line">    LED_ON,</span><br><span class="line">    LED_BLINK,</span><br><span class="line">&#125; <span class="type">led_state_t</span>;</span><br></pre></td></tr></table></figure>
+
+<p>嵌入式场景：</p>
+<ul>
+<li>状态机状态。</li>
+<li>错误码。</li>
+<li>事件类型。</li>
+<li>设备工作模式。</li>
+</ul>
+<h2 id="5-内存布局"><a href="#5-内存布局" class="headerlink" title="5. 内存布局"></a>5. 内存布局</h2><h3 id="高频问点：C-程序的内存区域有哪些？"><a href="#高频问点：C-程序的内存区域有哪些？" class="headerlink" title="高频问点：C 程序的内存区域有哪些？"></a>高频问点：C 程序的内存区域有哪些？</h3><p>常见区域：</p>
+<ul>
+<li><code>.text</code>：代码段，存放程序指令。</li>
+<li><code>.rodata</code>：只读数据，例如字符串常量、<code>const</code> 常量。</li>
+<li><code>.data</code>：已初始化的全局变量和静态变量。</li>
+<li><code>.bss</code>：未初始化或初始化为 0 的全局变量和静态变量。</li>
+<li>heap：堆，动态分配内存。</li>
+<li>stack：栈，函数调用、局部变量、返回地址。</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">int</span> a = <span class="number">1</span>;       <span class="comment">// 可能在 rodata</span></span><br><span class="line"><span class="type">int</span> b = <span class="number">2</span>;             <span class="comment">// data</span></span><br><span class="line"><span class="type">int</span> c;                 <span class="comment">// bss</span></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> d = <span class="number">3</span>;      <span class="comment">// data</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">foo</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> e = <span class="number">4</span>;         <span class="comment">// stack</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>面试答法：</p>
+<blockquote>
+<p>嵌入式里 Flash 通常存放代码和只读数据，SRAM 存放 <code>.data</code>、<code>.bss</code>、堆和栈。启动代码会把 <code>.data</code> 从 Flash 复制到 RAM，并把 <code>.bss</code> 清零，然后再进入 <code>main</code>。因此理解内存布局有助于分析 RAM 占用、栈溢出和启动过程。</p>
+</blockquote>
+<h3 id="高频问点：全局变量和局部变量有什么区别？"><a href="#高频问点：全局变量和局部变量有什么区别？" class="headerlink" title="高频问点：全局变量和局部变量有什么区别？"></a>高频问点：全局变量和局部变量有什么区别？</h3><p>全局变量：</p>
+<ul>
+<li>生命周期是整个程序运行期间。</li>
+<li>默认初始化为 0。</li>
+<li>存放在 <code>.data</code> 或 <code>.bss</code>。</li>
+<li>多个函数都可能访问，容易引入耦合。</li>
+</ul>
+<p>局部变量：</p>
+<ul>
+<li>生命周期通常是函数调用期间。</li>
+<li>默认不初始化，值不确定。</li>
+<li>通常存放在栈上。</li>
+<li>大数组放局部变量可能导致栈溢出。</li>
+</ul>
+<p>面试答法：</p>
+<blockquote>
+<p>嵌入式里我会避免在函数里定义很大的局部数组，因为栈空间有限。较大的缓冲区可以放到静态区，但要控制作用域，能用 <code>static</code> 限制在当前文件就不要暴露为全局变量。</p>
+</blockquote>
+<h3 id="高频问点：为什么嵌入式里慎用-malloc？"><a href="#高频问点：为什么嵌入式里慎用-malloc？" class="headerlink" title="高频问点：为什么嵌入式里慎用 malloc？"></a>高频问点：为什么嵌入式里慎用 <code>malloc</code>？</h3><p>原因：</p>
+<ul>
+<li>小 MCU RAM 很有限。</li>
+<li>频繁申请释放可能产生内存碎片。</li>
+<li>分配失败需要处理。</li>
+<li>实时系统中动态分配耗时不确定。</li>
+<li>调试内存泄漏比较困难。</li>
+</ul>
+<p>面试答法：</p>
+<blockquote>
+<p>小型嵌入式项目中我会尽量避免频繁动态分配，尤其是在实时路径和中断中。常见做法是使用静态缓冲区、内存池或固定大小队列。如果必须使用动态分配，需要检查返回值，并明确释放时机。</p>
+</blockquote>
+<h2 id="6-volatile"><a href="#6-volatile" class="headerlink" title="6. volatile"></a>6. <code>volatile</code></h2><h3 id="高频问点：volatile-的作用是什么？"><a href="#高频问点：volatile-的作用是什么？" class="headerlink" title="高频问点：volatile 的作用是什么？"></a>高频问点：<code>volatile</code> 的作用是什么？</h3><p><code>volatile</code> 告诉编译器：这个变量可能被当前执行流之外的因素改变，每次访问都必须真实读写内存，不能假设它的值不变。</p>
+<p>常见场景：</p>
+<ul>
+<li>硬件寄存器。</li>
+<li>中断服务函数和主循环共享变量。</li>
+<li>DMA 状态标志。</li>
+<li>RTOS 中某些简单状态标志。</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">volatile</span> <span class="type">uint32_t</span> *GPIO_ODR = (<span class="keyword">volatile</span> <span class="type">uint32_t</span> *)<span class="number">0x40020014</span>;</span><br></pre></td></tr></table></figure>
+
+<p>中断共享变量：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="keyword">volatile</span> <span class="type">uint8_t</span> uart_rx_done;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">USART_IRQHandler</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    uart_rx_done = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (!uart_rx_done) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="高频追问：volatile-能保证线程安全吗？"><a href="#高频追问：volatile-能保证线程安全吗？" class="headerlink" title="高频追问：volatile 能保证线程安全吗？"></a>高频追问：<code>volatile</code> 能保证线程安全吗？</h3><p>不能。</p>
+<p><code>volatile</code> 只保证编译器不优化访问，不保证操作原子性，也不保证多任务互斥。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">volatile</span> <span class="type">int</span> count;</span><br><span class="line"></span><br><span class="line">count++; <span class="comment">// 可能包含读、加、写三个步骤，不是原子操作</span></span><br></pre></td></tr></table></figure>
+
+<p>如果 <code>count++</code> 同时发生在中断和主循环中，仍然可能丢失更新。</p>
+<p>面试答法：</p>
+<blockquote>
+<p><code>volatile</code> 解决的是编译器优化导致的可见性问题，不解决并发安全问题。多个任务或中断同时读写共享变量时，还需要关中断、临界区、互斥锁或原子操作。</p>
+</blockquote>
+<h2 id="7-static、extern、const"><a href="#7-static、extern、const" class="headerlink" title="7. static、extern、const"></a>7. <code>static</code>、<code>extern</code>、<code>const</code></h2><h3 id="高频问点：static-有哪些作用？"><a href="#高频问点：static-有哪些作用？" class="headerlink" title="高频问点：static 有哪些作用？"></a>高频问点：<code>static</code> 有哪些作用？</h3><p>修饰局部变量：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">foo</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">static</span> <span class="type">int</span> count = <span class="number">0</span>;</span><br><span class="line">    count++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>特点：</p>
+<ul>
+<li>生命周期变成整个程序运行期间。</li>
+<li>作用域仍在函数内部。</li>
+<li>只初始化一次。</li>
+</ul>
+<p>修饰全局变量或函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> module_state;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">helper</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>特点：</p>
+<ul>
+<li>只在当前 <code>.c</code> 文件可见。</li>
+<li>避免符号污染和命名冲突。</li>
+<li>有利于模块封装。</li>
+</ul>
+<p>面试答法：</p>
+<blockquote>
+<p><code>static</code> 修饰局部变量时改变生命周期，修饰全局变量或函数时限制链接作用域。嵌入式模块里我会把不需要对外暴露的变量和函数声明为 <code>static</code>，减少全局符号污染。</p>
+</blockquote>
+<h3 id="高频问点：extern-的作用是什么？"><a href="#高频问点：extern-的作用是什么？" class="headerlink" title="高频问点：extern 的作用是什么？"></a>高频问点：<code>extern</code> 的作用是什么？</h3><p><code>extern</code> 表示声明一个在其他地方定义的变量或函数。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// config.c</span></span><br><span class="line"><span class="type">int</span> g_baudrate = <span class="number">115200</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// main.c</span></span><br><span class="line"><span class="keyword">extern</span> <span class="type">int</span> g_baudrate;</span><br></pre></td></tr></table></figure>
+
+<p>注意：</p>
+<ul>
+<li>声明不分配存储空间。</li>
+<li>定义才分配存储空间。</li>
+<li>不要在头文件里直接定义普通全局变量。</li>
+</ul>
+<p>错误示例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// config.h</span></span><br><span class="line"><span class="type">int</span> g_value; <span class="comment">// 如果多个 .c 包含，会导致重复定义</span></span><br></pre></td></tr></table></figure>
+
+<p>正确示例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// config.h</span></span><br><span class="line"><span class="keyword">extern</span> <span class="type">int</span> g_value;</span><br><span class="line"></span><br><span class="line"><span class="comment">// config.c</span></span><br><span class="line"><span class="type">int</span> g_value;</span><br></pre></td></tr></table></figure>
+
+<h3 id="高频问点：const-在嵌入式中有什么意义？"><a href="#高频问点：const-在嵌入式中有什么意义？" class="headerlink" title="高频问点：const 在嵌入式中有什么意义？"></a>高频问点：<code>const</code> 在嵌入式中有什么意义？</h3><p><code>const</code> 表示对象不应该被修改。</p>
+<p>嵌入式场景：</p>
+<ul>
+<li>查表数据。</li>
+<li>字符串常量。</li>
+<li>设备固定配置。</li>
+<li>函数只读参数。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">const</span> <span class="type">uint16_t</span> crc_table[<span class="number">256</span>] = &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">send_data</span><span class="params">(<span class="type">const</span> <span class="type">uint8_t</span> *buf, <span class="type">uint16_t</span> len)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>面试答法：</p>
+<blockquote>
+<p><code>const</code> 能表达只读语义，也可能让数据放到只读存储区域，节省 RAM。函数参数中使用 <code>const</code> 可以告诉调用者这个函数不会修改传入缓冲区。</p>
+</blockquote>
+<h2 id="8-位运算和寄存器操作"><a href="#8-位运算和寄存器操作" class="headerlink" title="8. 位运算和寄存器操作"></a>8. 位运算和寄存器操作</h2><h3 id="高频问点：如何置位、清零、翻转、判断某一位？"><a href="#高频问点：如何置位、清零、翻转、判断某一位？" class="headerlink" title="高频问点：如何置位、清零、翻转、判断某一位？"></a>高频问点：如何置位、清零、翻转、判断某一位？</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> BIT(n) (1U &lt;&lt; (n))</span></span><br><span class="line"></span><br><span class="line">reg |= BIT(<span class="number">3</span>);       <span class="comment">// 置位 bit3</span></span><br><span class="line">reg &amp;= ~BIT(<span class="number">3</span>);      <span class="comment">// 清零 bit3</span></span><br><span class="line">reg ^= BIT(<span class="number">3</span>);       <span class="comment">// 翻转 bit3</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (reg &amp; BIT(<span class="number">3</span>)) &#123;  <span class="comment">// 判断 bit3 是否为 1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="高频问点：如何设置多位字段？"><a href="#高频问点：如何设置多位字段？" class="headerlink" title="高频问点：如何设置多位字段？"></a>高频问点：如何设置多位字段？</h3><p>例如要设置寄存器 bit[5:4] 为 <code>0b10</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> FIELD_MASK   (0x3U &lt;&lt; 4)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> FIELD_VALUE  (0x2U &lt;&lt; 4)</span></span><br><span class="line"></span><br><span class="line">reg = (reg &amp; ~FIELD_MASK) | FIELD_VALUE;</span><br></pre></td></tr></table></figure>
+
+<p>面试答法：</p>
+<blockquote>
+<p>设置多位字段时，不能直接或上新值，否则旧值可能残留。正确做法是先用 mask 清掉目标位，再把新值移位后写进去。</p>
+</blockquote>
+<h3 id="高频问点：为什么寄存器要用-volatile？"><a href="#高频问点：为什么寄存器要用-volatile？" class="headerlink" title="高频问点：为什么寄存器要用 volatile？"></a>高频问点：为什么寄存器要用 <code>volatile</code>？</h3><p>硬件寄存器的值可能被硬件改变，例如状态寄存器、接收数据寄存器。编译器无法知道这些变化。如果不加 <code>volatile</code>，编译器可能把寄存器读取优化成一次，导致程序看不到状态变化。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> UART_SR (*(volatile uint32_t *)0x40011000)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> ((UART_SR &amp; BIT(<span class="number">5</span>)) == <span class="number">0</span>) &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="9-宏、条件编译和-inline"><a href="#9-宏、条件编译和-inline" class="headerlink" title="9. 宏、条件编译和 inline"></a>9. 宏、条件编译和 <code>inline</code></h2><h3 id="高频问点：宏有什么优缺点？"><a href="#高频问点：宏有什么优缺点？" class="headerlink" title="高频问点：宏有什么优缺点？"></a>高频问点：宏有什么优缺点？</h3><p>优点：</p>
+<ul>
+<li>编译期展开。</li>
+<li>适合定义常量、寄存器地址、bit mask。</li>
+<li>可用于条件编译。</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>没有类型检查。</li>
+<li>参数可能被重复求值。</li>
+<li>复杂宏可读性差。</li>
+</ul>
+<p>错误示例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> SQUARE(x) x * x</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> y = SQUARE(<span class="number">1</span> + <span class="number">2</span>); <span class="comment">// 展开为 1 + 2 * 1 + 2</span></span><br></pre></td></tr></table></figure>
+
+<p>改进：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> SQUARE(x) ((x) * (x))</span></span><br></pre></td></tr></table></figure>
+
+<p>但仍有重复求值问题：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SQUARE(i++); <span class="comment">// i++ 会执行两次</span></span><br></pre></td></tr></table></figure>
+
+<p>面试答法：</p>
+<blockquote>
+<p>简单常量和 bit 操作用宏很方便，但复杂逻辑我更倾向使用 <code>static inline</code> 函数，因为它有类型检查，也更容易调试。</p>
+</blockquote>
+<h3 id="高频问点：-ifdef-常用于什么？"><a href="#高频问点：-ifdef-常用于什么？" class="headerlink" title="高频问点：#ifdef 常用于什么？"></a>高频问点：<code>#ifdef</code> 常用于什么？</h3><p>用途：</p>
+<ul>
+<li>按芯片型号选择代码。</li>
+<li>打开或关闭调试日志。</li>
+<li>配置功能模块。</li>
+<li>适配不同编译器。</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifdef</span> ENABLE_DEBUG_LOG</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LOG(fmt, ...) printf(fmt, ##__VA_ARGS__)</span></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LOG(fmt, ...)</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<h3 id="高频问点：头文件为什么要防止重复包含？"><a href="#高频问点：头文件为什么要防止重复包含？" class="headerlink" title="高频问点：头文件为什么要防止重复包含？"></a>高频问点：头文件为什么要防止重复包含？</h3><p>同一个头文件可能被多个文件间接包含，如果没有 include guard，可能导致重复定义或编译错误。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> DRIVER_UART_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DRIVER_UART_H</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">uart_init</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<p>或：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">pragma</span> once</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="10-大小端、对齐和字节序"><a href="#10-大小端、对齐和字节序" class="headerlink" title="10. 大小端、对齐和字节序"></a>10. 大小端、对齐和字节序</h2><h3 id="高频问点：什么是大小端？"><a href="#高频问点：什么是大小端？" class="headerlink" title="高频问点：什么是大小端？"></a>高频问点：什么是大小端？</h3><p>多字节数据在内存中的存放顺序不同：</p>
+<ul>
+<li>大端：高位字节放低地址。</li>
+<li>小端：低位字节放低地址。</li>
+</ul>
+<p>例如 <code>0x12345678</code>：</p>
+<ul>
+<li>大端：<code>12 34 56 78</code></li>
+<li>小端：<code>78 56 34 12</code></li>
+</ul>
+<p>嵌入式场景：</p>
+<ul>
+<li>通信协议解析。</li>
+<li>Flash 数据存储。</li>
+<li>传感器寄存器高低字节合成。</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">uint16_t</span> value = ((<span class="type">uint16_t</span>)buf[<span class="number">0</span>] &lt;&lt; <span class="number">8</span>) | buf[<span class="number">1</span>]; <span class="comment">// 大端解析</span></span><br></pre></td></tr></table></figure>
+
+<p>面试答法：</p>
+<blockquote>
+<p>协议解析时不要直接把字节数组强转成结构体或整数指针，因为会受到大小端和对齐影响。更稳妥的做法是按协议规定显式移位组合。</p>
+</blockquote>
+<h3 id="高频问点：未对齐访问有什么问题？"><a href="#高频问点：未对齐访问有什么问题？" class="headerlink" title="高频问点：未对齐访问有什么问题？"></a>高频问点：未对齐访问有什么问题？</h3><p>有些 CPU 支持未对齐访问但效率较低，有些 MCU 访问未对齐地址会产生异常。</p>
+<p>风险场景：</p>
+<ul>
+<li>把 <code>uint8_t *</code> 强转为 <code>uint32_t *</code>。</li>
+<li>packed 结构体中直接访问多字节成员。</li>
+<li>协议缓冲区地址不对齐。</li>
+</ul>
+<p>安全做法：</p>
+<ul>
+<li>使用 <code>memcpy</code> 复制到对齐变量。</li>
+<li>使用字节移位解析。</li>
+</ul>
+<h2 id="11-中断与共享变量"><a href="#11-中断与共享变量" class="headerlink" title="11. 中断与共享变量"></a>11. 中断与共享变量</h2><h3 id="高频问点：中断函数里为什么不能做太多事？"><a href="#高频问点：中断函数里为什么不能做太多事？" class="headerlink" title="高频问点：中断函数里为什么不能做太多事？"></a>高频问点：中断函数里为什么不能做太多事？</h3><p>原因：</p>
+<ul>
+<li>中断会打断正常任务。</li>
+<li>中断执行时间过长会影响实时性。</li>
+<li>可能阻塞其他中断。</li>
+<li>不适合做 printf、动态内存分配、长循环、复杂协议解析。</li>
+</ul>
+<p>推荐做法：</p>
+<ul>
+<li>读取必要状态。</li>
+<li>清除中断标志。</li>
+<li>保存少量数据。</li>
+<li>设置标志位。</li>
+<li>释放信号量或发送简短消息给任务。</li>
+</ul>
+<p>面试答法：</p>
+<blockquote>
+<p>中断里应该快进快出，只做必要处理。耗时逻辑放到主循环或 RTOS 任务中执行。这样可以减少中断延迟，提高系统实时性。</p>
+</blockquote>
+<h3 id="高频问点：主循环和中断共享变量要注意什么？"><a href="#高频问点：主循环和中断共享变量要注意什么？" class="headerlink" title="高频问点：主循环和中断共享变量要注意什么？"></a>高频问点：主循环和中断共享变量要注意什么？</h3><p>注意：</p>
+<ul>
+<li>共享变量加 <code>volatile</code>。</li>
+<li>多字节变量读写可能不是原子操作。</li>
+<li>读改写操作需要临界区。</li>
+<li>中断标志要及时清除。</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="keyword">volatile</span> <span class="type">uint32_t</span> tick_count;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">SysTick_Handler</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    tick_count++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">uint32_t</span> <span class="title function_">get_tick</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">uint32_t</span> t;</span><br><span class="line"></span><br><span class="line">    __disable_irq();</span><br><span class="line">    t = tick_count;</span><br><span class="line">    __enable_irq();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> t;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="12-错误处理和健壮性"><a href="#12-错误处理和健壮性" class="headerlink" title="12. 错误处理和健壮性"></a>12. 错误处理和健壮性</h2><h3 id="高频问点：嵌入式函数返回值怎么设计？"><a href="#高频问点：嵌入式函数返回值怎么设计？" class="headerlink" title="高频问点：嵌入式函数返回值怎么设计？"></a>高频问点：嵌入式函数返回值怎么设计？</h3><p>常见方式：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">enum</span> &#123;</span></span><br><span class="line">    ERR_OK = <span class="number">0</span>,</span><br><span class="line">    ERR_TIMEOUT = <span class="number">-1</span>,</span><br><span class="line">    ERR_INVALID_ARG = <span class="number">-2</span>,</span><br><span class="line">    ERR_BUSY = <span class="number">-3</span>,</span><br><span class="line">&#125; <span class="type">error_t</span>;</span><br></pre></td></tr></table></figure>
+
+<p>函数示例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">uart_send</span><span class="params">(<span class="type">const</span> <span class="type">uint8_t</span> *buf, <span class="type">uint16_t</span> len)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (buf == <span class="literal">NULL</span> || len == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> ERR_INVALID_ARG;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// send...</span></span><br><span class="line">    <span class="keyword">return</span> ERR_OK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>面试答法：</p>
+<blockquote>
+<p>驱动接口要尽量返回明确错误码，而不是只返回成功或失败。这样上层可以区分参数错误、超时、忙状态、硬件错误，并做对应处理。</p>
+</blockquote>
+<h3 id="高频问点：为什么要检查空指针和长度？"><a href="#高频问点：为什么要检查空指针和长度？" class="headerlink" title="高频问点：为什么要检查空指针和长度？"></a>高频问点：为什么要检查空指针和长度？</h3><p>嵌入式系统没有操作系统保护时，空指针或越界访问可能直接 HardFault，甚至破坏内存。</p>
+<p>接口设计建议：</p>
+<ul>
+<li>指针参数先判空。</li>
+<li>长度参数检查范围。</li>
+<li>对外接口不要相信调用者一定正确。</li>
+<li>对关键错误可以使用断言。</li>
+</ul>
+<h2 id="13-代码组织"><a href="#13-代码组织" class="headerlink" title="13. 代码组织"></a>13. 代码组织</h2><h3 id="高频问点：-h-和-c-分别放什么？"><a href="#高频问点：-h-和-c-分别放什么？" class="headerlink" title="高频问点：.h 和 .c 分别放什么？"></a>高频问点：<code>.h</code> 和 <code>.c</code> 分别放什么？</h3><p><code>.h</code> 文件：</p>
+<ul>
+<li>类型定义。</li>
+<li>宏定义。</li>
+<li>对外函数声明。</li>
+<li>对外常量声明。</li>
+</ul>
+<p><code>.c</code> 文件：</p>
+<ul>
+<li>函数实现。</li>
+<li>私有变量。</li>
+<li>私有函数。</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// led.h</span></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> once</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">led_init</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">led_set</span><span class="params">(<span class="type">uint8_t</span> on)</span>;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// led.c</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;led.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">uint8_t</span> led_state;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">led_init</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    led_state = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">led_set</span><span class="params">(<span class="type">uint8_t</span> on)</span></span><br><span class="line">&#123;</span><br><span class="line">    led_state = on;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="高频问点：如何设计一个简单驱动接口？"><a href="#高频问点：如何设计一个简单驱动接口？" class="headerlink" title="高频问点：如何设计一个简单驱动接口？"></a>高频问点：如何设计一个简单驱动接口？</h3><p>建议包含：</p>
+<ul>
+<li>初始化函数。</li>
+<li>配置函数。</li>
+<li>读写函数。</li>
+<li>状态查询函数。</li>
+<li>错误返回值。</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">uint32_t</span> baudrate;</span><br><span class="line">    <span class="type">uint8_t</span> data_bits;</span><br><span class="line">    <span class="type">uint8_t</span> stop_bits;</span><br><span class="line">&#125; <span class="type">uart_config_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">uart_init</span><span class="params">(<span class="type">const</span> <span class="type">uart_config_t</span> *config)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">uart_write</span><span class="params">(<span class="type">const</span> <span class="type">uint8_t</span> *buf, <span class="type">uint16_t</span> len)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">uart_read</span><span class="params">(<span class="type">uint8_t</span> *buf, <span class="type">uint16_t</span> len, <span class="type">uint32_t</span> timeout_ms)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>面试答法：</p>
+<blockquote>
+<p>我会把驱动接口设计成清晰的初始化、读写和状态查询函数，参数尽量明确，返回值能表达错误原因。模块内部变量用 <code>static</code> 隐藏，避免上层直接操作底层状态。</p>
+</blockquote>
+<h2 id="14-高频-Bug-场景"><a href="#14-高频-Bug-场景" class="headerlink" title="14. 高频 Bug 场景"></a>14. 高频 Bug 场景</h2><h3 id="场景-1：程序偶尔-HardFault"><a href="#场景-1：程序偶尔-HardFault" class="headerlink" title="场景 1：程序偶尔 HardFault"></a>场景 1：程序偶尔 HardFault</h3><p>可能原因：</p>
+<ul>
+<li>空指针。</li>
+<li>栈溢出。</li>
+<li>数组越界。</li>
+<li>未对齐访问。</li>
+<li>函数指针错误。</li>
+<li>中断访问已释放或失效的缓冲区。</li>
+</ul>
+<p>排查方法：</p>
+<ul>
+<li>查看 HardFault 寄存器。</li>
+<li>打开 map 文件看栈和 RAM。</li>
+<li>增大任务栈测试。</li>
+<li>检查最近修改。</li>
+<li>加断言和日志。</li>
+</ul>
+<h3 id="场景-2：优化等级一开程序就异常"><a href="#场景-2：优化等级一开程序就异常" class="headerlink" title="场景 2：优化等级一开程序就异常"></a>场景 2：优化等级一开程序就异常</h3><p>可能原因：</p>
+<ul>
+<li>应该加 <code>volatile</code> 的变量没加。</li>
+<li>代码依赖未定义行为。</li>
+<li>越界访问。</li>
+<li>未初始化变量。</li>
+<li>延时循环被优化掉。</li>
+</ul>
+<p>面试答法：</p>
+<blockquote>
+<p>如果不开优化正常、开优化异常，我会重点怀疑 <code>volatile</code>、未初始化变量、越界访问和未定义行为。比如等待中断标志位的循环，如果标志变量没有 <code>volatile</code>，编译器可能把它优化成死循环。</p>
+</blockquote>
+<h3 id="场景-3：局部数组过大导致异常"><a href="#场景-3：局部数组过大导致异常" class="headerlink" title="场景 3：局部数组过大导致异常"></a>场景 3：局部数组过大导致异常</h3><p>示例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">foo</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">uint8_t</span> buf[<span class="number">8192</span>]; <span class="comment">// 小 MCU 上很危险</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>解决：</p>
+<ul>
+<li>改为静态缓冲区。</li>
+<li>减小缓冲区。</li>
+<li>使用分块处理。</li>
+<li>检查任务栈大小。</li>
+</ul>
+<h2 id="15-嵌入式-C-高频问答速背"><a href="#15-嵌入式-C-高频问答速背" class="headerlink" title="15. 嵌入式 C 高频问答速背"></a>15. 嵌入式 C 高频问答速背</h2><h3 id="volatile、const、static-的区别？"><a href="#volatile、const、static-的区别？" class="headerlink" title="volatile、const、static 的区别？"></a><code>volatile</code>、<code>const</code>、<code>static</code> 的区别？</h3><ul>
+<li><code>volatile</code>：防止编译器优化访问，常用于寄存器和中断共享变量。</li>
+<li><code>const</code>：表示只读语义，防止误修改，也可能放入只读区。</li>
+<li><code>static</code>：修饰局部变量改变生命周期，修饰全局变量或函数限制文件作用域。</li>
+</ul>
+<h3 id="malloc-和静态分配怎么选？"><a href="#malloc-和静态分配怎么选？" class="headerlink" title="malloc 和静态分配怎么选？"></a><code>malloc</code> 和静态分配怎么选？</h3><p>小 MCU 和实时系统中优先静态分配或内存池。动态分配灵活，但有碎片、失败、耗时不确定和泄漏风险。</p>
+<h3 id="为什么中断共享变量要加-volatile？"><a href="#为什么中断共享变量要加-volatile？" class="headerlink" title="为什么中断共享变量要加 volatile？"></a>为什么中断共享变量要加 <code>volatile</code>？</h3><p>因为变量可能在中断中被修改，主循环如果不加 <code>volatile</code>，编译器可能缓存变量值，导致主循环看不到变化。</p>
+<h3 id="volatile-为什么不等于原子操作？"><a href="#volatile-为什么不等于原子操作？" class="headerlink" title="volatile 为什么不等于原子操作？"></a><code>volatile</code> 为什么不等于原子操作？</h3><p>因为 <code>volatile</code> 只约束编译器访问，不保证 <code>count++</code> 这种读改写操作不可打断。</p>
+<h3 id="如何避免头文件重复包含？"><a href="#如何避免头文件重复包含？" class="headerlink" title="如何避免头文件重复包含？"></a>如何避免头文件重复包含？</h3><p>使用 include guard 或 <code>#pragma once</code>。</p>
+<h3 id="什么情况下用函数指针？"><a href="#什么情况下用函数指针？" class="headerlink" title="什么情况下用函数指针？"></a>什么情况下用函数指针？</h3><p>回调、状态机、驱动适配、事件通知。它能降低模块之间的耦合。</p>
+<h3 id="为什么协议解析不建议直接强转结构体？"><a href="#为什么协议解析不建议直接强转结构体？" class="headerlink" title="为什么协议解析不建议直接强转结构体？"></a>为什么协议解析不建议直接强转结构体？</h3><p>因为结构体可能有 padding，且大小端、对齐方式和编译器实现会影响布局。更稳妥的是按字节解析。</p>
+<h3 id="寄存器操作为什么常用位运算？"><a href="#寄存器操作为什么常用位运算？" class="headerlink" title="寄存器操作为什么常用位运算？"></a>寄存器操作为什么常用位运算？</h3><p>寄存器通常每一位或几位代表一个配置项。位运算可以只修改目标位，不影响其他位。</p>
+<h3 id="如何看待全局变量？"><a href="#如何看待全局变量？" class="headerlink" title="如何看待全局变量？"></a>如何看待全局变量？</h3><p>全局变量方便但容易导致耦合和并发问题。能限制作用域就用 <code>static</code>，能通过接口访问就不要直接暴露。</p>
+<h3 id="嵌入式-C-代码最重要的习惯是什么？"><a href="#嵌入式-C-代码最重要的习惯是什么？" class="headerlink" title="嵌入式 C 代码最重要的习惯是什么？"></a>嵌入式 C 代码最重要的习惯是什么？</h3><p>参数检查、边界检查、清晰的错误码、控制作用域、避免大栈对象、共享变量考虑并发、硬件相关变量使用 <code>volatile</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="copyright-cc-box"><i class="anzhiyufont anzhiyu-icon-copyright"></i></div><div class="post-copyright__author_box"><a class="post-copyright__author_img" href="/" title="头像"><img class="post-copyright__author_img_back" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/touxiang.jpg" title="头像" alt="头像"><img class="post-copyright__author_img_front" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/touxiang.jpg" title="头像" alt="头像"></a><div class="post-copyright__author_name">为巽</div><div class="post-copyright__author_desc">咬定青山不放松</div></div><div class="post-copyright__post__info"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="http://example.com/2026/06/17/%E6%80%9D%E6%BE%88%E9%9D%A2%E8%AF%95%E7%AC%94%E8%AE%B0-%E5%B5%8C%E5%85%A5%E5%BC%8FC/">原创</a><a class="post-copyright-title"><span onclick="rm.copyPageUrl('http://example.com/2026/06/17/%E6%80%9D%E6%BE%88%E9%9D%A2%E8%AF%95%E7%AC%94%E8%AE%B0-%E5%B5%8C%E5%85%A5%E5%BC%8FC/')">思澈面试笔记-嵌入式C</span></a></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="rewardLeftButton"></div><div class="shareRight"><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="http://example.com/2026/06/17/%E6%80%9D%E6%BE%88%E9%9D%A2%E8%AF%95%E7%AC%94%E8%AE%B0-%E5%B5%8C%E5%85%A5%E5%BC%8FC/"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=思澈面试笔记-嵌入式C&amp;url=http://example.com/2026/06/17/%E6%80%9D%E6%BE%88%E9%9D%A2%E8%AF%95%E7%AC%94%E8%AE%B0-%E5%B5%8C%E5%85%A5%E5%BC%8FC/&amp;pic=" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><script>function copyCurrentPageUrl() {
+  var currentPageUrl = window.location.href;
+  var input = document.createElement("input");
+  input.setAttribute("value", currentPageUrl);
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.body.removeChild(input);
+}</script><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="copyCurrentPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/%E9%9D%A2%E8%AF%95/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>面试<span class="tagsPageCount">2</span></a></div></div></div><div class="post_share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"/><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer="defer"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/2026/06/17/%E6%80%9D%E6%BE%88%E9%9D%A2%E8%AF%95%E7%AC%94%E8%AE%B0-%E6%9E%84%E5%BB%BA%E7%B3%BB%E7%BB%9F/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">思澈面试笔记-构建系统</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="anzhiyufont anzhiyu-icon-thumbs-up fa-fw" style="font-size: 1.5rem; margin-right: 4px"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/2026/06/17/%E6%80%9D%E6%BE%88%E9%9D%A2%E8%AF%95%E7%AC%94%E8%AE%B0-%E6%9E%84%E5%BB%BA%E7%B3%BB%E7%BB%9F/" title="思澈面试笔记-构建系统"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2026-06-17</div><div class="title">思澈面试笔记-构建系统</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="author-info__sayhi" id="author-info__sayhi" onclick="anzhiyu.changeSayHelloText()"></div><div class="author-info-avatar"><img class="avatar-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-status"><img class="g-status" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://bu.dusays.com/2023/08/24/64e6ce9c507bb.png" alt="status"/></div></div><div class="author-info__description"></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/"><h1 class="author-info__name">为巽</h1><div class="author-info__desc">咬定青山不放松</div></a><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/anzhiyu-c" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9Achar-%E6%98%AF%E5%90%A6%E4%B8%80%E5%AE%9A%E6%98%AF%E6%9C%89%E7%AC%A6%E5%8F%B7%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">高频问点：char 是否一定是有符号？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9A%E6%9C%89%E7%AC%A6%E5%8F%B7%E5%92%8C%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%B7%B7%E7%94%A8%E6%9C%89%E4%BB%80%E4%B9%88%E9%A3%8E%E9%99%A9%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">高频问点：有符号和无符号混用有什么风险？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E6%8C%87%E9%92%88"><span class="toc-number"></span> <span class="toc-text">3. 指针</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9A%E6%8C%87%E9%92%88%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">高频问点：指针是什么？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9A%E6%8C%87%E9%92%88%E5%92%8C%E6%95%B0%E7%BB%84%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">高频问点：指针和数组有什么区别？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9A%E4%BB%80%E4%B9%88%E6%98%AF%E9%87%8E%E6%8C%87%E9%92%88%E3%80%81%E7%A9%BA%E6%8C%87%E9%92%88%E3%80%81%E6%82%AC%E7%A9%BA%E6%8C%87%E9%92%88%EF%BC%9F"><span class="toc-number">3.</span> <span class="toc-text">高频问点：什么是野指针、空指针、悬空指针？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9Aconst-%E5%92%8C%E6%8C%87%E9%92%88%E7%BB%84%E5%90%88%E6%80%8E%E4%B9%88%E7%90%86%E8%A7%A3%EF%BC%9F"><span class="toc-number">4.</span> <span class="toc-text">高频问点：const 和指针组合怎么理解？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9A%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E6%9C%89%E4%BB%80%E4%B9%88%E7%94%A8%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">高频问点：函数指针有什么用？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E7%BB%93%E6%9E%84%E4%BD%93%E3%80%81%E8%81%94%E5%90%88%E4%BD%93%E3%80%81%E6%9E%9A%E4%B8%BE"><span class="toc-number"></span> <span class="toc-text">4. 结构体、联合体、枚举</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9A%E7%BB%93%E6%9E%84%E4%BD%93%E6%9C%89%E4%BB%80%E4%B9%88%E7%94%A8%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">高频问点：结构体有什么用？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9A%E7%BB%93%E6%9E%84%E4%BD%93%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E6%9C%89%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">高频问点：结构体为什么会有内存对齐？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9A%E8%81%94%E5%90%88%E4%BD%93%E6%9C%89%E4%BB%80%E4%B9%88%E7%94%A8%EF%BC%9F"><span class="toc-number">3.</span> <span class="toc-text">高频问点：联合体有什么用？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9A%E6%9E%9A%E4%B8%BE%E6%9C%89%E4%BB%80%E4%B9%88%E7%94%A8%EF%BC%9F"><span class="toc-number">4.</span> <span class="toc-text">高频问点：枚举有什么用？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80"><span class="toc-number"></span> <span class="toc-text">5. 内存布局</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9AC-%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E6%9C%89%E5%93%AA%E4%BA%9B%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">高频问点：C 程序的内存区域有哪些？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9A%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F%E5%92%8C%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">高频问点：全局变量和局部变量有什么区别？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E5%B5%8C%E5%85%A5%E5%BC%8F%E9%87%8C%E6%85%8E%E7%94%A8-malloc%EF%BC%9F"><span class="toc-number">3.</span> <span class="toc-text">高频问点：为什么嵌入式里慎用 malloc？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-volatile"><span class="toc-number"></span> <span class="toc-text">6. volatile</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9Avolatile-%E7%9A%84%E4%BD%9C%E7%94%A8%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">高频问点：volatile 的作用是什么？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E8%BF%BD%E9%97%AE%EF%BC%9Avolatile-%E8%83%BD%E4%BF%9D%E8%AF%81%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E5%90%97%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">高频追问：volatile 能保证线程安全吗？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-static%E3%80%81extern%E3%80%81const"><span class="toc-number"></span> <span class="toc-text">7. static、extern、const</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9Astatic-%E6%9C%89%E5%93%AA%E4%BA%9B%E4%BD%9C%E7%94%A8%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">高频问点：static 有哪些作用？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9Aextern-%E7%9A%84%E4%BD%9C%E7%94%A8%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">高频问点：extern 的作用是什么？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9Aconst-%E5%9C%A8%E5%B5%8C%E5%85%A5%E5%BC%8F%E4%B8%AD%E6%9C%89%E4%BB%80%E4%B9%88%E6%84%8F%E4%B9%89%EF%BC%9F"><span class="toc-number">3.</span> <span class="toc-text">高频问点：const 在嵌入式中有什么意义？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E4%BD%8D%E8%BF%90%E7%AE%97%E5%92%8C%E5%AF%84%E5%AD%98%E5%99%A8%E6%93%8D%E4%BD%9C"><span class="toc-number"></span> <span class="toc-text">8. 位运算和寄存器操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9A%E5%A6%82%E4%BD%95%E7%BD%AE%E4%BD%8D%E3%80%81%E6%B8%85%E9%9B%B6%E3%80%81%E7%BF%BB%E8%BD%AC%E3%80%81%E5%88%A4%E6%96%AD%E6%9F%90%E4%B8%80%E4%BD%8D%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">高频问点：如何置位、清零、翻转、判断某一位？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9A%E5%A6%82%E4%BD%95%E8%AE%BE%E7%BD%AE%E5%A4%9A%E4%BD%8D%E5%AD%97%E6%AE%B5%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">高频问点：如何设置多位字段？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E5%AF%84%E5%AD%98%E5%99%A8%E8%A6%81%E7%94%A8-volatile%EF%BC%9F"><span class="toc-number">3.</span> <span class="toc-text">高频问点：为什么寄存器要用 volatile？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-%E5%AE%8F%E3%80%81%E6%9D%A1%E4%BB%B6%E7%BC%96%E8%AF%91%E5%92%8C-inline"><span class="toc-number"></span> <span class="toc-text">9. 宏、条件编译和 inline</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9A%E5%AE%8F%E6%9C%89%E4%BB%80%E4%B9%88%E4%BC%98%E7%BC%BA%E7%82%B9%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">高频问点：宏有什么优缺点？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9A-ifdef-%E5%B8%B8%E7%94%A8%E4%BA%8E%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">高频问点：#ifdef 常用于什么？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9A%E5%A4%B4%E6%96%87%E4%BB%B6%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E9%98%B2%E6%AD%A2%E9%87%8D%E5%A4%8D%E5%8C%85%E5%90%AB%EF%BC%9F"><span class="toc-number">3.</span> <span class="toc-text">高频问点：头文件为什么要防止重复包含？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-%E5%A4%A7%E5%B0%8F%E7%AB%AF%E3%80%81%E5%AF%B9%E9%BD%90%E5%92%8C%E5%AD%97%E8%8A%82%E5%BA%8F"><span class="toc-number"></span> <span class="toc-text">10. 大小端、对齐和字节序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9A%E4%BB%80%E4%B9%88%E6%98%AF%E5%A4%A7%E5%B0%8F%E7%AB%AF%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">高频问点：什么是大小端？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9A%E6%9C%AA%E5%AF%B9%E9%BD%90%E8%AE%BF%E9%97%AE%E6%9C%89%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">高频问点：未对齐访问有什么问题？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-%E4%B8%AD%E6%96%AD%E4%B8%8E%E5%85%B1%E4%BA%AB%E5%8F%98%E9%87%8F"><span class="toc-number"></span> <span class="toc-text">11. 中断与共享变量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9A%E4%B8%AD%E6%96%AD%E5%87%BD%E6%95%B0%E9%87%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD%E5%81%9A%E5%A4%AA%E5%A4%9A%E4%BA%8B%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">高频问点：中断函数里为什么不能做太多事？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9A%E4%B8%BB%E5%BE%AA%E7%8E%AF%E5%92%8C%E4%B8%AD%E6%96%AD%E5%85%B1%E4%BA%AB%E5%8F%98%E9%87%8F%E8%A6%81%E6%B3%A8%E6%84%8F%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">高频问点：主循环和中断共享变量要注意什么？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#12-%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E5%92%8C%E5%81%A5%E5%A3%AE%E6%80%A7"><span class="toc-number"></span> <span class="toc-text">12. 错误处理和健壮性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9A%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%87%BD%E6%95%B0%E8%BF%94%E5%9B%9E%E5%80%BC%E6%80%8E%E4%B9%88%E8%AE%BE%E8%AE%A1%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">高频问点：嵌入式函数返回值怎么设计？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%A3%80%E6%9F%A5%E7%A9%BA%E6%8C%87%E9%92%88%E5%92%8C%E9%95%BF%E5%BA%A6%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">高频问点：为什么要检查空指针和长度？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#13-%E4%BB%A3%E7%A0%81%E7%BB%84%E7%BB%87"><span class="toc-number"></span> <span class="toc-text">13. 代码组织</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9A-h-%E5%92%8C-c-%E5%88%86%E5%88%AB%E6%94%BE%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">高频问点：.h 和 .c 分别放什么？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%97%AE%E7%82%B9%EF%BC%9A%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E9%A9%B1%E5%8A%A8%E6%8E%A5%E5%8F%A3%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">高频问点：如何设计一个简单驱动接口？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#14-%E9%AB%98%E9%A2%91-Bug-%E5%9C%BA%E6%99%AF"><span class="toc-number"></span> <span class="toc-text">14. 高频 Bug 场景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF-1%EF%BC%9A%E7%A8%8B%E5%BA%8F%E5%81%B6%E5%B0%94-HardFault"><span class="toc-number">1.</span> <span class="toc-text">场景 1：程序偶尔 HardFault</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF-2%EF%BC%9A%E4%BC%98%E5%8C%96%E7%AD%89%E7%BA%A7%E4%B8%80%E5%BC%80%E7%A8%8B%E5%BA%8F%E5%B0%B1%E5%BC%82%E5%B8%B8"><span class="toc-number">2.</span> <span class="toc-text">场景 2：优化等级一开程序就异常</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF-3%EF%BC%9A%E5%B1%80%E9%83%A8%E6%95%B0%E7%BB%84%E8%BF%87%E5%A4%A7%E5%AF%BC%E8%87%B4%E5%BC%82%E5%B8%B8"><span class="toc-number">3.</span> <span class="toc-text">场景 3：局部数组过大导致异常</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#15-%E5%B5%8C%E5%85%A5%E5%BC%8F-C-%E9%AB%98%E9%A2%91%E9%97%AE%E7%AD%94%E9%80%9F%E8%83%8C"><span class="toc-number"></span> <span class="toc-text">15. 嵌入式 C 高频问答速背</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#volatile%E3%80%81const%E3%80%81static-%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">volatile、const、static 的区别？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#malloc-%E5%92%8C%E9%9D%99%E6%80%81%E5%88%86%E9%85%8D%E6%80%8E%E4%B9%88%E9%80%89%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">malloc 和静态分配怎么选？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%AD%E6%96%AD%E5%85%B1%E4%BA%AB%E5%8F%98%E9%87%8F%E8%A6%81%E5%8A%A0-volatile%EF%BC%9F"><span class="toc-number">3.</span> <span class="toc-text">为什么中断共享变量要加 volatile？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#volatile-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E7%AD%89%E4%BA%8E%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C%EF%BC%9F"><span class="toc-number">4.</span> <span class="toc-text">volatile 为什么不等于原子操作？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E9%81%BF%E5%85%8D%E5%A4%B4%E6%96%87%E4%BB%B6%E9%87%8D%E5%A4%8D%E5%8C%85%E5%90%AB%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">如何避免头文件重复包含？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%83%85%E5%86%B5%E4%B8%8B%E7%94%A8%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%EF%BC%9F"><span class="toc-number">6.</span> <span class="toc-text">什么情况下用函数指针？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%8D%8F%E8%AE%AE%E8%A7%A3%E6%9E%90%E4%B8%8D%E5%BB%BA%E8%AE%AE%E7%9B%B4%E6%8E%A5%E5%BC%BA%E8%BD%AC%E7%BB%93%E6%9E%84%E4%BD%93%EF%BC%9F"><span class="toc-number">7.</span> <span class="toc-text">为什么协议解析不建议直接强转结构体？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8%E6%93%8D%E4%BD%9C%E4%B8%BA%E4%BB%80%E4%B9%88%E5%B8%B8%E7%94%A8%E4%BD%8D%E8%BF%90%E7%AE%97%EF%BC%9F"><span class="toc-number">8.</span> <span class="toc-text">寄存器操作为什么常用位运算？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E7%9C%8B%E5%BE%85%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F%EF%BC%9F"><span class="toc-number">9.</span> <span class="toc-text">如何看待全局变量？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B5%8C%E5%85%A5%E5%BC%8F-C-%E4%BB%A3%E7%A0%81%E6%9C%80%E9%87%8D%E8%A6%81%E7%9A%84%E4%B9%A0%E6%83%AF%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">10.</span> <span class="toc-text">嵌入式 C 代码最重要的习惯是什么？</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/06/17/%E6%80%9D%E6%BE%88%E9%9D%A2%E8%AF%95%E7%AC%94%E8%AE%B0-%E5%B5%8C%E5%85%A5%E5%BC%8FC/" title="思澈面试笔记-嵌入式C">思澈面试笔记-嵌入式C</a><time datetime="2026-06-17T01:28:58.781Z" title="Created 2026-06-17 01:28:58">2026-06-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/06/17/%E6%80%9D%E6%BE%88%E9%9D%A2%E8%AF%95%E7%AC%94%E8%AE%B0-%E6%9E%84%E5%BB%BA%E7%B3%BB%E7%BB%9F/" title="思澈面试笔记-构建系统">思澈面试笔记-构建系统</a><time datetime="2026-06-17T01:25:06.076Z" title="Created 2026-06-17 01:25:06">2026-06-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/24/SF32LB52%E2%80%94%E4%B8%AA%E4%BA%BA%E6%AF%95%E8%AE%BE%E7%AC%94%E8%AE%B0%EF%BC%881%EF%BC%89/" title="SF32LB52—个人毕设笔记—添加Borad及修改PinMux（1）">SF32LB52—个人毕设笔记—添加Borad及修改PinMux（1）</a><time datetime="2025-11-24T07:04:34.565Z" title="Created 2025-11-24 07:04:34">2025-11-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/08/20/%E9%BB%84%E5%B1%B1%E6%B4%BE%E4%B9%8BBLE/" title="黄山派之BLE">黄山派之BLE</a><time datetime="2025-08-20T05:34:52.952Z" title="Created 2025-08-20 05:34:52">2025-08-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/04/11/%E7%AC%AC%E4%BA%8C%E7%AB%A0%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" title="第二章内存管理">第二章内存管理</a><time datetime="2025-04-11T02:50:01.960Z" title="Created 2025-04-11 02:50:01">2025-04-11</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div id="footer-bar-tips"></div><div id="footer-type-tips"></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/anzhiyu-c/hexo-theme-anzhiyu" title="主题">主题</a></div></div></div></footer></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">Articles</div><div class="length-num">52</div></a><a href="/tags/" title="tag"><div class="headline">Tags</div><div class="length-num">23</div></a><a href="/categories/" title="category"><div class="headline">Categories</div><div class="length-num">21</div></a></div><span class="sidebar-menu-item-title">Function</span><div class="sidebar-menu-item"><a class="darkmode_switchbutton menu-child" href="javascript:void(0);" title="Display Mode"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span>Display Mode</span></a></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://zh.annas-archive.org/" title="安娜图书"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/book.png" alt="安娜图书"/><span class="back-menu-item-text">安娜图书</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="https://www.book123.info/" title="无名图书"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/book-open.png" alt="无名图书"/><span class="back-menu-item-text">无名图书</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">项目</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://image.anheyu.com/" title="项目"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://image.anheyu.com/favicon.ico" alt="项目"/><span class="back-menu-item-text">项目</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/album/"><i class="anzhiyufont anzhiyu-icon-images faa-tada" style="font-size: 0.9em;"></i><span> 相册集</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li></ul></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/APP%E5%BC%80%E5%8F%91/" style="font-size: 0.88rem;">APP开发<sup>1</sup></a><a href="/tags/CSS/" style="font-size: 0.88rem;">CSS<sup>1</sup></a><a href="/tags/HTML/" style="font-size: 0.88rem;">HTML<sup>3</sup></a><a href="/tags/HarmonyOS/" style="font-size: 0.88rem;">HarmonyOS<sup>1</sup></a><a href="/tags/RTOS/" style="font-size: 0.88rem;">RTOS<sup>2</sup></a><a href="/tags/SF32/" style="font-size: 0.88rem;">SF32<sup>1</sup></a><a href="/tags/STM32/" style="font-size: 0.88rem;">STM32<sup>9</sup></a><a href="/tags/Ubuntu%E7%BB%B4%E6%8A%A4/" style="font-size: 0.88rem;">Ubuntu维护<sup>1</sup></a><a href="/tags/windows%E7%BB%B4%E6%8A%A4/" style="font-size: 0.88rem;">windows维护<sup>1</sup></a><a href="/tags/%E5%8D%8E%E4%B8%BAIOT/" style="font-size: 0.88rem;">华为IOT<sup>1</sup></a><a href="/tags/%E5%8D%8E%E4%B8%BA%E4%BA%91IOT/" style="font-size: 0.88rem;">华为云IOT<sup>1</sup></a><a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/" style="font-size: 0.88rem;">嵌入式<sup>1</sup></a><a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8FC/" style="font-size: 0.88rem;">嵌入式C<sup>6</sup></a><a href="/tags/%E6%80%9D%E6%BE%88/" style="font-size: 0.88rem;">思澈<sup>1</sup></a><a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 0.88rem;">数据库<sup>2</sup></a><a href="/tags/%E6%A0%B7%E9%A2%98/" style="font-size: 0.88rem;">样题<sup>1</sup></a><a href="/tags/%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/" style="font-size: 0.88rem;">电子技术<sup>1</sup></a><a href="/tags/%E7%94%B5%E8%B7%AF%E5%92%8C%E7%94%B5%E8%B7%AF%E6%A8%A1%E5%9E%8B/" style="font-size: 0.88rem;">电路和电路模型<sup>1</sup></a><a href="/tags/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/" style="font-size: 0.88rem;">电路基础<sup>1</sup></a><a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 0.88rem;">算法<sup>5</sup></a><a href="/tags/%E8%BD%AF%E8%80%83/" style="font-size: 0.88rem;">软考<sup>1</sup></a><a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 0.88rem;">面试<sup>2</sup></a><a href="/tags/%E9%BB%84%E5%B1%B1%E6%B4%BE/" style="font-size: 0.88rem;">黄山派<sup>1</sup></a></div></div><hr/></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="Switch Between Traditional Chinese And Simplified Chinese">繁</button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><button class="search-close-button"><i class="anzhiyufont anzhiyu-icon-xmark"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://y.qq.com/n/ryqq/playlist/8802438608&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.umd.js"></script><script src="https://cdn.cbd.int/instant.page@5.2.0/instantpage.js" type="module"></script><script src="https://cdn.cbd.int/vanilla-lazyload@17.8.5/dist/lazyload.iife.min.js"></script><script src="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.cbd.int/pangu@4.0.7/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script>// 消除控制台打印
+var HoldLog = console.log;
+console.log = function () {};
+let now1 = new Date();
+queueMicrotask(() => {
+  const Log = function () {
+    HoldLog.apply(console, arguments);
+  }; //在恢复前输出日志
+  const grt = new Date("04/01/2021 00:00:00"); //此处修改你的建站时间或者网站上线时间
+  now1.setTime(now1.getTime() + 250);
+  const days = (now1 - grt) / 1000 / 60 / 60 / 24;
+  const dnum = Math.floor(days);
+  const ascll = [
+    `欢迎使用安知鱼!`,
+    `生活明朗, 万物可爱`,
+    `
+        
+       █████╗ ███╗   ██╗███████╗██╗  ██╗██╗██╗   ██╗██╗   ██╗
+      ██╔══██╗████╗  ██║╚══███╔╝██║  ██║██║╚██╗ ██╔╝██║   ██║
+      ███████║██╔██╗ ██║  ███╔╝ ███████║██║ ╚████╔╝ ██║   ██║
+      ██╔══██║██║╚██╗██║ ███╔╝  ██╔══██║██║  ╚██╔╝  ██║   ██║
+      ██║  ██║██║ ╚████║███████╗██║  ██║██║   ██║   ╚██████╔╝
+      ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝    ╚═════╝
+        
+        `,
+    "已上线",
+    dnum,
+    "天",
+    "©2020 By 安知鱼 V1.6.12",
+  ];
+  const ascll2 = [`NCC2-036`, `调用前置摄像头拍照成功，识别为【小笨蛋】.`, `Photo captured: `, `🤪`];
+
+  setTimeout(
+    Log.bind(
+      console,
+      `\n%c${ascll[0]} %c ${ascll[1]} %c ${ascll[2]} %c${ascll[3]}%c ${ascll[4]}%c ${ascll[5]}\n\n%c ${ascll[6]}\n`,
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      ""
+    )
+  );
+  setTimeout(
+    Log.bind(
+      console,
+      `%c ${ascll2[0]} %c ${ascll2[1]} %c \n${ascll2[2]} %c\n${ascll2[3]}\n`,
+      "color:white; background-color:#4fd953",
+      "",
+      "",
+      'background:url("https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/tinggge.gif") no-repeat;font-size:450%'
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c WELCOME %c 你好，小笨蛋.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(
+      console,
+      "%c ⚡ Powered by 安知鱼 %c 你正在访问 为巽 的博客.",
+      "color:white; background-color:#f0ad4e",
+      ""
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c W23-12 %c 你已打开控制台.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(console, "%c S013-782 %c 你现在正处于监控中.", "color:white; background-color:#d9534f", "")
+  );
+});</script><script async src="/anzhiyu/random.js"></script><script src="https://cdn.cbd.int/algoliasearch@4.18.0/dist/algoliasearch-lite.umd.js"></script><script src="https://cdn.cbd.int/instantsearch.js@4.60.0/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script><div class="js-pjax"><input type="hidden" name="page-type" id="page-type" value="post"></div><script>var visitorMail = "";
+</script><script async data-pjax src="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css"><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.cbd.int/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://cdn.cbd.int/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://cdn.cbd.int/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  anzhiyu.removeGlobalFnEvent('pjax')
+  anzhiyu.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script charset="UTF-8" src="https://cdn.cbd.int/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div><div id="popup-window"><div class="popup-window-title">通知</div><div class="popup-window-divider"></div><div class="popup-window-content"><div class="popup-tip">你好呀</div><div class="popup-link"><i class="anzhiyufont anzhiyu-icon-arrow-circle-right"></i></div></div></div><script async>window.onload=function(){var a=document.createElement('script'),b=document.getElementsByTagName('script')[0];a.type='text/javascript',a.async=!0,a.src='/sw-register.js?v='+Date.now(),b.parentNode.insertBefore(a,b)};</script></body></html>

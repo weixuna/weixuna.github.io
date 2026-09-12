@@ -1871,11 +1871,6 @@ Linux man-pages：fork(2)、execve(2)、mmap(2)、select(2)、poll(2)、epoll(7)
       </tags>
   </entry>
   <entry>
-    <title>CSS第二天</title>
-    <url>/2023/10/24/CSS%E7%AC%AC%E4%BA%8C%E5%A4%A9/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>Dx-C511模块连接华为云OTA</title>
     <url>/2024/09/26/Dx-C511%E6%A8%A1%E5%9D%97%E8%BF%9E%E6%8E%A5%E5%8D%8E%E4%B8%BA%E4%BA%91%E4%B8%8B%E8%BD%BD%E5%9B%BA%E4%BB%B6/</url>
     <content><![CDATA[1、配置APN
@@ -1909,6 +1904,11 @@ AT$HTTPACTION&#x3D;0
       <tags>
         <tag>华为IOT</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>CSS第二天</title>
+    <url>/2023/10/24/CSS%E7%AC%AC%E4%BA%8C%E5%A4%A9/</url>
+    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>ESP32-P4 骑行终端项目深挖面试准备</title>
@@ -2399,6 +2399,25 @@ line-through
       </tags>
   </entry>
   <entry>
+    <title>SCREEPS</title>
+    <url>/2023/11/27/SCREEPS/</url>
+    <content><![CDATA[创建机器人var crepp = Game.creeps[&#x27;MiningRobot&#x27;];Game.spawns[&quot;Spawn1&quot;].spawnCreep([WORK, CARRY, MOVE], &quot;Harvester1&quot;);
+
+采集能量module.exports.loop = function () &#123;    var creep = Game.creeps[&#x27;Harvester1&#x27;];    var sources = creep.room.find(FIND_SOURCES);    if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) &#123;        creep.moveTo(sources[0]);    &#125;&#125;
+
+采集能量返回module.exports.loop = function () &#123;    var creep = Game.creeps[&#x27;Harvester1&#x27;];    if(creep.store.getFreeCapacity() &gt; 0) &#123;        var sources = creep.room.find(FIND_SOURCES);        if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) &#123;            creep.moveTo(sources[0]);        &#125;    &#125;    else &#123;        if( creep.transfer(Game.spawns[&#x27;Spawn1&#x27;], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) &#123;            creep.moveTo(Game.spawns[&#x27;Spawn1&#x27;]);        &#125;    &#125;&#125;
+
+module.exports.loop = function () &#123;    for(var name in Game.creeps) &#123;        var creep = Game.creeps[name];        if(creep.store.getFreeCapacity() &gt; 0) &#123;            //检查是否又剩余的容量            var sources = creep.room.find(FIND_SOURCES);            //创建能量的变量，指的是找到这所房间的全部能量            if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) &#123;                 //让creep从列表的第一个能源点采集能源                creep.moveTo(sources[0]);                //如果不在能源采集范围，能会走向第一个能源点移动            &#125;        &#125;        else &#123;//当容量已满时，返回Spawn1            if(creep.transfer(Game.spawns[&#x27;Spawn1&#x27;], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) &#123;                creep.moveTo(Game.spawns[&#x27;Spawn1&#x27;]);            &#125;        &#125;    &#125;&#125;
+
+代码优化var roleHarvester = require(&#x27;role.harvester&#x27;);module.exports.loop = function () &#123;    for(var name in Game.creeps) &#123;        var creep = Game.creeps[name];        roleHarvester.run(creep);    &#125;&#125;var roleHarvester = &#123;    /** @param &#123;Creep&#125; creep **/    run: function(creep) &#123;	    if(creep.store.getFreeCapacity() &gt; 0) &#123;            var sources = creep.room.find(FIND_SOURCES);            if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) &#123;                creep.moveTo(sources[0]);            &#125;        &#125;        else &#123;            if(creep.transfer(Game.spawns[&#x27;Spawn1&#x27;], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) &#123;                creep.moveTo(Game.spawns[&#x27;Spawn1&#x27;]);            &#125;        &#125;	&#125;&#125;;module.exports = roleHarvester;
+
+升级建筑//生成机器人Game.spawns[&#x27;Spawn1&#x27;].spawnCreep( [WORK, CARRY, MOVE], &#x27;Upgrader1&#x27; );var roleHarvester = require(&#x27;role.harvester&#x27;);var roleUpgrader = require(&#x27;role.upgrader&#x27;);module.exports.loop = function () &#123;    for(var name in Game.creeps) &#123;        var creep = Game.creeps[name];        if(creep.memory.role == &#x27;harvester&#x27;) &#123;            roleHarvester.run(creep);        &#125;        if(creep.memory.role == &#x27;upgrader&#x27;) &#123;            roleUpgrader.run(creep);        &#125;    &#125;&#125;
+
+var roleUpgrader = &#123;    /** @param &#123;Creep&#125; creep **/    run: function(creep) &#123;	    if(creep.store[RESOURCE_ENERGY] == 0) &#123;            var sources = creep.room.find(FIND_SOURCES);            if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) &#123;                creep.moveTo(sources[0]);            &#125;        &#125;        else &#123;            if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) &#123;                creep.moveTo(creep.room.controller);            &#125;        &#125;	&#125;&#125;;module.exports = roleUpgrader;//每个 creep 都有的 memory 属性，该属性允许在 creep 的“内存”中写入自定义信息。Game.creeps[&#x27;Harvester1&#x27;].memory.role = &#x27;harvester&#x27;;Game.creeps[&#x27;Upgrader1&#x27;].memory.role = &#x27;upgrader&#x27;;//mainvar roleHarvester = require(&#x27;role.harvester&#x27;);var roleUpgrader = require(&#x27;role.upgrader&#x27;);module.exports.loop = function () &#123;    for(var name in Game.creeps) &#123;        var creep = Game.creeps[name];        if(creep.memory.role == &#x27;harvester&#x27;) &#123;            roleHarvester.run(creep);        &#125;        if(creep.memory.role == &#x27;upgrader&#x27;) &#123;            roleUpgrader.run(creep);        &#125;    &#125;&#125;
+
+]]></content>
+  </entry>
+  <entry>
     <title>HTML第二天</title>
     <url>/2023/10/12/HTML%E7%AC%AC%E4%BA%8C%E5%A4%A9/</url>
     <content><![CDATA[1.表格的基本语法&lt;table&gt; //表格标签  &lt;tr&gt; //行    &lt;td&gt;单元文字&lt;/td&gt;//单元格      &lt;th&gt;姓名&lt;/th&gt;//表格头部份  &lt;/tr&gt;&lt;/table&gt;
@@ -2510,25 +2529,6 @@ placeholder:占位符
       <tags>
         <tag>HTML</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>SCREEPS</title>
-    <url>/2023/11/27/SCREEPS/</url>
-    <content><![CDATA[创建机器人var crepp = Game.creeps[&#x27;MiningRobot&#x27;];Game.spawns[&quot;Spawn1&quot;].spawnCreep([WORK, CARRY, MOVE], &quot;Harvester1&quot;);
-
-采集能量module.exports.loop = function () &#123;    var creep = Game.creeps[&#x27;Harvester1&#x27;];    var sources = creep.room.find(FIND_SOURCES);    if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) &#123;        creep.moveTo(sources[0]);    &#125;&#125;
-
-采集能量返回module.exports.loop = function () &#123;    var creep = Game.creeps[&#x27;Harvester1&#x27;];    if(creep.store.getFreeCapacity() &gt; 0) &#123;        var sources = creep.room.find(FIND_SOURCES);        if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) &#123;            creep.moveTo(sources[0]);        &#125;    &#125;    else &#123;        if( creep.transfer(Game.spawns[&#x27;Spawn1&#x27;], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) &#123;            creep.moveTo(Game.spawns[&#x27;Spawn1&#x27;]);        &#125;    &#125;&#125;
-
-module.exports.loop = function () &#123;    for(var name in Game.creeps) &#123;        var creep = Game.creeps[name];        if(creep.store.getFreeCapacity() &gt; 0) &#123;            //检查是否又剩余的容量            var sources = creep.room.find(FIND_SOURCES);            //创建能量的变量，指的是找到这所房间的全部能量            if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) &#123;                 //让creep从列表的第一个能源点采集能源                creep.moveTo(sources[0]);                //如果不在能源采集范围，能会走向第一个能源点移动            &#125;        &#125;        else &#123;//当容量已满时，返回Spawn1            if(creep.transfer(Game.spawns[&#x27;Spawn1&#x27;], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) &#123;                creep.moveTo(Game.spawns[&#x27;Spawn1&#x27;]);            &#125;        &#125;    &#125;&#125;
-
-代码优化var roleHarvester = require(&#x27;role.harvester&#x27;);module.exports.loop = function () &#123;    for(var name in Game.creeps) &#123;        var creep = Game.creeps[name];        roleHarvester.run(creep);    &#125;&#125;var roleHarvester = &#123;    /** @param &#123;Creep&#125; creep **/    run: function(creep) &#123;	    if(creep.store.getFreeCapacity() &gt; 0) &#123;            var sources = creep.room.find(FIND_SOURCES);            if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) &#123;                creep.moveTo(sources[0]);            &#125;        &#125;        else &#123;            if(creep.transfer(Game.spawns[&#x27;Spawn1&#x27;], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) &#123;                creep.moveTo(Game.spawns[&#x27;Spawn1&#x27;]);            &#125;        &#125;	&#125;&#125;;module.exports = roleHarvester;
-
-升级建筑//生成机器人Game.spawns[&#x27;Spawn1&#x27;].spawnCreep( [WORK, CARRY, MOVE], &#x27;Upgrader1&#x27; );var roleHarvester = require(&#x27;role.harvester&#x27;);var roleUpgrader = require(&#x27;role.upgrader&#x27;);module.exports.loop = function () &#123;    for(var name in Game.creeps) &#123;        var creep = Game.creeps[name];        if(creep.memory.role == &#x27;harvester&#x27;) &#123;            roleHarvester.run(creep);        &#125;        if(creep.memory.role == &#x27;upgrader&#x27;) &#123;            roleUpgrader.run(creep);        &#125;    &#125;&#125;
-
-var roleUpgrader = &#123;    /** @param &#123;Creep&#125; creep **/    run: function(creep) &#123;	    if(creep.store[RESOURCE_ENERGY] == 0) &#123;            var sources = creep.room.find(FIND_SOURCES);            if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) &#123;                creep.moveTo(sources[0]);            &#125;        &#125;        else &#123;            if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) &#123;                creep.moveTo(creep.room.controller);            &#125;        &#125;	&#125;&#125;;module.exports = roleUpgrader;//每个 creep 都有的 memory 属性，该属性允许在 creep 的“内存”中写入自定义信息。Game.creeps[&#x27;Harvester1&#x27;].memory.role = &#x27;harvester&#x27;;Game.creeps[&#x27;Upgrader1&#x27;].memory.role = &#x27;upgrader&#x27;;//mainvar roleHarvester = require(&#x27;role.harvester&#x27;);var roleUpgrader = require(&#x27;role.upgrader&#x27;);module.exports.loop = function () &#123;    for(var name in Game.creeps) &#123;        var creep = Game.creeps[name];        if(creep.memory.role == &#x27;harvester&#x27;) &#123;            roleHarvester.run(creep);        &#125;        if(creep.memory.role == &#x27;upgrader&#x27;) &#123;            roleUpgrader.run(creep);        &#125;    &#125;&#125;
-
-]]></content>
   </entry>
   <entry>
     <title>SF32LB52—个人毕设笔记—添加Borad及修改PinMux（1）</title>
@@ -5646,39 +5646,6 @@ continue 结束本次循环，进入下一次循环
       </tags>
   </entry>
   <entry>
-    <title>Mysql数据库</title>
-    <url>/2023/08/29/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E4%BA%86%E8%A7%A3%E6%95%B0%E6%8D%AE%E5%BA%93/</url>
-    <content><![CDATA[一、了解 SQL1、什么是数据库数据库是以某种组织的方式存储的数据集合。
-数据库（database）保存有组织的数据的容器（一个文件或者一组文件）
-更准确的来说，数据库软件称为数据库管理系统（DBMS）。通过 DBMS 创建和操作的容器
-2、什么是表表 是一种结构化的文件，用来存储某种特定类型的数据。
-3、什么是模式模式 关于数据库和表的布局以及特性的信息。
-4、列和数据类型表是由列组成。列中存储这表中某种部分的信息。
-列 表中的一个字段。所有表都是由一个或多个列组成的。
-数据类型 所容许的数据的类型。每个字段都有相应的数据类型。
-5、行表中的数据都是按行存储的，保存的记录存储在自己的行内。
-行 表中的一个记录。
-6、主键主键（又称键码、码） 一列（一组列），其值能够唯一区分表中的每个行。
-满足条件：
-任意两行都不具有相同的主键值。
-每个行都必须具有一个主键值（主键列不允许 null 值）
-二、了解 mysql一、客户机-服务器软件MySQL、Oracle 以及 Microsoft SQL Server 等数据库是基于客户机—服务器的数据库
-DBMS（数据库管理系统）可以分为两类：
-（1）基于共享文件系统的 DBMS（2）基于客户机-服务器的 DBMS
-
-与数据文件打交道的只有服务器软件。关于数据、数据添加、删除和数据更新的所有请求都是由服务器软件完成。
-客户机是与用户打交道的软件。例如：请求一个按字母顺序列出的产品表，则客户机软件通过网阔提交该请求给服务器软件。服务器软件处理这个请求，根据需求过滤、丢弃和排序数据，然后送回客户机软件。
-
-三、排序索检数据一、子句有些字句是必需，有一些是可选的。一个子句通常由一个关键字和所提供的数据组成。
-]]></content>
-      <categories>
-        <category>Mysql</category>
-      </categories>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>第一章-初识STM32</title>
     <url>/2023/08/17/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E5%88%9D%E8%AF%86STM32/</url>
     <content><![CDATA[一、芯片里面有什么1.片上外设
@@ -5725,6 +5692,39 @@ FLASH：G 表示 1024KB,C 表示 256，E 表示 512，I 表示 2048
       </categories>
       <tags>
         <tag>STM32</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Mysql数据库</title>
+    <url>/2023/08/29/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E4%BA%86%E8%A7%A3%E6%95%B0%E6%8D%AE%E5%BA%93/</url>
+    <content><![CDATA[一、了解 SQL1、什么是数据库数据库是以某种组织的方式存储的数据集合。
+数据库（database）保存有组织的数据的容器（一个文件或者一组文件）
+更准确的来说，数据库软件称为数据库管理系统（DBMS）。通过 DBMS 创建和操作的容器
+2、什么是表表 是一种结构化的文件，用来存储某种特定类型的数据。
+3、什么是模式模式 关于数据库和表的布局以及特性的信息。
+4、列和数据类型表是由列组成。列中存储这表中某种部分的信息。
+列 表中的一个字段。所有表都是由一个或多个列组成的。
+数据类型 所容许的数据的类型。每个字段都有相应的数据类型。
+5、行表中的数据都是按行存储的，保存的记录存储在自己的行内。
+行 表中的一个记录。
+6、主键主键（又称键码、码） 一列（一组列），其值能够唯一区分表中的每个行。
+满足条件：
+任意两行都不具有相同的主键值。
+每个行都必须具有一个主键值（主键列不允许 null 值）
+二、了解 mysql一、客户机-服务器软件MySQL、Oracle 以及 Microsoft SQL Server 等数据库是基于客户机—服务器的数据库
+DBMS（数据库管理系统）可以分为两类：
+（1）基于共享文件系统的 DBMS（2）基于客户机-服务器的 DBMS
+
+与数据文件打交道的只有服务器软件。关于数据、数据添加、删除和数据更新的所有请求都是由服务器软件完成。
+客户机是与用户打交道的软件。例如：请求一个按字母顺序列出的产品表，则客户机软件通过网阔提交该请求给服务器软件。服务器软件处理这个请求，根据需求过滤、丢弃和排序数据，然后送回客户机软件。
+
+三、排序索检数据一、子句有些字句是必需，有一些是可选的。一个子句通常由一个关键字和所提供的数据组成。
+]]></content>
+      <categories>
+        <category>Mysql</category>
+      </categories>
+      <tags>
+        <tag>数据库</tag>
       </tags>
   </entry>
   <entry>
@@ -6087,34 +6087,6 @@ GPIO 引脚将信号传输到 stm32 其他片上外设，由该外设读取引�
       </tags>
   </entry>
   <entry>
-    <title>第九章 STM32中断应用</title>
-    <url>/2024/05/09/%E7%AC%AC%E4%B9%9D%E7%AB%A0%20STM32%E4%B8%AD%E6%96%AD%E5%BA%94%E7%94%A8/</url>
-    <content><![CDATA[一、中断概述中断时出现某些意外需要主机干预，机器能自动停止运行的程序，转入新的处理的程序，处理完之后返回程序被暂停的程序，继续运行。
-异常就是中断，中断就是异常。
-异常分为：系统异常和外部中断。
-二、NVIC介绍NVIC是嵌套向量中断控制器，控制芯片中断的功能。
-一般来说，使用ISER（使能中断）、ICER（失能中断）和IP（设置中断优先级）寄存器。
-（不常用）
-
-三、优先级中断优先级寄存器NVIC_IPRx，用来配置外部中断的优先级。如果抢占优先级相同，九比较子优先级，如果都相同，比较硬件中断编号，编号越小，优先级越高
-
-四、优先级分组优先级分组由外设SCB的应用程序中断和复位控制寄存器AIRCR的PRIGROUP[10:8]决定，主优先级&#x3D;抢占优先级
-/*** 配置中断优先级分组：抢占优先级和子优先级* 形参如下：* @arg NVIC_PriorityGroup_0: 0bit for 抢占优先级* 4 bits for 子优先级* @arg NVIC_PriorityGroup_1: 1 bit for 抢占优先级* 3 bits for 子优先级* @arg NVIC_PriorityGroup_2: 2 bit for 抢占优先级* 2 bits for 子优先级* @arg NVIC_PriorityGroup_3: 3 bit for 抢占优先级* 1 bits for 子优先级* @arg NVIC_PriorityGroup_4: 4 bit for 抢占优先级* 0 bits for 子优先级* @ 注意 如果优先级分组为 0，则抢占优先级就不存在，优先级就全部由子优先级控制*/void NVIC_PriorityGroupConfig(uint32_t PriorityGroup)&#123;     // 检查参数     assert_param(IS_NVIC_PRIORITY_GROUP(PriorityGroup));     // 设置优先级分组     NVIC_SetPriorityGrouping(PriorityGroup);&#125;
-
-
-五、中断编程配置中断一般使用三个：
-1、使用 HAL_NVIC_SetPriorityGrouping(uint32_t PriorityGroup) 函数配置中断优先级分组。一般默认是 NVIC_PRIORITYGROUP_4 分组 4。
-2、使用 HAL_NVIC_SetPriority (IRQn_Type IRQn, uint32_t PreemptPriority, uint32_t SubPriority) 函数配置具体外设中断通道的抢占优先级和子优先级。
-3、使用 HAL_NVIC_EnableIRQ 函数使能中断请求。
-]]></content>
-      <categories>
-        <category>野火 STM32</category>
-      </categories>
-      <tags>
-        <tag>STM32</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>第二章 算法</title>
     <url>/2024/02/29/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[2.1 算法定义算法是解决特定问题求解步骤的描述，计算机中表现位指令的有限序列，并且每条指令表示一个或多个操作。
@@ -6148,6 +6120,34 @@ GPIO 引脚将信号传输到 stm32 其他片上外设，由该外设读取引�
       </categories>
       <tags>
         <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>第九章 STM32中断应用</title>
+    <url>/2024/05/09/%E7%AC%AC%E4%B9%9D%E7%AB%A0%20STM32%E4%B8%AD%E6%96%AD%E5%BA%94%E7%94%A8/</url>
+    <content><![CDATA[一、中断概述中断时出现某些意外需要主机干预，机器能自动停止运行的程序，转入新的处理的程序，处理完之后返回程序被暂停的程序，继续运行。
+异常就是中断，中断就是异常。
+异常分为：系统异常和外部中断。
+二、NVIC介绍NVIC是嵌套向量中断控制器，控制芯片中断的功能。
+一般来说，使用ISER（使能中断）、ICER（失能中断）和IP（设置中断优先级）寄存器。
+（不常用）
+
+三、优先级中断优先级寄存器NVIC_IPRx，用来配置外部中断的优先级。如果抢占优先级相同，九比较子优先级，如果都相同，比较硬件中断编号，编号越小，优先级越高
+
+四、优先级分组优先级分组由外设SCB的应用程序中断和复位控制寄存器AIRCR的PRIGROUP[10:8]决定，主优先级&#x3D;抢占优先级
+/*** 配置中断优先级分组：抢占优先级和子优先级* 形参如下：* @arg NVIC_PriorityGroup_0: 0bit for 抢占优先级* 4 bits for 子优先级* @arg NVIC_PriorityGroup_1: 1 bit for 抢占优先级* 3 bits for 子优先级* @arg NVIC_PriorityGroup_2: 2 bit for 抢占优先级* 2 bits for 子优先级* @arg NVIC_PriorityGroup_3: 3 bit for 抢占优先级* 1 bits for 子优先级* @arg NVIC_PriorityGroup_4: 4 bit for 抢占优先级* 0 bits for 子优先级* @ 注意 如果优先级分组为 0，则抢占优先级就不存在，优先级就全部由子优先级控制*/void NVIC_PriorityGroupConfig(uint32_t PriorityGroup)&#123;     // 检查参数     assert_param(IS_NVIC_PRIORITY_GROUP(PriorityGroup));     // 设置优先级分组     NVIC_SetPriorityGrouping(PriorityGroup);&#125;
+
+
+五、中断编程配置中断一般使用三个：
+1、使用 HAL_NVIC_SetPriorityGrouping(uint32_t PriorityGroup) 函数配置中断优先级分组。一般默认是 NVIC_PRIORITYGROUP_4 分组 4。
+2、使用 HAL_NVIC_SetPriority (IRQn_Type IRQn, uint32_t PreemptPriority, uint32_t SubPriority) 函数配置具体外设中断通道的抢占优先级和子优先级。
+3、使用 HAL_NVIC_EnableIRQ 函数使能中断请求。
+]]></content>
+      <categories>
+        <category>野火 STM32</category>
+      </categories>
+      <tags>
+        <tag>STM32</tag>
       </tags>
   </entry>
   <entry>
@@ -7088,6 +7088,38 @@ SPI&#x2F;I2C&#x2F;UART&#x2F;DMA、GPIO 中断、逻辑分析仪、JTAG、非阻�
       <categories>
         <category>项目</category>
       </categories>
+  </entry>
+  <entry>
+    <title>骑行码表项目：项目架构与面试总览</title>
+    <url>/2026/09/12/%E9%AA%91%E8%A1%8C%E7%A0%81%E8%A1%A8%E9%A1%B9%E7%9B%AE%EF%BC%9A%E9%A1%B9%E7%9B%AE%E6%9E%B6%E6%9E%84%E4%B8%8E%E9%9D%A2%E8%AF%95%E6%80%BB%E8%A7%88/</url>
+    <content><![CDATA[1. 一句话定义这是一个运行在 ESP32-P4 上的圆形 LVGL 骑行终端。P4 负责业务计算、SD 地图、显示、音频和协议栈；ESP32-C6 只提供 Bluetooth Controller，二者通过 ESP-Hosted SDIO 交换 HCI。设备侧把 BLE 路线、手机定位、GNSS、传感器和 DEMO 数据汇聚到统一运动模型，再由 UI、历史记录和主动播报分别消费快照。
+2. 分层边界板级层 components/board_peripherals  PMIC / LCD / Touch / SDMMC / GNSS UART / I2S 音频 / IMU        |业务模型层 main/app_model + map  motion snapshot / weather / history / system time  map_store SD 数据 + map_route 路线投影        |协议接入层 bt + app_net + ai_voice  NimBLE GATT / BLE route / Wi-Fi STA / Xiaozhi WebSocket        |视图层 main/ui_app  ui_page_manager / 页面 / draw callback / 低频 timer
+
+底层任务不能调用 lv_...。UI 只在 LVGL 线程内读取快照并更新控件。跨任务传递使用 FreeRTOS queue、mutex、event group 或“带 generation 的快照”。
+3. 启动顺序及原因main/app_main() 的顺序是：NVS -&gt; board_peripherals_init() -&gt; 运动模型&#x2F;天气任务 -&gt; LCD -&gt; LVGL adapter -&gt; 输入设备 -&gt; UI -&gt; 按键 -&gt; BLE -&gt; 手动 Xiaozhi controller -&gt; 延迟挂载 SD。
+先初始化 NVS 是因为 Wi-Fi profile、天气、骑行历史都依赖 NVS。板级初始化必须早于 UI，确保电源、显示和音频设备状态可用。LVGL 启动后才允许创建页面。BLE 在 UI 之后启动，失败只记录 warning，不阻塞骑行 UI。SD 卡挂载被放到延迟任务，避免启动阶段和 ESP-Hosted&#x2F;显示 DMA 同时争用内部 SRAM。
+LVGL adapter 任务 priority&#x3D;24、core&#x3D;1、最大延迟 5 ms、栈在 PSRAM；这个优先级高于 TCP&#x2F;IP 线程，目的不是让业务跑得更快，而是避免联网时 LVGL worker 被饿死。
+4. 数据流：从手机路线到导航手机规划 GCJ-02 polyline  -&gt; Command Characteristic 0x22 BEGIN  -&gt; 0x23 按 offset 分块  -&gt; 0x24 COMMIT + CRC32  -&gt; ble_route task 形成 LOADED 快照  -&gt; map_route task 复制点列  -&gt; GCJ-02 迭代反算为 WGS84  -&gt; map_store 读取中心 3x3 个 2 km 网格  -&gt; 等距投影为 dm 世界坐标  -&gt; 累计距离/高程/包围盒  -&gt; UI 复制自己的 PSRAM 几何缓存并绘制
+
+PHONE 定位走另一条链：0x30 在 GATT 回调中只做协议解析，然后入队；phone_location_task 做精度&#x2F;时间&#x2F;跳点过滤，调用运动模型更新距离，并由 map_route_project_gcj02() 投影到路线。路线状态和定位来源是两个独立状态机。
+5. 面试中需要主动说清楚的取舍为什么大数据放 PSRAM，音频小块放内部 RAM地图网格、路线点列、历史图表和 Wi-Fi 扫描记录体积不可预测，使用 heap_caps_malloc(..., MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT)，避免挤占 DMA 所需的内部 SRAM。SDMMC、I2S 和 OPUS 热路径要求可寻址且对齐的内部 8-bit 缓冲，所以音频 raw&#x2F;PCM&#x2F;OPUS packet 和 MAX98357A 写入缓冲使用 MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT。
+为什么不在 LVGL 绘制回调里访问 SD 卡SD 读是阻塞 IO，且绘制回调运行在 UI 关键路径；把它放到 map_store task 后，UI 只看到旧快照或新快照，避免卡顿和并发破坏。
+为什么有 generation地图、路线、运动快照都可能在不同任务更新。generation 让 UI 判断“缓存是否仍对应当前源数据”，避免路线替换后旧屏幕点集继续被使用。generation 回绕到 0 时立即改为 1，避免 0 被当作“未初始化”。
+6. 当前边界当前没有 OTA、地图瓦片 BLE 传输、离线唤醒词、ESP-SR、MCP 设备控制工具。Xiaozhi 强制选 WebSocket，MQTT 配置即使返回也不使用。Live Metrics 只包含时间、距离、当前&#x2F;平均速度和保留的电池字段；完整历史记录通过独立 Ride Record characteristic 同步。
+7. 代码入口
+启动：main/main.c
+页面路由：main/ui_app/core/ui_page_manager.c
+统一数据：main/app_model/app_motion_model.c
+BLE：bt/app_ble.c、bt/app_ble_gatt.c、bt/app_ble_proto.c
+完整路线：bt/app_ble_route.c、map/map_route.c
+地图：map/map_store.c
+Wi-Fi&#x2F;Xiaozhi：main/app_net/app_wifi.c、main/ai_voice/app_ai_voice.c
+
+
+
+
+
+]]></content>
   </entry>
   <entry>
     <title>黄山派之BLE</title>

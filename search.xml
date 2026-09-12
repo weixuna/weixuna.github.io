@@ -2512,6 +2512,117 @@ placeholder:占位符
       </tags>
   </entry>
   <entry>
+    <title>RTOS 任务、并发与内存模型深挖</title>
+    <url>/2026/09/12/RTOS%20%E4%BB%BB%E5%8A%A1%E3%80%81%E5%B9%B6%E5%8F%91%E4%B8%8E%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E6%B7%B1%E6%8C%96/</url>
+    <content><![CDATA[1. 任务清单
+
+
+任务
+优先级&#x2F;栈
+触发或周期
+主要职责
+
+
+
+LVGL adapter
+24，PSRAM
+最长延迟 5 ms
+唯一 UI 线程
+
+
+app_button
+5&#x2F;4 KiB
+队列事件
+按键去抖、单击&#x2F;双击&#x2F;长按分发
+
+
+ble_route
+4&#x2F;4 KiB PSRAM
+BLE 命令队列
+路线接收、CRC、快照发布
+
+
+phone_location
+4&#x2F;3 KiB
+定位队列&#x2F;超时
+过滤定位、更新运动模型
+
+
+map_store
+4&#x2F;4 KiB
+地图请求
+SD 读取、校验、解析、快照交换
+
+
+map_route
+4&#x2F;4 KiB PSRAM
+路线 generation
+坐标转换、投影、高程预处理
+
+
+app_wifi
+4&#x2F;6 KiB PSRAM
+命令队列
+扫描、连接、超时、重试、NVS
+
+
+ai_voice
+4&#x2F;8 KiB PSRAM
+event group
+Xiaozhi 生命周期
+
+
+ai_audio
+4&#x2F;12 KiB
+OPUS 队列
+下行 OPUS 解码和 I2S 播放
+
+
+ai_mic
+4&#x2F;32 KiB PSRAM
+I2S 连续采样
+PCM 静音门、OPUS 编码、上传
+
+
+broadcast detect&#x2F;play
+3&#x2F;4-6 KiB
+1 s&#x2F;队列
+主动播报事件和 PCM 播放
+
+
+motion&#x2F;demo&#x2F;history&#x2F;weather
+3-4
+各自队列或 500 ms
+中央模型、模拟、持久化
+
+
+board_gnss&#x2F;attitude
+5&#x2F;Kconfig
+UART&#x2F;I2C
+传感器采集与融合
+
+
+优先级数字越大越优先。LVGL&#x3D;24、ESP-Hosted transport 约 23、TCP&#x2F;IP 约 18，业务 task 维持在 3~5，避免音频或 SD 任务压住 UI&#x2F;网络底层。
+2. 事件驱动而不是 UI 阻塞BLE GATT 回调只解析包并入队；Wi-Fi event handler 只把事件转换为命令；地图和路线 task 做文件&#x2F;浮点计算；音频回调只复制包并入 OPUS 队列。任何需要等待、读 SD、解码或 NVS commit 的动作都不在 ISR、GATT callback、LVGL callback 中执行。
+3. 快照一致性运动模型维护 app_motion_snapshot_t，读写由模型内部同步保护。快照带 version、source_timestamp_ms 和 valid_flags。UI 每秒读取一次，按 valid flag 更新字段；没有有效心率&#x2F;功率&#x2F;踏频时显式显示离线，而不是保留上一场骑行的旧值。
+地图&#x2F;路线使用 mutex 或临界区保护指针交换。读侧先复制结构体和 generation，再复制到页面私有缓存；如果 source generation 变化，页面丢弃本轮缓存并重建。
+4. 定位与运动状态机定位模式枚举为 AUTO&#x2F;DEMO&#x2F;PHONE&#x2F;GNSS，来源为 NONE&#x2F;DEMO&#x2F;PHONE&#x2F;GNSS。模式选择不改变路线快照；路线 LOADED 也不自动切 DEMO。运动状态为 IDLE&#x2F;RUNNING&#x2F;PAUSED&#x2F;FINISHED，仅 RUNNING 时累计距离、运动时间、爬升下降。
+PHONE 任务拒绝精度大于 50 m、时间戳倒退、异常跳点；超过 3 s 没有新包就标记 timeout，断 BLE 后不跨断连区间累计距离。DEMO 每 500 ms 更新，以当前完整路线总长度作为模拟终点。
+5. 队列满和背压BLE PHONE 队列长度 4，满时丢最旧样本，保证最新位置优先。路线命令队列长度 8，写入失败返回 ESP_ERR_TIMEOUT，小程序依据 Route Status 重试。OPUS 下行队列深度 12，满时释放最旧包后接收新包，不无限增大。
+主动播报 P0&#x2F;P1 队列深度均 4：P0 转向&#x2F;到达可打断 P1 和 Xiaozhi TTS；P1 里程&#x2F;时间&#x2F;速度变化在 TTS 时等待，满了丢新事件并记录 warning。
+6. 内存策略PSRAM地图 cell、路线接收缓冲（最大 24576 B）、路线点、累计距离、高程数组、Wi-Fi AP 记录、历史明细、AI voice 主任务栈和本地 PCM 读取缓冲使用 PSRAM。申请失败必须发布错误状态或跳过可选功能。
+内部 SRAMSDMMC DMA、I2S raw&#x2F;PCM&#x2F;OPUS packet、libopus decoder&#x2F;encoder 需要内部 8-bit。禁止用普通 malloc 在 UI 初始化阶段申请大块缓冲，也不通过无上限增大 task stack 解决溢出。
+7. 典型并发风险及现有处理
+Wi-Fi GOT_IP 不在事件回调里启动 TLS，而是投递给 ai_voice，并分段等待 1 s&#x2F;1 s&#x2F;0.5 s。
+Xiaozhi 断线不依赖 websocket 内部 5 s 重连，应用层释放 chat&#x2F;MCP，延迟 3 s 重建。
+本地播报开始时停止 TTS 下行、暂停麦克风上传；结束后按会话状态恢复。
+地图新快照发布前保留旧页面几何，避免 SD 慢读导致 UI 空白。
+页面退出时删除 timer、注销按键 handler、删除 LVGL root 和释放 PSRAM 缓存。
+
+8. 面试回答模板当被问“为什么这么多任务”时，回答重点是阻塞边界而非任务数量：SD、网络、音频编码、BLE 解析都有不同实时性和阻塞特征，拆分后用小消息在任务间传递；UI 只消费快照，保证最长路径可控。被问“如何证明没有竞态”时，指出所有共享对象都有 mutex&#x2F;临界区&#x2F;generation，callback 不持有 UI 指针，页面只拥有自己的缓存。
+]]></content>
+  </entry>
+  <entry>
     <title>SCREEPS</title>
     <url>/2023/11/27/SCREEPS/</url>
     <content><![CDATA[创建机器人var crepp = Game.creeps[&#x27;MiningRobot&#x27;];Game.spawns[&quot;Spawn1&quot;].spawnCreep([WORK, CARRY, MOVE], &quot;Harvester1&quot;);
@@ -2640,6 +2751,14 @@ http请求代码：
       </tags>
   </entry>
   <entry>
+    <title>大学生活</title>
+    <url>/2024/02/17/%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%B4%BB/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>阅读</category>
+      </categories>
+  </entry>
+  <entry>
     <title>地图数据转换与导航投影深挖</title>
     <url>/2026/09/12/%E5%9C%B0%E5%9B%BE%E6%95%B0%E6%8D%AE%E8%BD%AC%E6%8D%A2%E4%B8%8E%E5%AF%BC%E8%88%AA%E6%8A%95%E5%BD%B1%E6%B7%B1%E6%8C%96/</url>
     <content><![CDATA[1. 离线转换为什么做成 mapbin完整广东 GeoJSON 不能在设备上解析。tools/geojson_to_c_array_gui.py 采用两遍流式扫描：第一遍建立边界和网格统计，第二遍写入 SQLite 临时几何，再输出 map.idx&#x2F;map.dat。最终文件先写 .tmp，完成后替换正式文件，避免断电留下半包地图。
@@ -2669,14 +2788,6 @@ map_route_project_gcj02() 只是“转换坐标 + world 投影”的组合；map
 地图加载失败会不会黑屏？ 不会。无旧图时发布 ERROR，页面显示错误并可返回；有旧图时保留旧几何，只更新 error&#x2F;generation。
 
 ]]></content>
-  </entry>
-  <entry>
-    <title>大学生活</title>
-    <url>/2024/02/17/%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%B4%BB/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>阅读</category>
-      </categories>
   </entry>
   <entry>
     <title>思澈面试笔记-RTOS</title>
@@ -4772,159 +4883,6 @@ find / -type f -name &quot;*DB*&quot;
       </tags>
   </entry>
   <entry>
-    <title>数据库常用命令</title>
-    <url>/2023/08/29/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</url>
-    <content><![CDATA[修订：查看表中的字段
-show columns from 商品库存;xxxxxxxxxx columnshow columns from 商品库存;
-
-
-
-select 所在区域 from 商品库存 limit 5;  检索此语句使用SELECT语句检索单个列。LIMIT 5指示MySQL返回不多于5行。
-
-
-统计四张表的记录数,要求 SQL 语句禁用联合查询（Union、JOIN、多表
-SELECT	(SELECT COUNT(*) FROM d_3_1) AS dcount,	(SELECT COUNT(*) FROM 商品库存) AS scount
-
-
-一、连接数据库mysql -h 主机IP -P 端口号 -u 用户名 -p 密码
-
-在 UbuntuMySQL -u root -p
-
-连接远程主机
-mysql -h110.110.110.110 -u root -p 123;
-
-二、修改用户密码mysqladmin -u root -password ab12
-
-再次修改
-mysqladmin -u root -password djg345
-
-三、新增用户（1）增加一个用户 test1，密码为 abc
-grant select,insert,delete on *.*to [email]=test@&quot;%]test1@&quot;[/email]&quot;Indentified by&quot;abc&quot;;# grant on 命令格式：grant select on 数据库.* to 用户名@登录主机 identified by “密码”;
-
-（2）新增一个 test2 密码为 abc，只能 localhost 登录
-grant select,insert,update,delete on mydb.* to [email=test2@localhost]test2@localhsot[/email] identified by &quot;abc&quot;;# 如果不想test有密码可以在用一次打消密码grant select,insert,update,delete on mydb.* to [email=test2@localhost]test2@localhost[/email] identified by “”;=
-
-四、创建数据库（1）create database 命名;
-
-（2）创建数据库并分配用户
-#1create database 数据库名;#2create select,insert,update,delete,create,drop,alter on 数据库名.* to 数据库名@loclhost identified by &#x27;密码&#x27;;#3select password por &#x27;数据名&#x27;@&#x27;localhost&#x27; =old_password(&#x27;密码&#x27;);
-
-五、显示数据库show databases 显示所有数据库
-
-六、删除数据库drop database xhkdb;
-
-七、使用数据库use xhkdb;
-（1）use 语句可以通告 mysql 把数据库当作默认使用。知道下一个不同的 use 语句。
-
-（2）use 语句不会阻碍访问其他数据库中的表。ab1 数据库访问 author 表，并从 db2 数据库访问 editor 表
-use db1;select author_name,editor_name from author,ab2,editor;where author.editor_id = ab2.editor.editor_id;
-
-八、当前连接的数据库select database();
-（1）显示 mysql 版本
-select version();
-
-
-（2）显示当前时间
-select now();
-
-
-（3）显示年月日
-
-
-
-（4）显示字符串
-
-（5）当计算器
-
-（5）串接字符串
-
-&#x2F;&#x2F;这里用到 CONCAT()函数，用来把字符串串接起来。
-九、创建数据库表注意：要先使用 use 数据库名；
-create table 表名(	字段名1，数据类型 [列级别约束条件][默认值]，	字段名2，数据类型 [列级别约束条件][默认值],	……	[表级别约束条件])
-
-
-例如:创建 tb_emp1 表结构
-
-
-十、获取表结构查看表结构可以使用 describe 和 show create table；
-describe 表名;
-
-或
-desc 表名；
-
-show create table 可以查看显示创建表时的 create table 语句。
-show create table 表名\G;
-
-
-十一、删除数据表drop table if exists 表1，表2,表n
-
-
-十二、向表中插入数据insert into 插入新行
-insert into 表名称 values(值1，值2);# 也可以指定要插入数据的列insert into table_name(列1，列2)values(值1，值2)
-
-十三、查询表中数据SELECT &#123;* | &lt;字段列表&gt;&#125; [	 FROM &lt;表 1&gt;,&lt;表 2&gt;...	 [WHERE &lt;表达式&gt;	 [GROUP BY &lt;group by definition&gt;]	 [HAVING &lt;expression&gt; [&#123;&lt;operator&gt;&lt;expression&gt;&#125;...]] 	[ORDER BY &lt;order by definition&gt;] 	[LIMIT [&lt;offset&gt;,] &lt;row count&gt;] ]SELECT [字段 1,字段 2,…,字段 n]FROM [表或视图]WHERE [查询条件];
-
-
-十四、删除记录delete from table_name[where &lt;condition&gt;];#						指定删除条件delete from person where id=11;
-
-十五、修改表中的数据update table_nameset column_nmael=value1,column_name2=value2where(condition)
-
-column_name1，为指定更新的字段名称。value 为相对应指定字段的更新值。condition 更新记录需要满足的条件
-【例】在 person 表中，更新 id 值为 11 的记录，将 age 字段值改为 15，将 name 字段值改为 LiMing，SQL 语句如下：
-update person set age=15,name=&#x27;liming&#x27;where id=11;
-
-十六、增加字段alter add 表名 add 新字段 数据类型	约束条件 first|after 已存在字段名	        first将新添加的字段设置为表的第一个字段	        after新添加的字段指定在‘已存在字段名’的后面
-
-【例】在数据表 tb_dept1 中添加一个没有完整性约束的 INT 类型的字段 managerId（部门经理编号），SQL 语句如下：
-ALTER TABLE tb_dept1 ADD managerId INT(10);
-
-十七、修改表名alter table 旧表名 rename to新表名
-
-【例】将数据表 tb_dept3 改名为 tb_deptment3，SQL 语句如下：
-ALTER TABLE tb_dept3 RENAME tb_deptment3;
-
-十八、备份数据库mysqldump -u user -h host -p password dbname[tbname,[tbname]]&gt;filename.sql
-
-十九、还原数据库mysql -u user -p [dbname]&lt;filename.sql
-
-【例 1】使用 mysql 命令将 C:\backup\booksdb_20130301.sql 文件中的备份导入到数据库中，输入语句如下：
-mysql –u root –p booksDB &lt; C:/backup/booksdb_20130301.sql
-
-如果已经登录 MySQL 服务器，还可以使用 source 命令导入 sql 文件。source 语句语法如下：
-source filename
-
-【 例 2 】 使 用 root 用 户 登 录 到 服 务 器 ， 然 后 使 用 source 导 入 本 地 的 备 份 文 件 booksdb_20110101.sql，输入语句如下：
-–选择要恢复到的数据库
-mysql&gt; use booksDB;Database changed
-
-–使用 source 命令导入备份文件
-mysql&gt; source C:\backup\booksDB_20130301.sql
-
-二十、快速恢复数据库在 MySQL 服务器停止运行时，将备份的数据库文件复制到 MySQL 存放数据的位置（MySQL 的 data 文件夹）
-chown -R mysql.mysql /var/lib/mysql/dbname
-
-【例】从 mysqlhotcopy 复制的备份恢复数据库，输入语句如下：
-cp -R /usr/backup/test usr/local/mysql/data
-
-二十一、在 Ubuntu 下安装 mysqlsudo apt-get update #更新软件包sudo apt-get install mysql-server #安装数据库服务器启动：sudo /etc/init.d/mysql start停止：sudo /etc/init.d/mysql stop重启：sudo /etc/init.d/mysql restart登录：mysql -u root -p&lt;pwd&gt;
-
-二十二、关闭防火墙- sudo apt-get install ufw 安装防火墙- sudo ufw enable 打开防火墙- sudo ufw status 查看防火墙状态- sudo ufw disable 关闭防火墙
-
-MySQL 在 Ubuntu 使用二十三、在服务器 SQLSERVER 上，利用 U 盘“U 盘资料&#x2F;test.sql”还原三张数据表。
-
-二十四、统计三张表的记录数，查询结果要求如图。SELECT &#x27;table1&#x27; AS TableName, COUNT(*) AS RecordCount FROM table1UNION ALLSELECT &#x27;table2&#x27; AS TableName, COUNT(*) AS RecordCount FROM table2UNION ALLSELECT &#x27;table3&#x27; AS TableName, COUNT(*) AS RecordCount FROM table3;
-
-二十五、删除 AD_AccountsRole 表中不属于 AD_Accounts 用户的关系数据。重新查询三张表的记录数。
-二十六、新建查询窗口，写出查询 nleedge 数据库中所有数据表和每个表的记录SELECT  (SELECT COUNT(*) FROM d_3_1) AS 表一,  (SELECT COUNT(*) FROM `商品库存`) AS 表二;
-]]></content>
-      <categories>
-        <category>Mysql</category>
-      </categories>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>物联网比赛之Windows维护</title>
     <url>/2023/08/29/%E7%89%A9%E8%81%94%E7%BD%91%E6%AF%94%E8%B5%9B%E4%B9%8BWindows%E7%BB%B4%E6%8A%A4/</url>
     <content><![CDATA[模块 B：物联网故障维修与运行维护1、Windows 系统维护
@@ -5179,6 +5137,159 @@ P4&#x2F;C6 异构换资源隔离：P4 专注图形&#x2F;地图，C6 专注 Contr
 12. 本次整理与验证边界本手册只新增面试材料，不修改源码、协议、配置、资源、分区和构建产物。已静态核对上述路径、任务、状态、协议字段和参数；没有运行新的编译、单元测试、模拟器或目标板测试。面试中应把“静态确认”和“实机测量”明确分开。
 13. 面试结束时的收束句“我在这个项目里负责的不是把几个 Demo 拼起来，而是把路线协议、坐标转换、离线地图、运动状态、双芯片蓝牙、联网语音、本地播报和 LVGL 页面组织成一套有明确所有权的异步系统。最重要的设计原则是：回调快速返回、业务状态集中、UI 只消费快照、所有队列有上限、所有异步操作可取消和可恢复。”
 ]]></content>
+  </entry>
+  <entry>
+    <title>数据库常用命令</title>
+    <url>/2023/08/29/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</url>
+    <content><![CDATA[修订：查看表中的字段
+show columns from 商品库存;xxxxxxxxxx columnshow columns from 商品库存;
+
+
+
+select 所在区域 from 商品库存 limit 5;  检索此语句使用SELECT语句检索单个列。LIMIT 5指示MySQL返回不多于5行。
+
+
+统计四张表的记录数,要求 SQL 语句禁用联合查询（Union、JOIN、多表
+SELECT	(SELECT COUNT(*) FROM d_3_1) AS dcount,	(SELECT COUNT(*) FROM 商品库存) AS scount
+
+
+一、连接数据库mysql -h 主机IP -P 端口号 -u 用户名 -p 密码
+
+在 UbuntuMySQL -u root -p
+
+连接远程主机
+mysql -h110.110.110.110 -u root -p 123;
+
+二、修改用户密码mysqladmin -u root -password ab12
+
+再次修改
+mysqladmin -u root -password djg345
+
+三、新增用户（1）增加一个用户 test1，密码为 abc
+grant select,insert,delete on *.*to [email]=test@&quot;%]test1@&quot;[/email]&quot;Indentified by&quot;abc&quot;;# grant on 命令格式：grant select on 数据库.* to 用户名@登录主机 identified by “密码”;
+
+（2）新增一个 test2 密码为 abc，只能 localhost 登录
+grant select,insert,update,delete on mydb.* to [email=test2@localhost]test2@localhsot[/email] identified by &quot;abc&quot;;# 如果不想test有密码可以在用一次打消密码grant select,insert,update,delete on mydb.* to [email=test2@localhost]test2@localhost[/email] identified by “”;=
+
+四、创建数据库（1）create database 命名;
+
+（2）创建数据库并分配用户
+#1create database 数据库名;#2create select,insert,update,delete,create,drop,alter on 数据库名.* to 数据库名@loclhost identified by &#x27;密码&#x27;;#3select password por &#x27;数据名&#x27;@&#x27;localhost&#x27; =old_password(&#x27;密码&#x27;);
+
+五、显示数据库show databases 显示所有数据库
+
+六、删除数据库drop database xhkdb;
+
+七、使用数据库use xhkdb;
+（1）use 语句可以通告 mysql 把数据库当作默认使用。知道下一个不同的 use 语句。
+
+（2）use 语句不会阻碍访问其他数据库中的表。ab1 数据库访问 author 表，并从 db2 数据库访问 editor 表
+use db1;select author_name,editor_name from author,ab2,editor;where author.editor_id = ab2.editor.editor_id;
+
+八、当前连接的数据库select database();
+（1）显示 mysql 版本
+select version();
+
+
+（2）显示当前时间
+select now();
+
+
+（3）显示年月日
+
+
+
+（4）显示字符串
+
+（5）当计算器
+
+（5）串接字符串
+
+&#x2F;&#x2F;这里用到 CONCAT()函数，用来把字符串串接起来。
+九、创建数据库表注意：要先使用 use 数据库名；
+create table 表名(	字段名1，数据类型 [列级别约束条件][默认值]，	字段名2，数据类型 [列级别约束条件][默认值],	……	[表级别约束条件])
+
+
+例如:创建 tb_emp1 表结构
+
+
+十、获取表结构查看表结构可以使用 describe 和 show create table；
+describe 表名;
+
+或
+desc 表名；
+
+show create table 可以查看显示创建表时的 create table 语句。
+show create table 表名\G;
+
+
+十一、删除数据表drop table if exists 表1，表2,表n
+
+
+十二、向表中插入数据insert into 插入新行
+insert into 表名称 values(值1，值2);# 也可以指定要插入数据的列insert into table_name(列1，列2)values(值1，值2)
+
+十三、查询表中数据SELECT &#123;* | &lt;字段列表&gt;&#125; [	 FROM &lt;表 1&gt;,&lt;表 2&gt;...	 [WHERE &lt;表达式&gt;	 [GROUP BY &lt;group by definition&gt;]	 [HAVING &lt;expression&gt; [&#123;&lt;operator&gt;&lt;expression&gt;&#125;...]] 	[ORDER BY &lt;order by definition&gt;] 	[LIMIT [&lt;offset&gt;,] &lt;row count&gt;] ]SELECT [字段 1,字段 2,…,字段 n]FROM [表或视图]WHERE [查询条件];
+
+
+十四、删除记录delete from table_name[where &lt;condition&gt;];#						指定删除条件delete from person where id=11;
+
+十五、修改表中的数据update table_nameset column_nmael=value1,column_name2=value2where(condition)
+
+column_name1，为指定更新的字段名称。value 为相对应指定字段的更新值。condition 更新记录需要满足的条件
+【例】在 person 表中，更新 id 值为 11 的记录，将 age 字段值改为 15，将 name 字段值改为 LiMing，SQL 语句如下：
+update person set age=15,name=&#x27;liming&#x27;where id=11;
+
+十六、增加字段alter add 表名 add 新字段 数据类型	约束条件 first|after 已存在字段名	        first将新添加的字段设置为表的第一个字段	        after新添加的字段指定在‘已存在字段名’的后面
+
+【例】在数据表 tb_dept1 中添加一个没有完整性约束的 INT 类型的字段 managerId（部门经理编号），SQL 语句如下：
+ALTER TABLE tb_dept1 ADD managerId INT(10);
+
+十七、修改表名alter table 旧表名 rename to新表名
+
+【例】将数据表 tb_dept3 改名为 tb_deptment3，SQL 语句如下：
+ALTER TABLE tb_dept3 RENAME tb_deptment3;
+
+十八、备份数据库mysqldump -u user -h host -p password dbname[tbname,[tbname]]&gt;filename.sql
+
+十九、还原数据库mysql -u user -p [dbname]&lt;filename.sql
+
+【例 1】使用 mysql 命令将 C:\backup\booksdb_20130301.sql 文件中的备份导入到数据库中，输入语句如下：
+mysql –u root –p booksDB &lt; C:/backup/booksdb_20130301.sql
+
+如果已经登录 MySQL 服务器，还可以使用 source 命令导入 sql 文件。source 语句语法如下：
+source filename
+
+【 例 2 】 使 用 root 用 户 登 录 到 服 务 器 ， 然 后 使 用 source 导 入 本 地 的 备 份 文 件 booksdb_20110101.sql，输入语句如下：
+–选择要恢复到的数据库
+mysql&gt; use booksDB;Database changed
+
+–使用 source 命令导入备份文件
+mysql&gt; source C:\backup\booksDB_20130301.sql
+
+二十、快速恢复数据库在 MySQL 服务器停止运行时，将备份的数据库文件复制到 MySQL 存放数据的位置（MySQL 的 data 文件夹）
+chown -R mysql.mysql /var/lib/mysql/dbname
+
+【例】从 mysqlhotcopy 复制的备份恢复数据库，输入语句如下：
+cp -R /usr/backup/test usr/local/mysql/data
+
+二十一、在 Ubuntu 下安装 mysqlsudo apt-get update #更新软件包sudo apt-get install mysql-server #安装数据库服务器启动：sudo /etc/init.d/mysql start停止：sudo /etc/init.d/mysql stop重启：sudo /etc/init.d/mysql restart登录：mysql -u root -p&lt;pwd&gt;
+
+二十二、关闭防火墙- sudo apt-get install ufw 安装防火墙- sudo ufw enable 打开防火墙- sudo ufw status 查看防火墙状态- sudo ufw disable 关闭防火墙
+
+MySQL 在 Ubuntu 使用二十三、在服务器 SQLSERVER 上，利用 U 盘“U 盘资料&#x2F;test.sql”还原三张数据表。
+
+二十四、统计三张表的记录数，查询结果要求如图。SELECT &#x27;table1&#x27; AS TableName, COUNT(*) AS RecordCount FROM table1UNION ALLSELECT &#x27;table2&#x27; AS TableName, COUNT(*) AS RecordCount FROM table2UNION ALLSELECT &#x27;table3&#x27; AS TableName, COUNT(*) AS RecordCount FROM table3;
+
+二十五、删除 AD_AccountsRole 表中不属于 AD_Accounts 用户的关系数据。重新查询三张表的记录数。
+二十六、新建查询窗口，写出查询 nleedge 数据库中所有数据表和每个表的记录SELECT  (SELECT COUNT(*) FROM d_3_1) AS 表一,  (SELECT COUNT(*) FROM `商品库存`) AS 表二;
+]]></content>
+      <categories>
+        <category>Mysql</category>
+      </categories>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
   </entry>
   <entry>
     <title>第一章 FreeRTOS 源码</title>
@@ -7119,6 +7230,30 @@ SPI&#x2F;I2C&#x2F;UART&#x2F;DMA、GPIO 中断、逻辑分析仪、JTAG、非阻�
       <categories>
         <category>项目</category>
       </categories>
+  </entry>
+  <entry>
+    <title>音频链路与本地主动播报深挖</title>
+    <url>/2026/09/12/%E9%9F%B3%E9%A2%91%E9%93%BE%E8%B7%AF%E4%B8%8E%E6%9C%AC%E5%9C%B0%E4%B8%BB%E5%8A%A8%E6%92%AD%E6%8A%A5%E6%B7%B1%E6%8C%96/</url>
+    <content><![CDATA[1. 两条独立音频路径Xiaozhi 下行：WebSocket binary raw OPUS -&gt; ai_audio -&gt; libopus -&gt; PCM16 -&gt; MAX98357AXiaozhi 上行：ICS43434 I2S 32 bit -&gt; PCM16 mono -&gt; 静音门 -&gt; libopus -&gt; WebSocket本地主动播报：SD 裸 PCM16 -&gt; 2048 B PSRAM buffer -&gt; MAX98357A
+
+本地播报不让服务端生成文本，运动&#x2F;导航事件直接组合预录数字和单位片段，延迟和离线可控。
+2. Xiaozhi 会话启动app_ai_voice_task 等待 Wi-Fi ready event。顺序固定为：稳定等待 1 s -&gt; esp_xiaozhi_chat_get_info() -&gt; 再等 1 s -&gt; 创建 MCP engine、注册 chat callback、强制 WebSocket -&gt; 等 connected 最多 8 s -&gt; 再等 0.5 s -&gt; 打开 OPUS channel、启动麦克风、发送 realtime start listening。
+组件返回 MQTT 和 WebSocket 配置时仍强制 WebSocket，避免两种 transport 同时争用。关闭或断线时清 event bits、停音频、释放 chat&#x2F;MCP，3 s 后由应用层重启。
+3. 下行解码细节音频 callback 不直接解码，只把包复制到内部 8-bit 内存，再投递 s_audio_queue。ai_audio 取包后先调用 opus_packet_get_nb_samples() 验证采样数，再 opus_decode() 到内部 PCM buffer；帧参数是 16 kHz、mono、60 ms，即每帧 960 samples，典型 PCM 长度 1920 B。
+decoder 使用源码版 78/esp-opus 1.0.5，不再调用曾触发崩溃的预编译 esp_audio_codec OPUS 路径。解码成功后调用 board_max98357a_write()；MAX98357A 负责 3 倍饱和增益和 mono 到 I2S stereo slot 的复制。
+下行队列深度 12，满时释放最旧包，避免 TTS burst 导致延迟越来越大。播放前再次检查 s_audio_channel_opened、Wi-Fi 和 stopping 标志，关闭会话后不会把已取出的最后一包继续写入 I2S。
+4. 麦克风上行细节ICS43434 使用 I2S1：BCLK&#x3D;36、DIN&#x3D;37、WS&#x3D;38，16 kHz、32 bit、right slot。ai_mic 以 60 ms 读一帧 960 samples，从 32 bit 原始值取有效 PCM16。
+先计算平均绝对值。语音开始需要连续 2 帧超过 150；语音结束需要连续 12 帧低于 120。静音帧直接丢弃，不进入 OPUS 编码；编码器启用 DTX，opus_len &lt;= 2 的小包也不上传。TTS 播放期间保持采样但暂停上传，降低回声回送。
+OPUS encoder 为 VOIP、bitrate&#x3D;16 kbps、complexity&#x3D;1。连续 3 次 send_audio_data 失败后停止本轮上传并触发会话重启。encoder 状态对象使用 PSRAM；I2S raw、PCM16 和 OPUS packet 缓冲使用内部 8-bit，保证实时读取、编码和发送路径可用。ai_mic 栈 32 KiB 放 PSRAM，解决 silk_encode_frame_FIX() 栈保护异常。
+5. 本地 PCM 播报资源目录 /sdcard/navigation_audio/，格式为裸 signed 16-bit little-endian、16 kHz、mono，无 WAV 头。生成脚本预先移除头尾静音，运行时不扫描静音、不解码、不重采样。
+事件检测 task 每 1000 ms 读取运动快照。P0：转向、到达；P1：每公里、每五分钟、持续速度变化。动态数字拆为 num_0..num_10000、小数点和单位文件，播放 task 依次从队列读取文件并以 2048 B PSRAM 缓冲写 MAX98357A。
+优先级策略：P0 到来时调用 app_ai_voice_local_playback_begin(true)，停止当前 TTS 并清 OPUS 队列；本地播放期间暂停麦克风和下行。P1 在 Xiaozhi 回复时等待，P0 到来可以打断 P1。播放结束根据会话是否仍有效恢复监听，否则关闭 MAX98357A stream。
+6. 失败降级SD 未挂载、PCM 缺失、I2S 写失败只终止当前句并记录 esp_err_t，不影响 UI 和运动记录。主动播报任务创建失败时 Xiaozhi 对话仍可用。音频内存不足时不扩大队列或挤占 DMA 区，而是让本轮音频进入错误状态。
+7. 面试追问为什么不用 WAV？ WAV 头对裸片段拼接没有价值，且每段都要处理格式；固定 PCM 使播放路径只有读文件和 DMA 写入。
+为什么上行不用 32 bit PCM？ 麦克风 I2S 为 32 bit slot，但协议与 OPUS 处理统一为 PCM16 mono，减少网络带宽和编码输入量。
+如何验证音频崩溃根因？ 保留完整 backtrace，先区分任务栈、decoder 内存和 packet 格式；本项目通过切换源码 libopus、确认 samples=960 连续播放，证明不是 WebSocket 头或封装层问题。
+
+]]></content>
   </entry>
   <entry>
     <title>骑行码表项目：项目架构与面试总览</title>

@@ -99,7 +99,7 @@ GATT Write 成功是否代表路线成功？ 不是，只代表包通过同步�
   </entry>
   <entry>
     <title></title>
-    <url>/2026/09/12/C%20%E8%AF%AD%E8%A8%80%E4%B8%8E%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%9F%BA%E7%A1%80%E5%AE%8C%E6%95%B4%E9%9D%A2%E8%AF%95%E6%89%8B%E5%86%8C/</url>
+    <url>/2026/09/14/C%20%E8%AF%AD%E8%A8%80%E4%B8%8E%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%9F%BA%E7%A1%80%E5%AE%8C%E6%95%B4%E9%9D%A2%E8%AF%95%E6%89%8B%E5%86%8C/</url>
     <content><![CDATA[
 C 语言与嵌入式基础面试手册
 适用：嵌入式软件、MCU、RTOS、驱动和应用方案实习面试。
@@ -2725,6 +2725,26 @@ Wi-Fi 断了运动会停止吗？ 不会。Wi-Fi&#x2F;Xiaozhi 是可选业务；
 ]]></content>
   </entry>
   <entry>
+    <title>eps32连接华为云iot，并且实现arkts控制点灯</title>
+    <url>/2024/04/02/eps32%E8%BF%9E%E6%8E%A5%E5%8D%8E%E4%B8%BA%E4%BA%91iot%EF%BC%8C%E5%B9%B6%E4%B8%94%E5%AE%9E%E7%8E%B0arkts%E6%8E%A7%E5%88%B6%E7%82%B9%E7%81%AF/</url>
+    <content><![CDATA[ESP32连接华为云我使用的是arduinoied所写的代码，要注意，在mqtt请求华为云中，需要写心跳间隔，不然上云不了（client.setKeepAlive(60);  &#x2F;&#x2F;心跳间隔，很重要！！！）。代码如下：
+#include &lt;ArduinoJson.h&gt;#include &lt;WiFi.h&gt;#include &lt;PubSubClient.h&gt;// 定义 LED 和按键引脚const int led_pin = 48; // 根据你的实际硬件更改const int button_pin = 0; // 通常用于ESP32的引脚// 定义 LED 状态变量，默认为假即低电平，通过它判断 LED 的状态是否改变过bool led_status = false;// WiFi 连接参数const char* ssid = &quot;LMJZ&quot;;     // 修改为你的WiFi名称const char* password = &quot;12345678&quot;; // 修改为你的WiFi密码// MQTT 连接参数const char* mqttServer = &quot;f31531a1fe.iot-mqtts.cn-north-4.myhuaweicloud.com&quot;;const int mqttPort = 1883;const char* clientId =&quot;65f5bd99fb8177243a4f32c3_wenshidu_0_0_2024033011&quot;;const char* mqttUser =&quot;65f5bd99fb8177243a4f32c3_wenshidu&quot;;const char* mqttPassword = &quot;def7f41de80e802a96a29f04eec1561c6a63057d2d0a0ed0aba966041ee6a5f1&quot;;// MQTT 客户端WiFiClient espClient;PubSubClient client(espClient);// MQTT 主题#define device_id &quot;65f5bd99fb8177243a4f32c3_wenshidu&quot;#define secret &quot;630aa442fa0fa9956ea95016189a5186&quot;#define Iot_link_Body_Format &quot;&#123;\&quot;services\&quot;:[&#123;\&quot;service_id\&quot;:\&quot;BasicData\&quot;,\&quot;properties\&quot;:&#123;%s&quot;// 设备属性上报#define Iot_link_MQTT_Topic_Report &quot;$oc/devices/&quot; device_id &quot;/sys/properties/report&quot;// 接收平台下发的命令#define Iot_link_MQTT_Topic_Commands &quot;$oc/devices/&quot; device_id &quot;/sys/commands/#&quot; // 设备响应平台的命令#define Iot_link_MQTT_Topic_CommandsRes &quot;$oc/devices/&quot; device_id &quot;/sys/commands/response/request_id=&quot;// 其他变量和函数声明int data_temp = 20; // 模拟上报的温度值long lastMsg = 0;void setup() &#123;  // 设置 LED 和按键引脚模式  pinMode(led_pin, OUTPUT);  pinMode(button_pin, INPUT_PULLUP);  // WiFi 初始化  Serial.begin(115200);  WiFi.begin(ssid, password);  while (WiFi.status() != WL_CONNECTED) &#123;    delay(500);    Serial.println(&quot;Connecting to WiFi..&quot;);  &#125;  Serial.println(&quot;Connected to the WiFi network&quot;);  // MQTT 初始化  MQTT_Init();&#125;void loop() &#123;  // 检测按键状态并控制 LED  if (digitalRead(button_pin) == LOW) &#123;    delay(100); // 去抖动    if (digitalRead(button_pin) == LOW) &#123;      while(digitalRead(button_pin) == LOW); // 等待按钮释放      led_status = !led_status;      digitalWrite(led_pin, led_status ? HIGH : LOW);    &#125;  &#125;  // MQTT 连接和数据上报  if (!client.connected()) &#123;    MQTT_Init();  &#125; else &#123;    client.loop();  &#125;  long now = millis();  if (now - lastMsg &gt; 5000) &#123;    lastMsg = now;    MQTT_POST();    data_temp++; // 递增温度值以模拟温度变化  &#125;&#125;void MQTT_Init() &#123;  client.setKeepAlive(60);  //心跳间隔，很重要！！！  client.setServer(mqttServer, mqttPort);  client.setCallback(callback);  while (!client.connected()) &#123;    Serial.println(&quot;Attempting to connect to MQTT server...&quot;);    if (client.connect(clientId, mqttUser, mqttPassword)) &#123;      Serial.println(&quot;Connected to MQTT server&quot;);      // 订阅命令主题      client.subscribe(Iot_link_MQTT_Topic_Commands);    &#125; else &#123;      Serial.print(&quot;Failed to connect to MQTT server, state: &quot;);      Serial.println(client.state());      delay(5000);    &#125;  &#125;&#125;void MQTT_POST() &#123;  char properties[50];  char jsonBuf[200];  sprintf(properties, &quot;\&quot;temperature\&quot;:%d&#125;&#125;]&#125;&quot;, data_temp);  sprintf(jsonBuf, Iot_link_Body_Format, properties);  client.publish(Iot_link_MQTT_Topic_Report, jsonBuf);  Serial.println(&quot;MQTT Publish OK!&quot;);&#125;void callback(char* topic, byte* payload, unsigned int length) &#123;  String recdata = &quot;&quot;;  Serial.printf(&quot;接收到订阅的消息:主题为：%s\n&quot;, topic);   Serial.print(&quot;数据内容：&quot;);  for (int i = 0; i &lt; length; i++) &#123;    recdata += (char)payload[i];  &#125;  Serial.println(recdata);  // 解析JSON数据  DynamicJsonDocument jsonBuffer(1024);  deserializeJson(jsonBuffer, recdata);  JsonObject obj = jsonBuffer.as&lt;JsonObject&gt;();  JsonObject paras = obj[&quot;paras&quot;].as&lt;JsonObject&gt;();  String ledcom = paras[&quot;value&quot;];  Serial.printf(&quot;解析命令：%s\n&quot;, ledcom.c_str());  // 解析request id，设备响应时的topic需要包含命令的request id，且会动态变化  String request_id = topic;  request_id.remove(0, request_id.lastIndexOf(&#x27;=&#x27;) + 1);  Serial.printf(&quot;request_id：%s\n&quot;, request_id.c_str());  // 命令设备响应  String response = &quot;&#123;&#125;&quot;;  client.publish((Iot_link_MQTT_Topic_CommandsRes + request_id).c_str(), response.c_str());  if (ledcom == &quot;ON&quot;) &#123;    digitalWrite(led_pin, LOW); // 关闭LED    Serial.println(&quot;关灯&quot;);  &#125; else if (ledcom == &quot;OFF&quot;) &#123;    digitalWrite(led_pin, HIGH); // 打开LED    Serial.println(&quot;开灯&quot;);  &#125;&#125;
+
+在鸿蒙开发中，要进行http请求，arkts代码
+下面是ui代码：
+Button(&#x27;点击&#x27;).onClick(async () =&gt; &#123;  if (this.led) &#123;    try &#123;      await greenHousesHttpRequest.sendDeviceCommand(&#x27;BasicData&#x27;, &#x27;Switch&#x27;, &#x27;OFF&#x27;);      console.log(&#x27;LED已关闭&#x27;);      this.led = false; // 更新LED状态为关闭      this.leddevice = &#x27;离线&#x27;; // 更新设备状态显示为不在线    &#125; catch (error) &#123;      console.error(&#x27;关闭LED失败&#x27;, error);    &#125;  &#125; else &#123;    try &#123;      await greenHousesHttpRequest.sendDeviceCommand(&#x27;BasicData&#x27;, &#x27;Switch&#x27;, &#x27;ON&#x27;);      console.log(&#x27;LED已点亮&#x27;);      this.led = true;      this.leddevice = &#x27;在线&#x27;;    &#125; catch (error) &#123;      console.error(&#x27;点亮LED失败&#x27;, error);    &#125;  &#125;&#125;).margin(&#123;top:10&#125;);
+
+http请求代码：
+// 设备下发命令  async sendDeviceCommand(serviceId, commandName, commandValue) &#123;    if (!this.token) &#123;      await this.getAuthToken();    &#125;    return new Promise((resolve, reject) =&gt; &#123;      let httpRequest = http.createHttp();      const url = &quot;https://f31531a1fe.iotda.cn-north-4.myhuaweicloud.com:443/v5/iot/34dd0bcb3a0b46fab400809bca1b6e3e/devices/65f5bd99fb8177243a4f32c3_wenshidu/commands&quot;      httpRequest.request(url,&#123;        method: http.RequestMethod.POST,        header: &#123;          &#x27;Content-Type&#x27;: &#x27;application/json&#x27;,          &#x27;X-Auth-Token&#x27;: this.token // 确保已经获取了token        &#125;,        extraData: &#123;          &quot;service_id&quot;: serviceId,          &quot;command_name&quot;: commandName,          &quot;paras&quot;: &#123;            &quot;value&quot;: commandValue          &#125;        &#125;      &#125;).then(resp =&gt; &#123;        if (resp.responseCode == 200) &#123;          resolve(JSON.parse(resp.result.toString()));        &#125; else &#123;          reject(&#x27;Failed to send command, response code: &#x27; + resp.responseCode);        &#125;      &#125;).catch(error =&gt; &#123;        console.error(&#x27;Error sending command:&#x27;, JSON.stringify(error));        reject(error);      &#125;);    &#125;);  &#125;
+]]></content>
+      <categories>
+        <category>华为云IOT连接</category>
+      </categories>
+      <tags>
+        <tag>华为云IOT</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>一、harmonyOS开发</title>
     <url>/2024/03/09/%E4%B8%80%E3%80%81HarmonyOS4%E5%BC%80%E5%8F%91/</url>
     <content><![CDATA[一、TS基础语法二、声明变量
@@ -2744,21 +2764,6 @@ Wi-Fi 断了运动会停止吗？ 不会。Wi-Fi&#x2F;Xiaozhi 是可选业务；
       <tags>
         <tag>APP开发</tag>
       </tags>
-  </entry>
-  <entry>
-    <title> 一篇牢骚</title>
-    <url>/2024/03/30/%E4%B8%80%E7%AF%87%E7%89%A2%E9%AA%9A/</url>
-    <content><![CDATA[愿我此生脚步不停，览尽世间美景。即使路途遥远且艰难，至少，至少，我经历过。以巽为名，行遍千山万水，看尽人间青山。青山不言，我自知晓其壮美。来自抖音博主hx888888000长穿毕
-
-
-
-来自抖音博主zkai6999那拉提
-
-
-来自抖音博主zkai6999阿勒泰
-
-
-]]></content>
   </entry>
   <entry>
     <title>关于使用wsl使用idf提供编译速度遇到的问题</title>
@@ -2796,24 +2801,12 @@ Wi-Fi 断了运动会停止吗？ 不会。Wi-Fi&#x2F;Xiaozhi 是可选业务；
       </tags>
   </entry>
   <entry>
-    <title>eps32连接华为云iot，并且实现arkts控制点灯</title>
-    <url>/2024/04/02/eps32%E8%BF%9E%E6%8E%A5%E5%8D%8E%E4%B8%BA%E4%BA%91iot%EF%BC%8C%E5%B9%B6%E4%B8%94%E5%AE%9E%E7%8E%B0arkts%E6%8E%A7%E5%88%B6%E7%82%B9%E7%81%AF/</url>
-    <content><![CDATA[ESP32连接华为云我使用的是arduinoied所写的代码，要注意，在mqtt请求华为云中，需要写心跳间隔，不然上云不了（client.setKeepAlive(60);  &#x2F;&#x2F;心跳间隔，很重要！！！）。代码如下：
-#include &lt;ArduinoJson.h&gt;#include &lt;WiFi.h&gt;#include &lt;PubSubClient.h&gt;// 定义 LED 和按键引脚const int led_pin = 48; // 根据你的实际硬件更改const int button_pin = 0; // 通常用于ESP32的引脚// 定义 LED 状态变量，默认为假即低电平，通过它判断 LED 的状态是否改变过bool led_status = false;// WiFi 连接参数const char* ssid = &quot;LMJZ&quot;;     // 修改为你的WiFi名称const char* password = &quot;12345678&quot;; // 修改为你的WiFi密码// MQTT 连接参数const char* mqttServer = &quot;f31531a1fe.iot-mqtts.cn-north-4.myhuaweicloud.com&quot;;const int mqttPort = 1883;const char* clientId =&quot;65f5bd99fb8177243a4f32c3_wenshidu_0_0_2024033011&quot;;const char* mqttUser =&quot;65f5bd99fb8177243a4f32c3_wenshidu&quot;;const char* mqttPassword = &quot;def7f41de80e802a96a29f04eec1561c6a63057d2d0a0ed0aba966041ee6a5f1&quot;;// MQTT 客户端WiFiClient espClient;PubSubClient client(espClient);// MQTT 主题#define device_id &quot;65f5bd99fb8177243a4f32c3_wenshidu&quot;#define secret &quot;630aa442fa0fa9956ea95016189a5186&quot;#define Iot_link_Body_Format &quot;&#123;\&quot;services\&quot;:[&#123;\&quot;service_id\&quot;:\&quot;BasicData\&quot;,\&quot;properties\&quot;:&#123;%s&quot;// 设备属性上报#define Iot_link_MQTT_Topic_Report &quot;$oc/devices/&quot; device_id &quot;/sys/properties/report&quot;// 接收平台下发的命令#define Iot_link_MQTT_Topic_Commands &quot;$oc/devices/&quot; device_id &quot;/sys/commands/#&quot; // 设备响应平台的命令#define Iot_link_MQTT_Topic_CommandsRes &quot;$oc/devices/&quot; device_id &quot;/sys/commands/response/request_id=&quot;// 其他变量和函数声明int data_temp = 20; // 模拟上报的温度值long lastMsg = 0;void setup() &#123;  // 设置 LED 和按键引脚模式  pinMode(led_pin, OUTPUT);  pinMode(button_pin, INPUT_PULLUP);  // WiFi 初始化  Serial.begin(115200);  WiFi.begin(ssid, password);  while (WiFi.status() != WL_CONNECTED) &#123;    delay(500);    Serial.println(&quot;Connecting to WiFi..&quot;);  &#125;  Serial.println(&quot;Connected to the WiFi network&quot;);  // MQTT 初始化  MQTT_Init();&#125;void loop() &#123;  // 检测按键状态并控制 LED  if (digitalRead(button_pin) == LOW) &#123;    delay(100); // 去抖动    if (digitalRead(button_pin) == LOW) &#123;      while(digitalRead(button_pin) == LOW); // 等待按钮释放      led_status = !led_status;      digitalWrite(led_pin, led_status ? HIGH : LOW);    &#125;  &#125;  // MQTT 连接和数据上报  if (!client.connected()) &#123;    MQTT_Init();  &#125; else &#123;    client.loop();  &#125;  long now = millis();  if (now - lastMsg &gt; 5000) &#123;    lastMsg = now;    MQTT_POST();    data_temp++; // 递增温度值以模拟温度变化  &#125;&#125;void MQTT_Init() &#123;  client.setKeepAlive(60);  //心跳间隔，很重要！！！  client.setServer(mqttServer, mqttPort);  client.setCallback(callback);  while (!client.connected()) &#123;    Serial.println(&quot;Attempting to connect to MQTT server...&quot;);    if (client.connect(clientId, mqttUser, mqttPassword)) &#123;      Serial.println(&quot;Connected to MQTT server&quot;);      // 订阅命令主题      client.subscribe(Iot_link_MQTT_Topic_Commands);    &#125; else &#123;      Serial.print(&quot;Failed to connect to MQTT server, state: &quot;);      Serial.println(client.state());      delay(5000);    &#125;  &#125;&#125;void MQTT_POST() &#123;  char properties[50];  char jsonBuf[200];  sprintf(properties, &quot;\&quot;temperature\&quot;:%d&#125;&#125;]&#125;&quot;, data_temp);  sprintf(jsonBuf, Iot_link_Body_Format, properties);  client.publish(Iot_link_MQTT_Topic_Report, jsonBuf);  Serial.println(&quot;MQTT Publish OK!&quot;);&#125;void callback(char* topic, byte* payload, unsigned int length) &#123;  String recdata = &quot;&quot;;  Serial.printf(&quot;接收到订阅的消息:主题为：%s\n&quot;, topic);   Serial.print(&quot;数据内容：&quot;);  for (int i = 0; i &lt; length; i++) &#123;    recdata += (char)payload[i];  &#125;  Serial.println(recdata);  // 解析JSON数据  DynamicJsonDocument jsonBuffer(1024);  deserializeJson(jsonBuffer, recdata);  JsonObject obj = jsonBuffer.as&lt;JsonObject&gt;();  JsonObject paras = obj[&quot;paras&quot;].as&lt;JsonObject&gt;();  String ledcom = paras[&quot;value&quot;];  Serial.printf(&quot;解析命令：%s\n&quot;, ledcom.c_str());  // 解析request id，设备响应时的topic需要包含命令的request id，且会动态变化  String request_id = topic;  request_id.remove(0, request_id.lastIndexOf(&#x27;=&#x27;) + 1);  Serial.printf(&quot;request_id：%s\n&quot;, request_id.c_str());  // 命令设备响应  String response = &quot;&#123;&#125;&quot;;  client.publish((Iot_link_MQTT_Topic_CommandsRes + request_id).c_str(), response.c_str());  if (ledcom == &quot;ON&quot;) &#123;    digitalWrite(led_pin, LOW); // 关闭LED    Serial.println(&quot;关灯&quot;);  &#125; else if (ledcom == &quot;OFF&quot;) &#123;    digitalWrite(led_pin, HIGH); // 打开LED    Serial.println(&quot;开灯&quot;);  &#125;&#125;
-
-在鸿蒙开发中，要进行http请求，arkts代码
-下面是ui代码：
-Button(&#x27;点击&#x27;).onClick(async () =&gt; &#123;  if (this.led) &#123;    try &#123;      await greenHousesHttpRequest.sendDeviceCommand(&#x27;BasicData&#x27;, &#x27;Switch&#x27;, &#x27;OFF&#x27;);      console.log(&#x27;LED已关闭&#x27;);      this.led = false; // 更新LED状态为关闭      this.leddevice = &#x27;离线&#x27;; // 更新设备状态显示为不在线    &#125; catch (error) &#123;      console.error(&#x27;关闭LED失败&#x27;, error);    &#125;  &#125; else &#123;    try &#123;      await greenHousesHttpRequest.sendDeviceCommand(&#x27;BasicData&#x27;, &#x27;Switch&#x27;, &#x27;ON&#x27;);      console.log(&#x27;LED已点亮&#x27;);      this.led = true;      this.leddevice = &#x27;在线&#x27;;    &#125; catch (error) &#123;      console.error(&#x27;点亮LED失败&#x27;, error);    &#125;  &#125;&#125;).margin(&#123;top:10&#125;);
-
-http请求代码：
-// 设备下发命令  async sendDeviceCommand(serviceId, commandName, commandValue) &#123;    if (!this.token) &#123;      await this.getAuthToken();    &#125;    return new Promise((resolve, reject) =&gt; &#123;      let httpRequest = http.createHttp();      const url = &quot;https://f31531a1fe.iotda.cn-north-4.myhuaweicloud.com:443/v5/iot/34dd0bcb3a0b46fab400809bca1b6e3e/devices/65f5bd99fb8177243a4f32c3_wenshidu/commands&quot;      httpRequest.request(url,&#123;        method: http.RequestMethod.POST,        header: &#123;          &#x27;Content-Type&#x27;: &#x27;application/json&#x27;,          &#x27;X-Auth-Token&#x27;: this.token // 确保已经获取了token        &#125;,        extraData: &#123;          &quot;service_id&quot;: serviceId,          &quot;command_name&quot;: commandName,          &quot;paras&quot;: &#123;            &quot;value&quot;: commandValue          &#125;        &#125;      &#125;).then(resp =&gt; &#123;        if (resp.responseCode == 200) &#123;          resolve(JSON.parse(resp.result.toString()));        &#125; else &#123;          reject(&#x27;Failed to send command, response code: &#x27; + resp.responseCode);        &#125;      &#125;).catch(error =&gt; &#123;        console.error(&#x27;Error sending command:&#x27;, JSON.stringify(error));        reject(error);      &#125;);    &#125;);  &#125;
-]]></content>
+    <title>大学生活</title>
+    <url>/2024/02/17/%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%B4%BB/</url>
+    <content><![CDATA[]]></content>
       <categories>
-        <category>华为云IOT连接</category>
+        <category>阅读</category>
       </categories>
-      <tags>
-        <tag>华为云IOT</tag>
-      </tags>
   </entry>
   <entry>
     <title>地图数据转换与导航投影深挖</title>
@@ -2847,12 +2840,51 @@ map_route_project_gcj02() 只是“转换坐标 + world 投影”的组合；map
 ]]></content>
   </entry>
   <entry>
-    <title>大学生活</title>
-    <url>/2024/02/17/%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%B4%BB/</url>
-    <content><![CDATA[]]></content>
+    <title>嵌入式面试八股文</title>
+    <url>/2026/09/14/%E5%B5%8C%E5%85%A5%E5%BC%8F%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1%E6%96%87/</url>
+    <content><![CDATA[C语言1、const主要用于定义常量，起到强制保护的作用，确保不会被意外修改。
+有以下三个用法：
+（1）修饰常量
+（2）修饰形参
+（3）修饰类型成员函数
+2、static主要用于以下三种：
+（1）静态局部变量-生周期延长到程序结束。
+（2）静态全局变量-限制作用域在本文件。
+（3）静态函数-限制作用域为本文。
+局部变量存放到哪里：.bss（未初始化）&#x2F;.data（已初始化）。
+3、volatile主要用于：告诉编译器此变量有可能会意外被修改，不要优化对它的读写。
+在嵌入式中常用于：
+（1）硬件寄存器。
+（2）中断服务程序修改的全局变量。
+（3）多线程&#x2F;RTOS共享的变量。
+（4）DMA传输的缓冲区。
+4、指针指针是一个变量，它存储的值是另一个变量的内存地址。
+5、函数指针函数指针就是存储函数的入口地址，通过它可以间接调用函数。也就是说：是一个指针，指向函数的地址。
+在嵌入式常用于：回调函数，状态机、函数跳转表
+//定义一个函数int add(int a,int b) &#123;return a + b;&#125;//声明函数指针变量int (*fun)(int,int);fun=add;
+
+6、指针函数指针函数就是它是一个函数，函数的返回值是一个地址。
+//定义一个函数，返回值为指针int *fun(int a,int b)&#123;      static int result;      result = a + b;      return &amp;result;&#125;//调用后得到的是地址int *p = fun(2,3);//取值print(&quot;%d\n&quot;,*p);
+
+7、指针数组指针数组就是由指针组成的数组。
+//5个 int *指针组成的数组int *p1[5];
+
+8、数组指针
+数组指针就是指向数组的指针
+int (*p2)[5];
+
+9、返回函数指针的函数返回函数指针的函数就是返回值为函数指针的函数。
+//定义普通函数int add(int a,int b)&#123;return a + b;&#125;//定义一个返回函数指针的函数int (*get_fun(char op))(int,int)&#123;     if(op == &#x27;+&#x27;) return add;     return NULL;&#125;//调用得到的是函数指针int (*fun)(int,int);fun = get_fun(&#x27;+&#x27;);//通过函数指针调用函数printf(&quot;%d\n&quot;,fun(2,3));
+
+10、struct 与 unionstruct：所有成员各占独立内存
+union：所有成员共用一块内存，大小是最大成员
+]]></content>
       <categories>
-        <category>阅读</category>
+        <category>面试</category>
       </categories>
+      <tags>
+        <tag>八股文</tag>
+      </tags>
   </entry>
   <entry>
     <title>思澈面试笔记-RTOS</title>
@@ -4948,159 +4980,6 @@ find / -type f -name &quot;*DB*&quot;
       </tags>
   </entry>
   <entry>
-    <title>数据库常用命令</title>
-    <url>/2023/08/29/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</url>
-    <content><![CDATA[修订：查看表中的字段
-show columns from 商品库存;xxxxxxxxxx columnshow columns from 商品库存;
-
-
-
-select 所在区域 from 商品库存 limit 5;  检索此语句使用SELECT语句检索单个列。LIMIT 5指示MySQL返回不多于5行。
-
-
-统计四张表的记录数,要求 SQL 语句禁用联合查询（Union、JOIN、多表
-SELECT	(SELECT COUNT(*) FROM d_3_1) AS dcount,	(SELECT COUNT(*) FROM 商品库存) AS scount
-
-
-一、连接数据库mysql -h 主机IP -P 端口号 -u 用户名 -p 密码
-
-在 UbuntuMySQL -u root -p
-
-连接远程主机
-mysql -h110.110.110.110 -u root -p 123;
-
-二、修改用户密码mysqladmin -u root -password ab12
-
-再次修改
-mysqladmin -u root -password djg345
-
-三、新增用户（1）增加一个用户 test1，密码为 abc
-grant select,insert,delete on *.*to [email]=test@&quot;%]test1@&quot;[/email]&quot;Indentified by&quot;abc&quot;;# grant on 命令格式：grant select on 数据库.* to 用户名@登录主机 identified by “密码”;
-
-（2）新增一个 test2 密码为 abc，只能 localhost 登录
-grant select,insert,update,delete on mydb.* to [email=test2@localhost]test2@localhsot[/email] identified by &quot;abc&quot;;# 如果不想test有密码可以在用一次打消密码grant select,insert,update,delete on mydb.* to [email=test2@localhost]test2@localhost[/email] identified by “”;=
-
-四、创建数据库（1）create database 命名;
-
-（2）创建数据库并分配用户
-#1create database 数据库名;#2create select,insert,update,delete,create,drop,alter on 数据库名.* to 数据库名@loclhost identified by &#x27;密码&#x27;;#3select password por &#x27;数据名&#x27;@&#x27;localhost&#x27; =old_password(&#x27;密码&#x27;);
-
-五、显示数据库show databases 显示所有数据库
-
-六、删除数据库drop database xhkdb;
-
-七、使用数据库use xhkdb;
-（1）use 语句可以通告 mysql 把数据库当作默认使用。知道下一个不同的 use 语句。
-
-（2）use 语句不会阻碍访问其他数据库中的表。ab1 数据库访问 author 表，并从 db2 数据库访问 editor 表
-use db1;select author_name,editor_name from author,ab2,editor;where author.editor_id = ab2.editor.editor_id;
-
-八、当前连接的数据库select database();
-（1）显示 mysql 版本
-select version();
-
-
-（2）显示当前时间
-select now();
-
-
-（3）显示年月日
-
-
-
-（4）显示字符串
-
-（5）当计算器
-
-（5）串接字符串
-
-&#x2F;&#x2F;这里用到 CONCAT()函数，用来把字符串串接起来。
-九、创建数据库表注意：要先使用 use 数据库名；
-create table 表名(	字段名1，数据类型 [列级别约束条件][默认值]，	字段名2，数据类型 [列级别约束条件][默认值],	……	[表级别约束条件])
-
-
-例如:创建 tb_emp1 表结构
-
-
-十、获取表结构查看表结构可以使用 describe 和 show create table；
-describe 表名;
-
-或
-desc 表名；
-
-show create table 可以查看显示创建表时的 create table 语句。
-show create table 表名\G;
-
-
-十一、删除数据表drop table if exists 表1，表2,表n
-
-
-十二、向表中插入数据insert into 插入新行
-insert into 表名称 values(值1，值2);# 也可以指定要插入数据的列insert into table_name(列1，列2)values(值1，值2)
-
-十三、查询表中数据SELECT &#123;* | &lt;字段列表&gt;&#125; [	 FROM &lt;表 1&gt;,&lt;表 2&gt;...	 [WHERE &lt;表达式&gt;	 [GROUP BY &lt;group by definition&gt;]	 [HAVING &lt;expression&gt; [&#123;&lt;operator&gt;&lt;expression&gt;&#125;...]] 	[ORDER BY &lt;order by definition&gt;] 	[LIMIT [&lt;offset&gt;,] &lt;row count&gt;] ]SELECT [字段 1,字段 2,…,字段 n]FROM [表或视图]WHERE [查询条件];
-
-
-十四、删除记录delete from table_name[where &lt;condition&gt;];#						指定删除条件delete from person where id=11;
-
-十五、修改表中的数据update table_nameset column_nmael=value1,column_name2=value2where(condition)
-
-column_name1，为指定更新的字段名称。value 为相对应指定字段的更新值。condition 更新记录需要满足的条件
-【例】在 person 表中，更新 id 值为 11 的记录，将 age 字段值改为 15，将 name 字段值改为 LiMing，SQL 语句如下：
-update person set age=15,name=&#x27;liming&#x27;where id=11;
-
-十六、增加字段alter add 表名 add 新字段 数据类型	约束条件 first|after 已存在字段名	        first将新添加的字段设置为表的第一个字段	        after新添加的字段指定在‘已存在字段名’的后面
-
-【例】在数据表 tb_dept1 中添加一个没有完整性约束的 INT 类型的字段 managerId（部门经理编号），SQL 语句如下：
-ALTER TABLE tb_dept1 ADD managerId INT(10);
-
-十七、修改表名alter table 旧表名 rename to新表名
-
-【例】将数据表 tb_dept3 改名为 tb_deptment3，SQL 语句如下：
-ALTER TABLE tb_dept3 RENAME tb_deptment3;
-
-十八、备份数据库mysqldump -u user -h host -p password dbname[tbname,[tbname]]&gt;filename.sql
-
-十九、还原数据库mysql -u user -p [dbname]&lt;filename.sql
-
-【例 1】使用 mysql 命令将 C:\backup\booksdb_20130301.sql 文件中的备份导入到数据库中，输入语句如下：
-mysql –u root –p booksDB &lt; C:/backup/booksdb_20130301.sql
-
-如果已经登录 MySQL 服务器，还可以使用 source 命令导入 sql 文件。source 语句语法如下：
-source filename
-
-【 例 2 】 使 用 root 用 户 登 录 到 服 务 器 ， 然 后 使 用 source 导 入 本 地 的 备 份 文 件 booksdb_20110101.sql，输入语句如下：
-–选择要恢复到的数据库
-mysql&gt; use booksDB;Database changed
-
-–使用 source 命令导入备份文件
-mysql&gt; source C:\backup\booksDB_20130301.sql
-
-二十、快速恢复数据库在 MySQL 服务器停止运行时，将备份的数据库文件复制到 MySQL 存放数据的位置（MySQL 的 data 文件夹）
-chown -R mysql.mysql /var/lib/mysql/dbname
-
-【例】从 mysqlhotcopy 复制的备份恢复数据库，输入语句如下：
-cp -R /usr/backup/test usr/local/mysql/data
-
-二十一、在 Ubuntu 下安装 mysqlsudo apt-get update #更新软件包sudo apt-get install mysql-server #安装数据库服务器启动：sudo /etc/init.d/mysql start停止：sudo /etc/init.d/mysql stop重启：sudo /etc/init.d/mysql restart登录：mysql -u root -p&lt;pwd&gt;
-
-二十二、关闭防火墙- sudo apt-get install ufw 安装防火墙- sudo ufw enable 打开防火墙- sudo ufw status 查看防火墙状态- sudo ufw disable 关闭防火墙
-
-MySQL 在 Ubuntu 使用二十三、在服务器 SQLSERVER 上，利用 U 盘“U 盘资料&#x2F;test.sql”还原三张数据表。
-
-二十四、统计三张表的记录数，查询结果要求如图。SELECT &#x27;table1&#x27; AS TableName, COUNT(*) AS RecordCount FROM table1UNION ALLSELECT &#x27;table2&#x27; AS TableName, COUNT(*) AS RecordCount FROM table2UNION ALLSELECT &#x27;table3&#x27; AS TableName, COUNT(*) AS RecordCount FROM table3;
-
-二十五、删除 AD_AccountsRole 表中不属于 AD_Accounts 用户的关系数据。重新查询三张表的记录数。
-二十六、新建查询窗口，写出查询 nleedge 数据库中所有数据表和每个表的记录SELECT  (SELECT COUNT(*) FROM d_3_1) AS 表一,  (SELECT COUNT(*) FROM `商品库存`) AS 表二;
-]]></content>
-      <categories>
-        <category>Mysql</category>
-      </categories>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>物联网比赛之Windows维护</title>
     <url>/2023/08/29/%E7%89%A9%E8%81%94%E7%BD%91%E6%AF%94%E8%B5%9B%E4%B9%8BWindows%E7%BB%B4%E6%8A%A4/</url>
     <content><![CDATA[模块 B：物联网故障维修与运行维护1、Windows 系统维护
@@ -5255,108 +5134,6 @@ u 电压 w 功 q电荷量
       </categories>
   </entry>
   <entry>
-    <title>骑行码表项目</title>
-    <url>/2026/09/12/%E7%A0%81%E8%A1%A8%E9%A1%B9%E7%9B%AE%E6%B7%B1%E6%8C%96/</url>
-    <content><![CDATA[骑行码表项目面试深挖手册
-
-用途：面试时从项目概括展开到源码、数据结构、RTOS、异常和取舍。文中“源码事实”来自当前工程；没有实测的帧率、功耗、吞吐和声学指标明确标成待测，不在面试中夸大。
-
-1. 先把项目讲清楚1.1 30 秒版本这是一个基于 ESP32-P4&#x2F;C6 的智能骑行码表。P4 负责 LVGL 图形、离线地图和骑行业务，C6 通过 ESP-Hosted SDIO 提供蓝牙 Controller。手机小程序通过 BLE 下发路线和定位，设备用分片状态机接收并校验路线，再把 GCJ-02 坐标转换到 WGS84 地图坐标，计算路线进度、偏离距离、转向和坡度。运动数据统一进入 app_motion_model，Cycling、MTB、地图、历史、本地播报和小智 MCP 都读取同一份快照。小智走 Wi-Fi&#x2F;WebSocket&#x2F;Opus，本地导航播报走 SD 卡预生成 PCM；所有网络、SD 和音频操作都放在独立任务，LVGL 线程只负责显示。
-1.2 三分钟版本项目的难点是多模块并发，而不是单独调用某个 SDK。输入有手机 BLE、GNSS、IMU、实体键和 Wi-Fi；处理有路线校验、坐标转换、地图索引、运动统计和语音；输出有圆形 AMOLED、BLE 状态、MAX98357A 音频和小智 MCP。我的做法是让每个服务拥有自己的状态和执行上下文，用有界队列传递命令&#x2F;数据，用事件组表达阶段条件，用互斥锁保护短状态，用不可变快照给多个消费者读取。
-路线举例：app_ble_gatt 收到写入后交给 app_ble_proto 解析，再由 app_ble_route 处理 0x22 BEGIN、0x23 DATA、0x24 COMMIT、0x25 ABORT。DATA 按 offset 接收，重复相同 offset 且内容一致时幂等，跳 offset、越界或内容冲突报错。COMMIT 检查协议版本、总长度、坐标范围、高程和 CRC32，成功后由路线任务做 GCJ-02 到 WGS84 反变换、地图投影、累计距离和包围盒计算。map_store 读取 SD 卡 map.idx/map.dat 的 3×3 网格，map_route 用当前位置到路线线段的最近投影算出进度和偏离，SD Route 页面只读快照绘制。
-运动数据不会直接从 BLE 回调写 LVGL。手机定位命令先入有界队列，定位任务再更新 app_motion_model；页面、历史、本地播报和 MCP 都读模型快照。小智由双击电源键手动触发，Wi-Fi 获得 IP 后建立 WebSocket 和 Opus 音频；本地导航事件每秒检测一次，从 SD 读取 2048 字节 PCM 片段，P0 导航播报可打断 P1 指标播报和小智 TTS。LVGL 线程禁止 SD、网络、文件、编解码和阻塞锁等待，非 UI 线程禁止 lv_*。
-2. 系统架构：面试官想听的不是模块列表2.1 分层和依赖方向我会把代码分成四层：
-
-平台&#x2F;板级：FreeRTOS、SD、NVS、ESP-Hosted、ICS43434、MAX98357A、显示和触摸。
-领域服务：BLE GATT&#x2F;协议&#x2F;路线、地图文件、Wi-Fi、音频、历史。
-业务模型：app_motion_model、骑行状态、路线状态、活动类型、Xiaozhi 生命周期。
-UI：ui_page_manager 和各页面，只做布局、事件和快照到控件的映射。
-
-UI 可以调用业务公开 API，但不能包含 SiFli&#x2F;ESP BLE、Flash、socket 或文件写入头文件；业务&#x2F;服务不能包含 lvgl.h 或持有 lv_obj_t *。这样做的价值是：地图或 BLE 的压力不会直接进入 UI 热路径，运动状态机可以脱离 LVGL 做主机测试，换芯片或换 RTOS 时只替换平台适配。
-2.2 状态唯一所有者BLE 管理模块拥有电源、广播、连接和路线传输状态；Wi-Fi 任务拥有扫描、连接、GOT_IP 和重试状态；Xiaozhi controller 拥有 chat&#x2F;audio&#x2F;mic 生命周期；map_store 拥有地图文件和网格快照；map_route 拥有路线投影数组和导航状态；app_motion_model 拥有运动指标；页面管理器拥有页面实例和导航栈。页面只读这些服务发布的状态，不能再保存第二套“已连接”布尔值。
-2.3 一条数据的所有权链SDK 回调参数通常只在回调期间有效，所以回调只做长度检查、最小复制和投递。队列拥有复制后的事件或固定缓冲槽；消费任务在处理完后归还槽位。服务发布快照时切换双缓冲或在短锁内完成索引交换；UI 只读取当前快照，不保存服务内部可变指针。页面销毁后，异步事件通过页面实例号&#x2F;订阅号判断是否仍有效。
-3. 地图和导航：怎么从原始数据走到圆屏3.1 为什么需要 PC 端预处理GeoJSON&#x2F;OSM 原始数据是文本和层级对象，含字符串属性、浮点经纬度、线和面几何。让 P4 在运行时解析会同时占用 CPU、RAM 和 SD 随机 IO。tools/geojson_to_c_array_gui.py 在 PC 端流式扫描，使用 Shapely 做几何修复、简化、折线&#x2F;面处理和多边形三角剖分，再用 SQLite 做中间归档，最后生成适合随机读取的 map.idx 和 map.dat。
-3.2 坐标和文件格式转换器使用局部等距圆柱近似，把经纬度变成以米为单位的局部世界坐标，地球半径为 6378137。默认网格边长 2000 m。map.idx 有 64 字节头和 8 字节网格索引项，用于定位 map.dat 块；map.dat 以 ODAT 头开头，后面是网格和几何数据。索引和数据分离后，设备先查偏移，再只读取当前位置需要的块。
-3.3 运行时地图加载map_store 是独立任务，启动时打开并检查两个文件的头、版本和长度。根据中心经纬度算网格编号，加载中心及周围八个网格。位置仍在当前覆盖范围时复用快照，跨网格时后台读取新块。页面不 fread、不查索引、不投影、不做三角剖分，只拿地图快照绘制。
-3.4 GCJ-02 到 WGS84 为什么放在路线任务小程序路线是 GCJ-02，离线地图是 WGS84。如果不转换，路线和道路会整体偏移。map_route 对每个点迭代求 WGS84，再调用 map_store_project_wgs84()，把结果放进世界坐标数组。转换只做一次，避免每帧重复三角函数计算。路线准备还生成累计距离、包围盒、高程数组、累计爬升和累计下降，后续 UI 和播报只读结果。
-3.5 最近线段、偏离、转向和坡度当前位置不是简单找最近路点，而是对路线相邻点形成的线段做点到线段投影，比较投影距离，得到最近线段及线段内比例。将该比例和累计距离相加，就有沿路线进度、剩余距离和偏离距离。相邻线段方向夹角超过 25 度时判定为转向。坡度使用约 25 m 的距离窗口计算，避免相邻高程噪声造成坡度跳变。
-这是一套“沿既定路线跟随”的算法，不是在线路径规划器。偏航后会继续寻找原路线的最近位置并报告偏离，不会搜索新道路。面试官问“为什么不用 A*”时，回答是产品目标是路线跟随，路径规划在手机端完成；设备侧优先控制 RAM、实现复杂度和响应时间。
-3.6 地图追问问：为什么加载 3×3，不只加载一个网格？
-答：位置在网格边缘时，道路和路线可能跨到邻格。预取 3×3 可以减少边界频繁重载，代价是 SD 读取和缓存占用增加；实际范围由网格大小和设备 RAM 权衡。
-问：为什么要预计算累计距离？
-答：运行时只需要最近线段索引和投影比例，就能 O(1) 得到已行驶路线距离，不必每次从起点累加所有线段。
-问：地图卡顿怎么定位？
-答：先区分文件读取、解析&#x2F;投影、快照发布和 LVGL 绘制四段计时；检查是否跨网格、是否发生大块分配、是否更新了整个屏幕。不能只凭“LVGL 慢”下结论。
-4. RTOS：每个任务为什么存在4.1 任务分层
-LVGL adapter：指定核心运行，源码配置优先级 24、核心 1、最大延迟 5 ms，调用 LVGL 和页面定时器。
-地图&#x2F;路线：地图 IO、坐标转换和导航计算，分别拥有文件&#x2F;路线状态。
-定位&#x2F;运动&#x2F;历史：消费手机定位或 Demo 数据，更新运动模型和 NVS 历史。
-Wi-Fi&#x2F;Xiaozhi：扫描连接、WebSocket chat 和 MCP 生命周期。
-音频：麦克风采集与 Opus 编码、Opus 解码与播放、本地 PCM 播放。
-低频任务：MCP 报告和本地播报事件检测约每 1000 ms 运行。
-
-面试时要区分“实时性”和“高优先级”：UI 需要及时响应但不应阻塞；音频有固定消费节拍；BLE&#x2F;地图&#x2F;Wi-Fi 是异步 IO；MCP 是低频报告。不能说“所有线程都是实时线程”。
-4.2 队列、事件组、互斥锁和通知怎么选队列用于带数据且允许排队的事件，例如 BLE 包、定位命令、Wi-Fi 命令、Opus 包和播报事件；队列容量固定，满时按业务拒绝、合并或报错。事件组用于条件，例如 Wi-Fi ready、chat connected、chat restart、listen start，不承载大数据。任务通知用于一对一唤醒，例如地图中心变化。互斥锁只保护 chat handle、NVS 状态、双缓冲索引等短临界区，不持锁做网络、文件或 UI。
-4.3 快照为什么比多个全局变量好速度、距离、位置、路线进度等字段必须在一个一致时刻被读取。app_motion_model 写入时形成快照，页面、历史、本地播报和 MCP 读取一次性副本；MCP 文本使用双缓冲，最多 384 字节，超过 3000 ms 没有新数据就报告过期。这样避免读取到“新速度+旧距离”，也不会把 SDK 私有句柄传播到 UI。
-4.4 并发追问问：队列满了怎么办？
-答：先按数据类型分类。位置&#x2F;进度可以合并为最新快照；路线 DATA 不能静默丢包，应拒绝、保持 offset 或进入错误；Opus 包要统计溢出并停止&#x2F;恢复播放；Wi-Fi 命令返回忙。所有策略都要让调用方知道是否真正受理。
-问：如何避免优先级反转？
-答：锁只保护短状态，避免高优先级 UI&#x2F;音频等待低优先级任务持锁做 IO；必要时使用带优先级继承的互斥量，并通过 runtime stats 和锁持有时间实测，而不是无限提高优先级。
-问：PSRAM 能不能放所有东西？
-答：路线、地图、屏幕缓存和部分栈适合放 PSRAM；DMA 或实时音频缓冲要看芯片和驱动的可访问能力，不能只看到“有 PSRAM”就全部迁移。
-5. BLE 路线和运动同步5.1 P4&#x2F;C6 分工P4 运行 NimBLE Host、GATT 和业务；C6 提供 Bluetooth Controller；ESP-Hosted 通过 VHCI over SDIO 传输控制和事件。P4 本地 Controller 关闭，避免双控制器竞争。这个架构让 P4 有更多资源处理 LVGL&#x2F;地图，但增加了 SDIO 链路、C6 重启和跨芯片断线处理。
-5.2 路线协议如何保证可靠Ride Service 有 Live Metrics、Command、Config、Ride Record、Route Status 等特征。Preferred MTU 为 247，但实际 DATA 长度仍按协商 MTU 检查。BEGIN 携带版本、活动类型、点数、总长度；DATA 携带 offset&#x2F;序号和片段；COMMIT 携带最终确认信息；ABORT 取消。
-接收端只接受期望 offset。重复相同 offset 且字节一致时重复确认，保证手机重试幂等；跳 offset、越界、同 offset 内容冲突立即报错。最大点数 2048；V1 单点 lat_e7 + lon_e7 共 8 字节，V2 增加高程等字段为 12 字节，最大 V2 载荷约 24576 字节。COMMIT 校验协议、长度、坐标、高程和 CRC32，通过后才变为 LOADED。
-5.3 断线和定位BLE 断线清空手机定位队列，标记定位超时并中止未完成路线；已经 LOADED 的路线保留，避免无线抖动导致路线丢失。手机定位事件进入有界队列，由定位任务更新 app_motion_model；页面不直接在 GATT 回调里更新位置或地图。
-5.4 BLE 追问问：CRC32 能不能保证安全？
-答：CRC32 只能发现传输损坏，不能证明发送者身份，也不能防篡改。路线同步用它做完整性检查；量产 OTA 或敏感配置还需要签名&#x2F;认证。
-问：为什么不把完整路线一次 malloc 出来？
-答：路线有明确最大点数，可以做固定上限和预分配；无上限 malloc 会在重连&#x2F;取消&#x2F;重复传输下造成碎片和峰值不可控。大数组放 PSRAM，但仍要在 BEGIN 时检查容量。
-问：手机发送成功是否等于设备落盘成功？
-答：不等于。进度应按设备已接收、校验或落盘的字节计算；只有 COMMIT 校验通过并发布 LOADED 才算业务成功。
-6. 音频与本地语音6.1 两条链路ICS43434 输入 16 kHz、单声道、16-bit little-endian PCM；MAX98357A 输出同格式 PCM。小智上行由麦克风任务读取 PCM，计算平均绝对值做端点检测，连续多帧超过阈值开始监听，尾部静音达到条件后停止；随后以低复杂度、DTX 的 Opus 上传。下行 Opus 在回调中只复制到有界队列，由解码任务转 PCM 后播放。
-本地播报不依赖网络。事件检测任务每 1000 ms 读取运动&#x2F;导航快照，生成到达、左右转、每公里、每五分钟和速度变化事件；播放任务最多组合 48 个数字、单位和固定句子片段，从 /sdcard/navigation_audio 每次读 2048 字节后写 MAX98357A。
-6.2 音频焦点导航关键提示是 P0，里程&#x2F;时间&#x2F;速度是 P1。P0 可丢弃等待中的 P1，并调用 esp_xiaozhi_chat_send_abort_speaking() 中止小智 TTS。电话&#x2F;HFP、A2DP 和提示音的最终抢占顺序应由统一 Audio Manager 决定；本地播报不能无条件打断通话。播报完成后根据状态决定是否恢复，不能盲目续播过期语音。
-6.3 音频追问问：为什么网络回调不直接解码？
-答：回调上下文要快速返回，直接 Opus 解码会阻塞网络栈并造成回调重入风险。复制到固定队列后，由音频任务按节拍消费，队列满&#x2F;空都能统计和恢复。
-问：本地播报为什么不用 TTS？
-答：导航关键提示需要离线可用和稳定延迟，预生成 PCM 不依赖 Wi-Fi&#x2F;云端；代价是素材占 SD 空间、句式有限，缺素材时只能降级。
-7. Wi-Fi 与小智7.1 连接流程开机不自动联网；实体电源键双击后打开确认浮层。Wi-Fi 任务扫描、排序，最多向 UI 提供 10 个 AP，最多保存 5 个配置。连接超时 20 秒，最多 3 次，等待 2 秒、4 秒重试。只有拿到 GOT_IP 才通知 AI voice。
-controller 收到 GOT_IP 后调用 esp_xiaozhi_chat_get_info，检查 WebSocket 配置，创建 MCP engine，注册运动数据工具，初始化并启动 chat，打开 Opus 通道，再启动麦克风。当前固定 WebSocket，不使用 MQTT。退出时依次停用 AI voice、停止 chat&#x2F;audio&#x2F;mic、停止 Wi-Fi，再恢复进入前页面。
-7.2 MCP 为什么只传摘要MCP 每 1000 ms 读取一次运动快照，生成不超过 384 字节的中文报告，包含当前&#x2F;平均&#x2F;最高速度、距离、运动时间、累计爬升下降、路线进度和最近历史。双缓冲发布文本；快照超过 3000 ms 未更新时返回过期提示。这样既控制网络包和内存，也避免云端读取 SDK 指针、完整历史文件或高频传感器流。
-7.3 小智追问问：为什么不让页面直接连接 Wi-Fi？
-答：连接、重试、NVS 和超时是服务职责，页面只发命令和显示状态。这样退出、断线和晚到事件有统一所有者，UI 不会因网络等待卡住。
-问：关联上 AP 但没有 IP 能不能启动小智？
-答：不能。只有 GOT_IP 才说明 DHCP&#x2F;网络配置完成，否则 WebSocket 初始化会失败，状态机应继续等待或进入超时。
-8. LVGL 页面与交互8.1 页面职责ui_page_manager 管理页面实例、进入&#x2F;隐藏&#x2F;销毁和返回；页面文件只写布局、样式、事件和 View Model 映射。Cycling&#x2F;MTB 第一次 START 先判断是否有匹配活动类型的路线：有则进预览，无则直接开始记录；第二次 START 在 DEMO 启动模拟运动，在 PHONE&#x2F;GNSS 启动真实记录。
-SD Route 页面按 466×466 圆屏设计，预览范围约 600 m，导航范围约 430 m。导航状态约 20 ms 检查，业务文字约 500 ms 更新，地图绘制最小间隔约 33 ms；方向箭头预计算，屏幕和路线缓存放 PSRAM。缩放、平移、回到当前位置和滑动返回是页面视觉状态，不修改地图服务内部状态。
-8.2 UI 线程纪律所有 lv_obj 创建、修改、动画和删除只在 LVGL&#x2F;UI 线程。BLE、Wi-Fi、音频、SD 和路线任务只能投递事件或更新快照。页面定时器只读快照并更新变化控件，不能 sleep、等锁、读文件、做坐标转换或图片解码。页面隐藏时停止无用动画和定时器；异步事件到达时先检查页面实例仍有效。
-8.3 LVGL 追问问：为什么不用每个 BLE 包刷新进度条？
-答：BLE 包频率和 UI 帧频没有必要一致。业务层合并&#x2F;限频，UI 只按 5-10 Hz 的可见频率更新；路线数据仍可高速接收，避免绘制成为吞吐瓶颈。
-问：页面快速退出后回调怎么办？
-答：回调不直接持有 lv_obj_t *，事件携带服务数据和页面实例&#x2F;订阅代号。UI 线程消费时若实例已失效就丢弃 UI 更新，业务状态仍可保留。
-9. 你可以主动讲的工程取舍
-预处理换运行时资源：地图在 PC 端投影、简化和三角剖分，设备只做索引和局部读取。
-快照换一致性：多个消费者读统一运动模型，不让每个页面各自解释定位数据。
-有界队列换可预测性：宁可显式返回忙&#x2F;溢出，也不让断网或 SD 变慢时内存无限增长。
-本地 PCM 换离线可靠性：导航播报不依赖云端，但素材管理和 SD 空间变复杂。
-P4&#x2F;C6 异构换资源隔离：P4 专注图形&#x2F;地图，C6 专注 Controller，但需要处理 ESP-Hosted 跨芯片故障。
-分层换可测试性：业务层不包含 LVGL，页面不能调用 SDK，后续可以用 mock 服务和主机测试状态机。
-
-10. 诚实回答性能问题可以确认的结构参数包括：LVGL adapter 优先级 24、核心 1、最大延迟 5 ms；路线任务栈宏 4096、优先级 4；BLE Preferred MTU 247；最大路线点数 2048；地图默认网格 2000 m、3×3 加载；本地播报检测 1000 ms、PCM 读块 2048 字节；MCP 报告 1000 ms、384 字节上限、3000 ms 过期。
-不能直接声称的内容包括稳定 60 FPS、最差帧耗时、BLE 实际吞吐、Opus 端到端延迟、音频欠载率、PSRAM 峰值、续航和功耗。正确回答是：“代码上通过任务隔离、固定队列和刷新限频控制风险，具体数值需要在目标板用 LVGL monitor、FreeRTOS runtime stats、逻辑分析仪和功耗仪实测。”
-11. 开发前扫描记录
-扫描日期：2026-09-11。
-扫描目录：main/app_model、main/app_net、main/ai_voice、main/ui_app、bt、map、components/board_peripherals/audio、tools、doc。
-关键文件：main/main.c、app_motion_model.c、app_wifi.c、app_xiaozhi_controller.c、app_ai_voice*.c、app_ble*.c、map_store.c、map_route.c、ui_page_manager.c 和各页面文件。
-参考文档：地图二进制格式、SD 路线、BLE 总览&#x2F;路线&#x2F;定位、小智移植、手动联网、主动播报和手机定位说明。
-未扫描&#x2F;未验证：目标板帧率、功耗、无线吞吐、音频质量、长稳、手机互操作和云端服务内部。
-
-12. 本次整理与验证边界本手册只新增面试材料，不修改源码、协议、配置、资源、分区和构建产物。已静态核对上述路径、任务、状态、协议字段和参数；没有运行新的编译、单元测试、模拟器或目标板测试。面试中应把“静态确认”和“实机测量”明确分开。
-13. 面试结束时的收束句“我在这个项目里负责的不是把几个 Demo 拼起来，而是把路线协议、坐标转换、离线地图、运动状态、双芯片蓝牙、联网语音、本地播报和 LVGL 页面组织成一套有明确所有权的异步系统。最重要的设计原则是：回调快速返回、业务状态集中、UI 只消费快照、所有队列有上限、所有异步操作可取消和可恢复。”
-]]></content>
-  </entry>
-  <entry>
     <title>第一章 FreeRTOS 源码</title>
     <url>/2025/04/10/%E7%AC%AC%E4%B8%80%E7%AB%A0%20FreeRTOS%20%E6%BA%90%E7%A0%81/</url>
     <content><![CDATA[1.1FreeRTOS目录结构
@@ -5497,6 +5274,159 @@ BaseType_t通常用作简单的返回值的类型，还有逻辑值，比如pdTR
       </categories>
       <tags>
         <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>数据库常用命令</title>
+    <url>/2023/08/29/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</url>
+    <content><![CDATA[修订：查看表中的字段
+show columns from 商品库存;xxxxxxxxxx columnshow columns from 商品库存;
+
+
+
+select 所在区域 from 商品库存 limit 5;  检索此语句使用SELECT语句检索单个列。LIMIT 5指示MySQL返回不多于5行。
+
+
+统计四张表的记录数,要求 SQL 语句禁用联合查询（Union、JOIN、多表
+SELECT	(SELECT COUNT(*) FROM d_3_1) AS dcount,	(SELECT COUNT(*) FROM 商品库存) AS scount
+
+
+一、连接数据库mysql -h 主机IP -P 端口号 -u 用户名 -p 密码
+
+在 UbuntuMySQL -u root -p
+
+连接远程主机
+mysql -h110.110.110.110 -u root -p 123;
+
+二、修改用户密码mysqladmin -u root -password ab12
+
+再次修改
+mysqladmin -u root -password djg345
+
+三、新增用户（1）增加一个用户 test1，密码为 abc
+grant select,insert,delete on *.*to [email]=test@&quot;%]test1@&quot;[/email]&quot;Indentified by&quot;abc&quot;;# grant on 命令格式：grant select on 数据库.* to 用户名@登录主机 identified by “密码”;
+
+（2）新增一个 test2 密码为 abc，只能 localhost 登录
+grant select,insert,update,delete on mydb.* to [email=test2@localhost]test2@localhsot[/email] identified by &quot;abc&quot;;# 如果不想test有密码可以在用一次打消密码grant select,insert,update,delete on mydb.* to [email=test2@localhost]test2@localhost[/email] identified by “”;=
+
+四、创建数据库（1）create database 命名;
+
+（2）创建数据库并分配用户
+#1create database 数据库名;#2create select,insert,update,delete,create,drop,alter on 数据库名.* to 数据库名@loclhost identified by &#x27;密码&#x27;;#3select password por &#x27;数据名&#x27;@&#x27;localhost&#x27; =old_password(&#x27;密码&#x27;);
+
+五、显示数据库show databases 显示所有数据库
+
+六、删除数据库drop database xhkdb;
+
+七、使用数据库use xhkdb;
+（1）use 语句可以通告 mysql 把数据库当作默认使用。知道下一个不同的 use 语句。
+
+（2）use 语句不会阻碍访问其他数据库中的表。ab1 数据库访问 author 表，并从 db2 数据库访问 editor 表
+use db1;select author_name,editor_name from author,ab2,editor;where author.editor_id = ab2.editor.editor_id;
+
+八、当前连接的数据库select database();
+（1）显示 mysql 版本
+select version();
+
+
+（2）显示当前时间
+select now();
+
+
+（3）显示年月日
+
+
+
+（4）显示字符串
+
+（5）当计算器
+
+（5）串接字符串
+
+&#x2F;&#x2F;这里用到 CONCAT()函数，用来把字符串串接起来。
+九、创建数据库表注意：要先使用 use 数据库名；
+create table 表名(	字段名1，数据类型 [列级别约束条件][默认值]，	字段名2，数据类型 [列级别约束条件][默认值],	……	[表级别约束条件])
+
+
+例如:创建 tb_emp1 表结构
+
+
+十、获取表结构查看表结构可以使用 describe 和 show create table；
+describe 表名;
+
+或
+desc 表名；
+
+show create table 可以查看显示创建表时的 create table 语句。
+show create table 表名\G;
+
+
+十一、删除数据表drop table if exists 表1，表2,表n
+
+
+十二、向表中插入数据insert into 插入新行
+insert into 表名称 values(值1，值2);# 也可以指定要插入数据的列insert into table_name(列1，列2)values(值1，值2)
+
+十三、查询表中数据SELECT &#123;* | &lt;字段列表&gt;&#125; [	 FROM &lt;表 1&gt;,&lt;表 2&gt;...	 [WHERE &lt;表达式&gt;	 [GROUP BY &lt;group by definition&gt;]	 [HAVING &lt;expression&gt; [&#123;&lt;operator&gt;&lt;expression&gt;&#125;...]] 	[ORDER BY &lt;order by definition&gt;] 	[LIMIT [&lt;offset&gt;,] &lt;row count&gt;] ]SELECT [字段 1,字段 2,…,字段 n]FROM [表或视图]WHERE [查询条件];
+
+
+十四、删除记录delete from table_name[where &lt;condition&gt;];#						指定删除条件delete from person where id=11;
+
+十五、修改表中的数据update table_nameset column_nmael=value1,column_name2=value2where(condition)
+
+column_name1，为指定更新的字段名称。value 为相对应指定字段的更新值。condition 更新记录需要满足的条件
+【例】在 person 表中，更新 id 值为 11 的记录，将 age 字段值改为 15，将 name 字段值改为 LiMing，SQL 语句如下：
+update person set age=15,name=&#x27;liming&#x27;where id=11;
+
+十六、增加字段alter add 表名 add 新字段 数据类型	约束条件 first|after 已存在字段名	        first将新添加的字段设置为表的第一个字段	        after新添加的字段指定在‘已存在字段名’的后面
+
+【例】在数据表 tb_dept1 中添加一个没有完整性约束的 INT 类型的字段 managerId（部门经理编号），SQL 语句如下：
+ALTER TABLE tb_dept1 ADD managerId INT(10);
+
+十七、修改表名alter table 旧表名 rename to新表名
+
+【例】将数据表 tb_dept3 改名为 tb_deptment3，SQL 语句如下：
+ALTER TABLE tb_dept3 RENAME tb_deptment3;
+
+十八、备份数据库mysqldump -u user -h host -p password dbname[tbname,[tbname]]&gt;filename.sql
+
+十九、还原数据库mysql -u user -p [dbname]&lt;filename.sql
+
+【例 1】使用 mysql 命令将 C:\backup\booksdb_20130301.sql 文件中的备份导入到数据库中，输入语句如下：
+mysql –u root –p booksDB &lt; C:/backup/booksdb_20130301.sql
+
+如果已经登录 MySQL 服务器，还可以使用 source 命令导入 sql 文件。source 语句语法如下：
+source filename
+
+【 例 2 】 使 用 root 用 户 登 录 到 服 务 器 ， 然 后 使 用 source 导 入 本 地 的 备 份 文 件 booksdb_20110101.sql，输入语句如下：
+–选择要恢复到的数据库
+mysql&gt; use booksDB;Database changed
+
+–使用 source 命令导入备份文件
+mysql&gt; source C:\backup\booksDB_20130301.sql
+
+二十、快速恢复数据库在 MySQL 服务器停止运行时，将备份的数据库文件复制到 MySQL 存放数据的位置（MySQL 的 data 文件夹）
+chown -R mysql.mysql /var/lib/mysql/dbname
+
+【例】从 mysqlhotcopy 复制的备份恢复数据库，输入语句如下：
+cp -R /usr/backup/test usr/local/mysql/data
+
+二十一、在 Ubuntu 下安装 mysqlsudo apt-get update #更新软件包sudo apt-get install mysql-server #安装数据库服务器启动：sudo /etc/init.d/mysql start停止：sudo /etc/init.d/mysql stop重启：sudo /etc/init.d/mysql restart登录：mysql -u root -p&lt;pwd&gt;
+
+二十二、关闭防火墙- sudo apt-get install ufw 安装防火墙- sudo ufw enable 打开防火墙- sudo ufw status 查看防火墙状态- sudo ufw disable 关闭防火墙
+
+MySQL 在 Ubuntu 使用二十三、在服务器 SQLSERVER 上，利用 U 盘“U 盘资料&#x2F;test.sql”还原三张数据表。
+
+二十四、统计三张表的记录数，查询结果要求如图。SELECT &#x27;table1&#x27; AS TableName, COUNT(*) AS RecordCount FROM table1UNION ALLSELECT &#x27;table2&#x27; AS TableName, COUNT(*) AS RecordCount FROM table2UNION ALLSELECT &#x27;table3&#x27; AS TableName, COUNT(*) AS RecordCount FROM table3;
+
+二十五、删除 AD_AccountsRole 表中不属于 AD_Accounts 用户的关系数据。重新查询三张表的记录数。
+二十六、新建查询窗口，写出查询 nleedge 数据库中所有数据表和每个表的记录SELECT  (SELECT COUNT(*) FROM d_3_1) AS 表一,  (SELECT COUNT(*) FROM `商品库存`) AS 表二;
+]]></content>
+      <categories>
+        <category>Mysql</category>
+      </categories>
+      <tags>
+        <tag>数据库</tag>
       </tags>
   </entry>
   <entry>
@@ -6294,6 +6224,34 @@ GPIO 引脚将信号传输到 stm32 其他片上外设，由该外设读取引�
       </tags>
   </entry>
   <entry>
+    <title>第九章 STM32中断应用</title>
+    <url>/2024/05/09/%E7%AC%AC%E4%B9%9D%E7%AB%A0%20STM32%E4%B8%AD%E6%96%AD%E5%BA%94%E7%94%A8/</url>
+    <content><![CDATA[一、中断概述中断时出现某些意外需要主机干预，机器能自动停止运行的程序，转入新的处理的程序，处理完之后返回程序被暂停的程序，继续运行。
+异常就是中断，中断就是异常。
+异常分为：系统异常和外部中断。
+二、NVIC介绍NVIC是嵌套向量中断控制器，控制芯片中断的功能。
+一般来说，使用ISER（使能中断）、ICER（失能中断）和IP（设置中断优先级）寄存器。
+（不常用）
+
+三、优先级中断优先级寄存器NVIC_IPRx，用来配置外部中断的优先级。如果抢占优先级相同，九比较子优先级，如果都相同，比较硬件中断编号，编号越小，优先级越高
+
+四、优先级分组优先级分组由外设SCB的应用程序中断和复位控制寄存器AIRCR的PRIGROUP[10:8]决定，主优先级&#x3D;抢占优先级
+/*** 配置中断优先级分组：抢占优先级和子优先级* 形参如下：* @arg NVIC_PriorityGroup_0: 0bit for 抢占优先级* 4 bits for 子优先级* @arg NVIC_PriorityGroup_1: 1 bit for 抢占优先级* 3 bits for 子优先级* @arg NVIC_PriorityGroup_2: 2 bit for 抢占优先级* 2 bits for 子优先级* @arg NVIC_PriorityGroup_3: 3 bit for 抢占优先级* 1 bits for 子优先级* @arg NVIC_PriorityGroup_4: 4 bit for 抢占优先级* 0 bits for 子优先级* @ 注意 如果优先级分组为 0，则抢占优先级就不存在，优先级就全部由子优先级控制*/void NVIC_PriorityGroupConfig(uint32_t PriorityGroup)&#123;     // 检查参数     assert_param(IS_NVIC_PRIORITY_GROUP(PriorityGroup));     // 设置优先级分组     NVIC_SetPriorityGrouping(PriorityGroup);&#125;
+
+
+五、中断编程配置中断一般使用三个：
+1、使用 HAL_NVIC_SetPriorityGrouping(uint32_t PriorityGroup) 函数配置中断优先级分组。一般默认是 NVIC_PRIORITYGROUP_4 分组 4。
+2、使用 HAL_NVIC_SetPriority (IRQn_Type IRQn, uint32_t PreemptPriority, uint32_t SubPriority) 函数配置具体外设中断通道的抢占优先级和子优先级。
+3、使用 HAL_NVIC_EnableIRQ 函数使能中断请求。
+]]></content>
+      <categories>
+        <category>野火 STM32</category>
+      </categories>
+      <tags>
+        <tag>STM32</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>第二章 算法</title>
     <url>/2024/02/29/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[2.1 算法定义算法是解决特定问题求解步骤的描述，计算机中表现位指令的有限序列，并且每条指令表示一个或多个操作。
@@ -6327,34 +6285,6 @@ GPIO 引脚将信号传输到 stm32 其他片上外设，由该外设读取引�
       </categories>
       <tags>
         <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>第九章 STM32中断应用</title>
-    <url>/2024/05/09/%E7%AC%AC%E4%B9%9D%E7%AB%A0%20STM32%E4%B8%AD%E6%96%AD%E5%BA%94%E7%94%A8/</url>
-    <content><![CDATA[一、中断概述中断时出现某些意外需要主机干预，机器能自动停止运行的程序，转入新的处理的程序，处理完之后返回程序被暂停的程序，继续运行。
-异常就是中断，中断就是异常。
-异常分为：系统异常和外部中断。
-二、NVIC介绍NVIC是嵌套向量中断控制器，控制芯片中断的功能。
-一般来说，使用ISER（使能中断）、ICER（失能中断）和IP（设置中断优先级）寄存器。
-（不常用）
-
-三、优先级中断优先级寄存器NVIC_IPRx，用来配置外部中断的优先级。如果抢占优先级相同，九比较子优先级，如果都相同，比较硬件中断编号，编号越小，优先级越高
-
-四、优先级分组优先级分组由外设SCB的应用程序中断和复位控制寄存器AIRCR的PRIGROUP[10:8]决定，主优先级&#x3D;抢占优先级
-/*** 配置中断优先级分组：抢占优先级和子优先级* 形参如下：* @arg NVIC_PriorityGroup_0: 0bit for 抢占优先级* 4 bits for 子优先级* @arg NVIC_PriorityGroup_1: 1 bit for 抢占优先级* 3 bits for 子优先级* @arg NVIC_PriorityGroup_2: 2 bit for 抢占优先级* 2 bits for 子优先级* @arg NVIC_PriorityGroup_3: 3 bit for 抢占优先级* 1 bits for 子优先级* @arg NVIC_PriorityGroup_4: 4 bit for 抢占优先级* 0 bits for 子优先级* @ 注意 如果优先级分组为 0，则抢占优先级就不存在，优先级就全部由子优先级控制*/void NVIC_PriorityGroupConfig(uint32_t PriorityGroup)&#123;     // 检查参数     assert_param(IS_NVIC_PRIORITY_GROUP(PriorityGroup));     // 设置优先级分组     NVIC_SetPriorityGrouping(PriorityGroup);&#125;
-
-
-五、中断编程配置中断一般使用三个：
-1、使用 HAL_NVIC_SetPriorityGrouping(uint32_t PriorityGroup) 函数配置中断优先级分组。一般默认是 NVIC_PRIORITYGROUP_4 分组 4。
-2、使用 HAL_NVIC_SetPriority (IRQn_Type IRQn, uint32_t PreemptPriority, uint32_t SubPriority) 函数配置具体外设中断通道的抢占优先级和子优先级。
-3、使用 HAL_NVIC_EnableIRQ 函数使能中断请求。
-]]></content>
-      <categories>
-        <category>野火 STM32</category>
-      </categories>
-      <tags>
-        <tag>STM32</tag>
       </tags>
   </entry>
   <entry>
@@ -6928,6 +6858,21 @@ S(2,4)在预处理代替成字符串的形参 2 * 4
       </tags>
   </entry>
   <entry>
+    <title> 一篇牢骚</title>
+    <url>/2024/03/30/%E4%B8%80%E7%AF%87%E7%89%A2%E9%AA%9A/</url>
+    <content><![CDATA[愿我此生脚步不停，览尽世间美景。即使路途遥远且艰难，至少，至少，我经历过。以巽为名，行遍千山万水，看尽人间青山。青山不言，我自知晓其壮美。来自抖音博主hx888888000长穿毕
+
+
+
+来自抖音博主zkai6999那拉提
+
+
+来自抖音博主zkai6999阿勒泰
+
+
+]]></content>
+  </entry>
+  <entry>
     <title>面经</title>
     <url>/2026/08/26/%E9%9D%A2%E7%BB%8F/</url>
     <content><![CDATA[## 一、C 与 C++### 1. 嵌入式为什么常用 C，而不是 C++？C 的运行时简单、代码体积和内存开销通常更小，能直接进行指针、位操作和寄存器访问，执行时间和资源消耗也更容易分析。芯片 SDK、驱动、编译器和调试工具对 C 的支持通常更加成熟，因此适合裸机和小型 RTOS。C++ 也可以用于嵌入式，类、封装、模板和 RAII 能提高大型项目的可维护性。但异常、RTTI、动态内存、复杂模板和虚函数等特性可能带来额外开销或实时性风险，所以通常按项目约束选择性使用。### 2. C 编程和 C++ 的区别C 主要是面向过程；C++ 在此基础上增加了类、继承、多态、函数重载、模板、命名空间、引用和 STL 等能力。C++ 抽象能力和复用能力更强，但并不代表一定更慢，是否有额外开销取决于实际使用的语言特性和编译选项。## 二、`static`、`const` 与宏### 1. `static` 的作用- **函数内局部变量**：作用域仍在函数内，但具有整个程序运行期间的生命周期，只初始化一次。- **文件级全局变量**：生命周期不变，但只在当前源文件可见，具有内部链接属性。- **文件级函数**：只在当前源文件可见，避免符号冲突。- **C++ 类成员**：静态成员属于类，而不是某个对象。### 2. `const` 的作用`const` 表示不能通过当前标识符修改对象，是编译期约束，可表达只读接口并帮助类型检查。```cconst int *p;          // 不能通过 p 修改所指内容，p 可以改指向int *const p = &amp;x;     // p 不能改指向，但可以修改 xconst int *const p;    // p 和所指内容都不能通过 p 修改
@@ -7286,6 +7231,108 @@ SPI&#x2F;I2C&#x2F;UART&#x2F;DMA、GPIO 中断、逻辑分析仪、JTAG、非阻�
 
 这比编造使用经历更容易获得面试官信任，也能把问题引导到你真正掌握的原理上。
 
+]]></content>
+  </entry>
+  <entry>
+    <title>骑行码表项目</title>
+    <url>/2026/09/12/%E7%A0%81%E8%A1%A8%E9%A1%B9%E7%9B%AE%E6%B7%B1%E6%8C%96/</url>
+    <content><![CDATA[骑行码表项目面试深挖手册
+
+用途：面试时从项目概括展开到源码、数据结构、RTOS、异常和取舍。文中“源码事实”来自当前工程；没有实测的帧率、功耗、吞吐和声学指标明确标成待测，不在面试中夸大。
+
+1. 先把项目讲清楚1.1 30 秒版本这是一个基于 ESP32-P4&#x2F;C6 的智能骑行码表。P4 负责 LVGL 图形、离线地图和骑行业务，C6 通过 ESP-Hosted SDIO 提供蓝牙 Controller。手机小程序通过 BLE 下发路线和定位，设备用分片状态机接收并校验路线，再把 GCJ-02 坐标转换到 WGS84 地图坐标，计算路线进度、偏离距离、转向和坡度。运动数据统一进入 app_motion_model，Cycling、MTB、地图、历史、本地播报和小智 MCP 都读取同一份快照。小智走 Wi-Fi&#x2F;WebSocket&#x2F;Opus，本地导航播报走 SD 卡预生成 PCM；所有网络、SD 和音频操作都放在独立任务，LVGL 线程只负责显示。
+1.2 三分钟版本项目的难点是多模块并发，而不是单独调用某个 SDK。输入有手机 BLE、GNSS、IMU、实体键和 Wi-Fi；处理有路线校验、坐标转换、地图索引、运动统计和语音；输出有圆形 AMOLED、BLE 状态、MAX98357A 音频和小智 MCP。我的做法是让每个服务拥有自己的状态和执行上下文，用有界队列传递命令&#x2F;数据，用事件组表达阶段条件，用互斥锁保护短状态，用不可变快照给多个消费者读取。
+路线举例：app_ble_gatt 收到写入后交给 app_ble_proto 解析，再由 app_ble_route 处理 0x22 BEGIN、0x23 DATA、0x24 COMMIT、0x25 ABORT。DATA 按 offset 接收，重复相同 offset 且内容一致时幂等，跳 offset、越界或内容冲突报错。COMMIT 检查协议版本、总长度、坐标范围、高程和 CRC32，成功后由路线任务做 GCJ-02 到 WGS84 反变换、地图投影、累计距离和包围盒计算。map_store 读取 SD 卡 map.idx/map.dat 的 3×3 网格，map_route 用当前位置到路线线段的最近投影算出进度和偏离，SD Route 页面只读快照绘制。
+运动数据不会直接从 BLE 回调写 LVGL。手机定位命令先入有界队列，定位任务再更新 app_motion_model；页面、历史、本地播报和 MCP 都读模型快照。小智由双击电源键手动触发，Wi-Fi 获得 IP 后建立 WebSocket 和 Opus 音频；本地导航事件每秒检测一次，从 SD 读取 2048 字节 PCM 片段，P0 导航播报可打断 P1 指标播报和小智 TTS。LVGL 线程禁止 SD、网络、文件、编解码和阻塞锁等待，非 UI 线程禁止 lv_*。
+2. 系统架构：面试官想听的不是模块列表2.1 分层和依赖方向我会把代码分成四层：
+
+平台&#x2F;板级：FreeRTOS、SD、NVS、ESP-Hosted、ICS43434、MAX98357A、显示和触摸。
+领域服务：BLE GATT&#x2F;协议&#x2F;路线、地图文件、Wi-Fi、音频、历史。
+业务模型：app_motion_model、骑行状态、路线状态、活动类型、Xiaozhi 生命周期。
+UI：ui_page_manager 和各页面，只做布局、事件和快照到控件的映射。
+
+UI 可以调用业务公开 API，但不能包含 SiFli&#x2F;ESP BLE、Flash、socket 或文件写入头文件；业务&#x2F;服务不能包含 lvgl.h 或持有 lv_obj_t *。这样做的价值是：地图或 BLE 的压力不会直接进入 UI 热路径，运动状态机可以脱离 LVGL 做主机测试，换芯片或换 RTOS 时只替换平台适配。
+2.2 状态唯一所有者BLE 管理模块拥有电源、广播、连接和路线传输状态；Wi-Fi 任务拥有扫描、连接、GOT_IP 和重试状态；Xiaozhi controller 拥有 chat&#x2F;audio&#x2F;mic 生命周期；map_store 拥有地图文件和网格快照；map_route 拥有路线投影数组和导航状态；app_motion_model 拥有运动指标；页面管理器拥有页面实例和导航栈。页面只读这些服务发布的状态，不能再保存第二套“已连接”布尔值。
+2.3 一条数据的所有权链SDK 回调参数通常只在回调期间有效，所以回调只做长度检查、最小复制和投递。队列拥有复制后的事件或固定缓冲槽；消费任务在处理完后归还槽位。服务发布快照时切换双缓冲或在短锁内完成索引交换；UI 只读取当前快照，不保存服务内部可变指针。页面销毁后，异步事件通过页面实例号&#x2F;订阅号判断是否仍有效。
+3. 地图和导航：怎么从原始数据走到圆屏3.1 为什么需要 PC 端预处理GeoJSON&#x2F;OSM 原始数据是文本和层级对象，含字符串属性、浮点经纬度、线和面几何。让 P4 在运行时解析会同时占用 CPU、RAM 和 SD 随机 IO。tools/geojson_to_c_array_gui.py 在 PC 端流式扫描，使用 Shapely 做几何修复、简化、折线&#x2F;面处理和多边形三角剖分，再用 SQLite 做中间归档，最后生成适合随机读取的 map.idx 和 map.dat。
+3.2 坐标和文件格式转换器使用局部等距圆柱近似，把经纬度变成以米为单位的局部世界坐标，地球半径为 6378137。默认网格边长 2000 m。map.idx 有 64 字节头和 8 字节网格索引项，用于定位 map.dat 块；map.dat 以 ODAT 头开头，后面是网格和几何数据。索引和数据分离后，设备先查偏移，再只读取当前位置需要的块。
+3.3 运行时地图加载map_store 是独立任务，启动时打开并检查两个文件的头、版本和长度。根据中心经纬度算网格编号，加载中心及周围八个网格。位置仍在当前覆盖范围时复用快照，跨网格时后台读取新块。页面不 fread、不查索引、不投影、不做三角剖分，只拿地图快照绘制。
+3.4 GCJ-02 到 WGS84 为什么放在路线任务小程序路线是 GCJ-02，离线地图是 WGS84。如果不转换，路线和道路会整体偏移。map_route 对每个点迭代求 WGS84，再调用 map_store_project_wgs84()，把结果放进世界坐标数组。转换只做一次，避免每帧重复三角函数计算。路线准备还生成累计距离、包围盒、高程数组、累计爬升和累计下降，后续 UI 和播报只读结果。
+3.5 最近线段、偏离、转向和坡度当前位置不是简单找最近路点，而是对路线相邻点形成的线段做点到线段投影，比较投影距离，得到最近线段及线段内比例。将该比例和累计距离相加，就有沿路线进度、剩余距离和偏离距离。相邻线段方向夹角超过 25 度时判定为转向。坡度使用约 25 m 的距离窗口计算，避免相邻高程噪声造成坡度跳变。
+这是一套“沿既定路线跟随”的算法，不是在线路径规划器。偏航后会继续寻找原路线的最近位置并报告偏离，不会搜索新道路。面试官问“为什么不用 A*”时，回答是产品目标是路线跟随，路径规划在手机端完成；设备侧优先控制 RAM、实现复杂度和响应时间。
+3.6 地图追问问：为什么加载 3×3，不只加载一个网格？
+答：位置在网格边缘时，道路和路线可能跨到邻格。预取 3×3 可以减少边界频繁重载，代价是 SD 读取和缓存占用增加；实际范围由网格大小和设备 RAM 权衡。
+问：为什么要预计算累计距离？
+答：运行时只需要最近线段索引和投影比例，就能 O(1) 得到已行驶路线距离，不必每次从起点累加所有线段。
+问：地图卡顿怎么定位？
+答：先区分文件读取、解析&#x2F;投影、快照发布和 LVGL 绘制四段计时；检查是否跨网格、是否发生大块分配、是否更新了整个屏幕。不能只凭“LVGL 慢”下结论。
+4. RTOS：每个任务为什么存在4.1 任务分层
+LVGL adapter：指定核心运行，源码配置优先级 24、核心 1、最大延迟 5 ms，调用 LVGL 和页面定时器。
+地图&#x2F;路线：地图 IO、坐标转换和导航计算，分别拥有文件&#x2F;路线状态。
+定位&#x2F;运动&#x2F;历史：消费手机定位或 Demo 数据，更新运动模型和 NVS 历史。
+Wi-Fi&#x2F;Xiaozhi：扫描连接、WebSocket chat 和 MCP 生命周期。
+音频：麦克风采集与 Opus 编码、Opus 解码与播放、本地 PCM 播放。
+低频任务：MCP 报告和本地播报事件检测约每 1000 ms 运行。
+
+面试时要区分“实时性”和“高优先级”：UI 需要及时响应但不应阻塞；音频有固定消费节拍；BLE&#x2F;地图&#x2F;Wi-Fi 是异步 IO；MCP 是低频报告。不能说“所有线程都是实时线程”。
+4.2 队列、事件组、互斥锁和通知怎么选队列用于带数据且允许排队的事件，例如 BLE 包、定位命令、Wi-Fi 命令、Opus 包和播报事件；队列容量固定，满时按业务拒绝、合并或报错。事件组用于条件，例如 Wi-Fi ready、chat connected、chat restart、listen start，不承载大数据。任务通知用于一对一唤醒，例如地图中心变化。互斥锁只保护 chat handle、NVS 状态、双缓冲索引等短临界区，不持锁做网络、文件或 UI。
+4.3 快照为什么比多个全局变量好速度、距离、位置、路线进度等字段必须在一个一致时刻被读取。app_motion_model 写入时形成快照，页面、历史、本地播报和 MCP 读取一次性副本；MCP 文本使用双缓冲，最多 384 字节，超过 3000 ms 没有新数据就报告过期。这样避免读取到“新速度+旧距离”，也不会把 SDK 私有句柄传播到 UI。
+4.4 并发追问问：队列满了怎么办？
+答：先按数据类型分类。位置&#x2F;进度可以合并为最新快照；路线 DATA 不能静默丢包，应拒绝、保持 offset 或进入错误；Opus 包要统计溢出并停止&#x2F;恢复播放；Wi-Fi 命令返回忙。所有策略都要让调用方知道是否真正受理。
+问：如何避免优先级反转？
+答：锁只保护短状态，避免高优先级 UI&#x2F;音频等待低优先级任务持锁做 IO；必要时使用带优先级继承的互斥量，并通过 runtime stats 和锁持有时间实测，而不是无限提高优先级。
+问：PSRAM 能不能放所有东西？
+答：路线、地图、屏幕缓存和部分栈适合放 PSRAM；DMA 或实时音频缓冲要看芯片和驱动的可访问能力，不能只看到“有 PSRAM”就全部迁移。
+5. BLE 路线和运动同步5.1 P4&#x2F;C6 分工P4 运行 NimBLE Host、GATT 和业务；C6 提供 Bluetooth Controller；ESP-Hosted 通过 VHCI over SDIO 传输控制和事件。P4 本地 Controller 关闭，避免双控制器竞争。这个架构让 P4 有更多资源处理 LVGL&#x2F;地图，但增加了 SDIO 链路、C6 重启和跨芯片断线处理。
+5.2 路线协议如何保证可靠Ride Service 有 Live Metrics、Command、Config、Ride Record、Route Status 等特征。Preferred MTU 为 247，但实际 DATA 长度仍按协商 MTU 检查。BEGIN 携带版本、活动类型、点数、总长度；DATA 携带 offset&#x2F;序号和片段；COMMIT 携带最终确认信息；ABORT 取消。
+接收端只接受期望 offset。重复相同 offset 且字节一致时重复确认，保证手机重试幂等；跳 offset、越界、同 offset 内容冲突立即报错。最大点数 2048；V1 单点 lat_e7 + lon_e7 共 8 字节，V2 增加高程等字段为 12 字节，最大 V2 载荷约 24576 字节。COMMIT 校验协议、长度、坐标、高程和 CRC32，通过后才变为 LOADED。
+5.3 断线和定位BLE 断线清空手机定位队列，标记定位超时并中止未完成路线；已经 LOADED 的路线保留，避免无线抖动导致路线丢失。手机定位事件进入有界队列，由定位任务更新 app_motion_model；页面不直接在 GATT 回调里更新位置或地图。
+5.4 BLE 追问问：CRC32 能不能保证安全？
+答：CRC32 只能发现传输损坏，不能证明发送者身份，也不能防篡改。路线同步用它做完整性检查；量产 OTA 或敏感配置还需要签名&#x2F;认证。
+问：为什么不把完整路线一次 malloc 出来？
+答：路线有明确最大点数，可以做固定上限和预分配；无上限 malloc 会在重连&#x2F;取消&#x2F;重复传输下造成碎片和峰值不可控。大数组放 PSRAM，但仍要在 BEGIN 时检查容量。
+问：手机发送成功是否等于设备落盘成功？
+答：不等于。进度应按设备已接收、校验或落盘的字节计算；只有 COMMIT 校验通过并发布 LOADED 才算业务成功。
+6. 音频与本地语音6.1 两条链路ICS43434 输入 16 kHz、单声道、16-bit little-endian PCM；MAX98357A 输出同格式 PCM。小智上行由麦克风任务读取 PCM，计算平均绝对值做端点检测，连续多帧超过阈值开始监听，尾部静音达到条件后停止；随后以低复杂度、DTX 的 Opus 上传。下行 Opus 在回调中只复制到有界队列，由解码任务转 PCM 后播放。
+本地播报不依赖网络。事件检测任务每 1000 ms 读取运动&#x2F;导航快照，生成到达、左右转、每公里、每五分钟和速度变化事件；播放任务最多组合 48 个数字、单位和固定句子片段，从 /sdcard/navigation_audio 每次读 2048 字节后写 MAX98357A。
+6.2 音频焦点导航关键提示是 P0，里程&#x2F;时间&#x2F;速度是 P1。P0 可丢弃等待中的 P1，并调用 esp_xiaozhi_chat_send_abort_speaking() 中止小智 TTS。电话&#x2F;HFP、A2DP 和提示音的最终抢占顺序应由统一 Audio Manager 决定；本地播报不能无条件打断通话。播报完成后根据状态决定是否恢复，不能盲目续播过期语音。
+6.3 音频追问问：为什么网络回调不直接解码？
+答：回调上下文要快速返回，直接 Opus 解码会阻塞网络栈并造成回调重入风险。复制到固定队列后，由音频任务按节拍消费，队列满&#x2F;空都能统计和恢复。
+问：本地播报为什么不用 TTS？
+答：导航关键提示需要离线可用和稳定延迟，预生成 PCM 不依赖 Wi-Fi&#x2F;云端；代价是素材占 SD 空间、句式有限，缺素材时只能降级。
+7. Wi-Fi 与小智7.1 连接流程开机不自动联网；实体电源键双击后打开确认浮层。Wi-Fi 任务扫描、排序，最多向 UI 提供 10 个 AP，最多保存 5 个配置。连接超时 20 秒，最多 3 次，等待 2 秒、4 秒重试。只有拿到 GOT_IP 才通知 AI voice。
+controller 收到 GOT_IP 后调用 esp_xiaozhi_chat_get_info，检查 WebSocket 配置，创建 MCP engine，注册运动数据工具，初始化并启动 chat，打开 Opus 通道，再启动麦克风。当前固定 WebSocket，不使用 MQTT。退出时依次停用 AI voice、停止 chat&#x2F;audio&#x2F;mic、停止 Wi-Fi，再恢复进入前页面。
+7.2 MCP 为什么只传摘要MCP 每 1000 ms 读取一次运动快照，生成不超过 384 字节的中文报告，包含当前&#x2F;平均&#x2F;最高速度、距离、运动时间、累计爬升下降、路线进度和最近历史。双缓冲发布文本；快照超过 3000 ms 未更新时返回过期提示。这样既控制网络包和内存，也避免云端读取 SDK 指针、完整历史文件或高频传感器流。
+7.3 小智追问问：为什么不让页面直接连接 Wi-Fi？
+答：连接、重试、NVS 和超时是服务职责，页面只发命令和显示状态。这样退出、断线和晚到事件有统一所有者，UI 不会因网络等待卡住。
+问：关联上 AP 但没有 IP 能不能启动小智？
+答：不能。只有 GOT_IP 才说明 DHCP&#x2F;网络配置完成，否则 WebSocket 初始化会失败，状态机应继续等待或进入超时。
+8. LVGL 页面与交互8.1 页面职责ui_page_manager 管理页面实例、进入&#x2F;隐藏&#x2F;销毁和返回；页面文件只写布局、样式、事件和 View Model 映射。Cycling&#x2F;MTB 第一次 START 先判断是否有匹配活动类型的路线：有则进预览，无则直接开始记录；第二次 START 在 DEMO 启动模拟运动，在 PHONE&#x2F;GNSS 启动真实记录。
+SD Route 页面按 466×466 圆屏设计，预览范围约 600 m，导航范围约 430 m。导航状态约 20 ms 检查，业务文字约 500 ms 更新，地图绘制最小间隔约 33 ms；方向箭头预计算，屏幕和路线缓存放 PSRAM。缩放、平移、回到当前位置和滑动返回是页面视觉状态，不修改地图服务内部状态。
+8.2 UI 线程纪律所有 lv_obj 创建、修改、动画和删除只在 LVGL&#x2F;UI 线程。BLE、Wi-Fi、音频、SD 和路线任务只能投递事件或更新快照。页面定时器只读快照并更新变化控件，不能 sleep、等锁、读文件、做坐标转换或图片解码。页面隐藏时停止无用动画和定时器；异步事件到达时先检查页面实例仍有效。
+8.3 LVGL 追问问：为什么不用每个 BLE 包刷新进度条？
+答：BLE 包频率和 UI 帧频没有必要一致。业务层合并&#x2F;限频，UI 只按 5-10 Hz 的可见频率更新；路线数据仍可高速接收，避免绘制成为吞吐瓶颈。
+问：页面快速退出后回调怎么办？
+答：回调不直接持有 lv_obj_t *，事件携带服务数据和页面实例&#x2F;订阅代号。UI 线程消费时若实例已失效就丢弃 UI 更新，业务状态仍可保留。
+9. 你可以主动讲的工程取舍
+预处理换运行时资源：地图在 PC 端投影、简化和三角剖分，设备只做索引和局部读取。
+快照换一致性：多个消费者读统一运动模型，不让每个页面各自解释定位数据。
+有界队列换可预测性：宁可显式返回忙&#x2F;溢出，也不让断网或 SD 变慢时内存无限增长。
+本地 PCM 换离线可靠性：导航播报不依赖云端，但素材管理和 SD 空间变复杂。
+P4&#x2F;C6 异构换资源隔离：P4 专注图形&#x2F;地图，C6 专注 Controller，但需要处理 ESP-Hosted 跨芯片故障。
+分层换可测试性：业务层不包含 LVGL，页面不能调用 SDK，后续可以用 mock 服务和主机测试状态机。
+
+10. 诚实回答性能问题可以确认的结构参数包括：LVGL adapter 优先级 24、核心 1、最大延迟 5 ms；路线任务栈宏 4096、优先级 4；BLE Preferred MTU 247；最大路线点数 2048；地图默认网格 2000 m、3×3 加载；本地播报检测 1000 ms、PCM 读块 2048 字节；MCP 报告 1000 ms、384 字节上限、3000 ms 过期。
+不能直接声称的内容包括稳定 60 FPS、最差帧耗时、BLE 实际吞吐、Opus 端到端延迟、音频欠载率、PSRAM 峰值、续航和功耗。正确回答是：“代码上通过任务隔离、固定队列和刷新限频控制风险，具体数值需要在目标板用 LVGL monitor、FreeRTOS runtime stats、逻辑分析仪和功耗仪实测。”
+11. 开发前扫描记录
+扫描日期：2026-09-11。
+扫描目录：main/app_model、main/app_net、main/ai_voice、main/ui_app、bt、map、components/board_peripherals/audio、tools、doc。
+关键文件：main/main.c、app_motion_model.c、app_wifi.c、app_xiaozhi_controller.c、app_ai_voice*.c、app_ble*.c、map_store.c、map_route.c、ui_page_manager.c 和各页面文件。
+参考文档：地图二进制格式、SD 路线、BLE 总览&#x2F;路线&#x2F;定位、小智移植、手动联网、主动播报和手机定位说明。
+未扫描&#x2F;未验证：目标板帧率、功耗、无线吞吐、音频质量、长稳、手机互操作和云端服务内部。
+
+12. 本次整理与验证边界本手册只新增面试材料，不修改源码、协议、配置、资源、分区和构建产物。已静态核对上述路径、任务、状态、协议字段和参数；没有运行新的编译、单元测试、模拟器或目标板测试。面试中应把“静态确认”和“实机测量”明确分开。
+13. 面试结束时的收束句“我在这个项目里负责的不是把几个 Demo 拼起来，而是把路线协议、坐标转换、离线地图、运动状态、双芯片蓝牙、联网语音、本地播报和 LVGL 页面组织成一套有明确所有权的异步系统。最重要的设计原则是：回调快速返回、业务状态集中、UI 只消费快照、所有队列有上限、所有异步操作可取消和可恢复。”
 ]]></content>
   </entry>
   <entry>

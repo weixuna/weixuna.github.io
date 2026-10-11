@@ -35,6 +35,30 @@
 ]]></content>
   </entry>
   <entry>
+    <title>BLE 路线传输与运动数据同步深挖</title>
+    <url>/2026/09/12/BLE%20%E8%B7%AF%E7%BA%BF%E4%BC%A0%E8%BE%93%E4%B8%8E%E8%BF%90%E5%8A%A8%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%E6%B7%B1%E6%8C%96/</url>
+    <content><![CDATA[1. ESP-Hosted BLE 架构P4 关闭本地 Bluetooth Controller，运行 NimBLE Host&#x2F;GATT Server；C6 提供 Controller，HCI 通过 ESP-Hosted VHCI over SDIO。P4 上的 bt/app_ble.c 负责广播、连接和 notify，app_ble_gatt.c 定义 characteristic，app_ble_proto.c 解析统一包头，业务数据再进入各自 task。
+设备名 Aero-Wtach，单连接，preferred MTU&#x3D;247，Legacy connectable advertising。Ride Service 下有 Live Metrics、Command、Config、Ride Record、Route Status；另注册标准 Battery Service。
+2. 通用 Commandcmd_id:u8 | seq:u8 | payload_len:u8 | payload[payload_len]
+
+实际长度必须等于 3+payload_len，写缓存上限 128 B。seq 只用于日志，不能当 ACK、时间戳或去重依据。GATT 层先做长度、版本、flags 和范围校验，业务成功以对应状态&#x2F;快照为准。
+3. 完整路线 0x22~0x25V1：普通 Cycling，8 B&#x2F;点；V2：显式 activity_type，12 B&#x2F;点，增加 altitude_cm，MTB 必须用 V2。点数 2~2048，最大数据 24576 B，坐标固定 GCJ-02。
+BEGINV1 payload 16 B：version、coordinate_system、route_id、point_count、total_length、crc32。V2 payload 18 B，在头部增加 activity_type 和 point_format。有效 BEGIN 会释放旧接收缓冲，PSRAM 申请完整数据区，状态变为 RECEIVING。
+DATApayload 含 version、route_id、offset 和 1~116 B data。设备只接受 offset == received_length；相同 offset 且字节内容完全一致允许重复发送，跳 offset、越界或内容不同返回 INVALID_OFFSET。116 B 是协议上限，实际还受 negotiated_mtu-15 限制。
+COMMIT只有收到总长度后才计算 CRC32（多项式 0xEDB88320，初值&#x2F;异或 0xFFFFFFFF）。CRC 正确后一次性解析所有点、校验纬度&#x2F;经度范围，生成点数组和最多 64 点的归一化缩略图，再在 mutex 内替换 LOADED 快照。接收缓冲和点数组短时并存，V2 峰值约 49 KiB，不含地图投影。
+ABORT&#x2F;断开ABORT 只释放未完成传输，不清除已 LOADED 路线；断 BLE 会中止接收但保留已加载路线。0x21 才清除完整路线和旧途经点路线。Route Status 固定 20 B，包含 state&#x2F;error&#x2F;route_id&#x2F;received&#x2F;total&#x2F;point_count&#x2F;generation，支持 Read&#x2F;Notify。
+4. PHONE 定位 0x3024 B payload：version、flags、timestamp_ms、lat&#x2F;lon e7、altitude cm、speed cm&#x2F;s、course 0.1°、accuracy cm。最小有效 flags 是经纬度+精度。GATT callback 只解析后投递长度 4 的队列；phone_location_task 检查 accuracy&lt;&#x3D;50 m、时间戳单调、跳点和 3 s 超时，再调用运动模型。
+运行状态下才累计距离和时间。路线存在时，PHONE GCJ-02 先转 WGS84，再投影到路线，更新 route_progress_cm。BLE 断开不跨断连时间累计，定位模式不会自动回退 DEMO。
+5. Live Metrics 与历史记录Live Metrics 每 1 s notify，固定 17 B：elapsed_s、distance_m、speed_x100、avg_speed_x100，电池字段目前是保留值；真实电量走 Battery Level。完整历史不复用实时包，而使用 Ride Record characteristic：记录 payload v2 固定 99 B，新增 route_id；包头 11 B，默认 MTU 23 时每分包 9 B，另有 CRC 完成、同步完成和删除标记包。
+记录 SAVE 后先写 ride_history NVS，状态 pending；小程序完整校验后发 0x41(record_id) 才变 synced。0x40 flags 可请求最新、pending、删除标记；0x42 请求重传。删除标记最多 32 条，跨断线和重启保留。
+6. 时间和天气0x02 用 UTC Unix 秒+时区分钟更新统一时间快照，不写 Flash；0x10 固定 58 B，由天气 task 更新快照，数据变化时才写 NVS。两者都要求有响应 Write，业务成功不是“写入 API 返回”，而是任务更新后的状态&#x2F;generation。
+7. 面试追问为什么完整路线不用单个 GATT Write？ MTU 和写缓存有限，分包允许断点续传和 CRC 完整性校验；offset 严格递进避免乱序覆盖。
+为什么 Route Status 不增加 activity_type？ 保持 20 B 旧客户端兼容，activity_type 保存在终端内部快照，Cycling&#x2F;MTB 通过内部匹配消费。
+GATT Write 成功是否代表路线成功？ 不是，只代表包通过同步校验并进入队列；必须等待 Route Status LOADED。
+
+]]></content>
+  </entry>
+  <entry>
     <title>24年技能大赛广东样题</title>
     <url>/2024/01/17/24%E5%B9%B4%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E5%B9%BF%E4%B8%9C%E6%A0%B7%E9%A2%98/</url>
     <content><![CDATA[24年样题1一、接线二、维护三、sql server维护
@@ -74,32 +98,66 @@
       </tags>
   </entry>
   <entry>
-    <title>BLE 路线传输与运动数据同步深挖</title>
-    <url>/2026/09/12/BLE%20%E8%B7%AF%E7%BA%BF%E4%BC%A0%E8%BE%93%E4%B8%8E%E8%BF%90%E5%8A%A8%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%E6%B7%B1%E6%8C%96/</url>
-    <content><![CDATA[1. ESP-Hosted BLE 架构P4 关闭本地 Bluetooth Controller，运行 NimBLE Host&#x2F;GATT Server；C6 提供 Controller，HCI 通过 ESP-Hosted VHCI over SDIO。P4 上的 bt/app_ble.c 负责广播、连接和 notify，app_ble_gatt.c 定义 characteristic，app_ble_proto.c 解析统一包头，业务数据再进入各自 task。
-设备名 Aero-Wtach，单连接，preferred MTU&#x3D;247，Legacy connectable advertising。Ride Service 下有 Live Metrics、Command、Config、Ride Record、Route Status；另注册标准 Battery Service。
-2. 通用 Commandcmd_id:u8 | seq:u8 | payload_len:u8 | payload[payload_len]
+    <title>CSS第一天</title>
+    <url>/2023/10/24/CSS%E7%AC%AC%E4%B8%80%E5%A4%A9/</url>
+    <content><![CDATA[1.CSS 语法规范h1&#123;color:red; font-size:25px;&#125;选择器 属性 值
 
-实际长度必须等于 3+payload_len，写缓存上限 128 B。seq 只用于日志，不能当 ACK、时间戳或去重依据。GATT 层先做长度、版本、flags 和范围校验，业务成功以对应状态&#x2F;快照为准。
-3. 完整路线 0x22~0x25V1：普通 Cycling，8 B&#x2F;点；V2：显式 activity_type，12 B&#x2F;点，增加 altitude_cm，MTB 必须用 V2。点数 2~2048，最大数据 24576 B，坐标固定 GCJ-02。
-BEGINV1 payload 16 B：version、coordinate_system、route_id、point_count、total_length、crc32。V2 payload 18 B，在头部增加 activity_type 和 point_format。有效 BEGIN 会释放旧接收缓冲，PSRAM 申请完整数据区，状态变为 RECEIVING。
-DATApayload 含 version、route_id、offset 和 1~116 B data。设备只接受 offset == received_length；相同 offset 且字节内容完全一致允许重复发送，跳 offset、越界或内容不同返回 INVALID_OFFSET。116 B 是协议上限，实际还受 negotiated_mtu-15 限制。
-COMMIT只有收到总长度后才计算 CRC32（多项式 0xEDB88320，初值&#x2F;异或 0xFFFFFFFF）。CRC 正确后一次性解析所有点、校验纬度&#x2F;经度范围，生成点数组和最多 64 点的归一化缩略图，再在 mutex 内替换 LOADED 快照。接收缓冲和点数组短时并存，V2 峰值约 49 KiB，不含地图投影。
-ABORT&#x2F;断开ABORT 只释放未完成传输，不清除已 LOADED 路线；断 BLE 会中止接收但保留已加载路线。0x21 才清除完整路线和旧途经点路线。Route Status 固定 20 B，包含 state&#x2F;error&#x2F;route_id&#x2F;received&#x2F;total&#x2F;point_count&#x2F;generation，支持 Read&#x2F;Notify。
-4. PHONE 定位 0x3024 B payload：version、flags、timestamp_ms、lat&#x2F;lon e7、altitude cm、speed cm&#x2F;s、course 0.1°、accuracy cm。最小有效 flags 是经纬度+精度。GATT callback 只解析后投递长度 4 的队列；phone_location_task 检查 accuracy&lt;&#x3D;50 m、时间戳单调、跳点和 3 s 超时，再调用运动模型。
-运行状态下才累计距离和时间。路线存在时，PHONE GCJ-02 先转 WGS84，再投影到路线，更新 route_progress_cm。BLE 断开不跨断连时间累计，定位模式不会自动回退 DEMO。
-5. Live Metrics 与历史记录Live Metrics 每 1 s notify，固定 17 B：elapsed_s、distance_m、speed_x100、avg_speed_x100，电池字段目前是保留值；真实电量走 Battery Level。完整历史不复用实时包，而使用 Ride Record characteristic：记录 payload v2 固定 99 B，新增 route_id；包头 11 B，默认 MTU 23 时每分包 9 B，另有 CRC 完成、同步完成和删除标记包。
-记录 SAVE 后先写 ride_history NVS，状态 pending；小程序完整校验后发 0x41(record_id) 才变 synced。0x40 flags 可请求最新、pending、删除标记；0x42 请求重传。删除标记最多 32 条，跨断线和重启保留。
-6. 时间和天气0x02 用 UTC Unix 秒+时区分钟更新统一时间快照，不写 Flash；0x10 固定 58 B，由天气 task 更新快照，数据变化时才写 NVS。两者都要求有响应 Write，业务成功不是“写入 API 返回”，而是任务更新后的状态&#x2F;generation。
-7. 面试追问为什么完整路线不用单个 GATT Write？ MTU 和写缓存有限，分包允许断点续传和 CRC 完整性校验；offset 严格递进避免乱序覆盖。
-为什么 Route Status 不增加 activity_type？ 保持 20 B 旧客户端兼容，activity_type 保存在终端内部快照，Cycling&#x2F;MTB 通过内部匹配消费。
-GATT Write 成功是否代表路线成功？ 不是，只代表包通过同步校验并进入队列；必须等待 Route Status LOADED。
+2.类选择器&lt;div class=&quot;red font20&quot;&gt;亚瑟&lt;/div&gt;
 
+3.id 选择器#id名&#123;	属性1：属性值1；&#125;
+
+4.通配符选择器*&#123;	属性1：属性值1；&#125;
 ]]></content>
+      <categories>
+        <category>前端</category>
+      </categories>
+      <tags>
+        <tag>CSS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CSS第二天</title>
+    <url>/2023/10/24/CSS%E7%AC%AC%E4%BA%8C%E5%A4%A9/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>Dx-C511模块连接华为云OTA</title>
+    <url>/2024/09/26/Dx-C511%E6%A8%A1%E5%9D%97%E8%BF%9E%E6%8E%A5%E5%8D%8E%E4%B8%BA%E4%BA%91%E4%B8%8B%E8%BD%BD%E5%9B%BA%E4%BB%B6/</url>
+    <content><![CDATA[1、配置APN
+AT+QICSGP&#x3D;1,1,”cmnbiot”,””,””
+2、开启移动网络
+AT+NETOPEN
+3、设置客户端ID
+AT+MCONFIG&#x3D;”id”,”用户名”,”密码”AT+MCONFIG=&quot;667145986bc31504f06f60ee_wulianwang_0_0_20&quot;,&quot;667145986bc31504f06f60ee_wulianwang&quot;,&quot;63e106dff798f9ed7d313f33c5e1cffe4ad206abe2121b993d464a8f111a97ba&quot;
+4、连接mqtt服务器
+AT+MIPSTART&#x3D;”服务器IP地址”,1883,4
+AT+MIPSTART=&quot;0ae1ed433d.st1.iotda-device.cn-north-4.myhuaweicloud.com&quot;,1883,4
+5、连接服务器，设置心跳60秒
+AT+MCONNECT&#x3D;1,60
+6、订阅数据
+AT+MSUB=&quot;$oc/devices/667145986bc31504f06f6/sys/events/down&quot;,0
+7、发布长数据
+AT+MPUBEX=&quot;$oc/devices/667145986bc31504f06f/sys/events/up&quot;,0,0,149
+{“services”:[{“service_id”:”$ota”,”event_type”:”version_report”,”event_time”:”20151212T121212Z”,”paras”:{“sw_version”:”v1.0”,”fw_version”: “v1.0”}}]}
+8、开启HTTP模式
+AT$HTTPOPEN
+9、发送请求头
+AT$HTTPRQH&#x3D;Authorization,Bearer 627fd1b1a3f07e7e977b388c112a3af8acf60349c885e3d7c4490661e208b64a
+10、发送URL
+AT$HTTPPARA&#x3D;https://117.78.5.125:8943/iodm/dev/v2.0/upgradefile/applications/d47eeb52098345898ba95b1be5cbd7c4/devices/667145986bc31504f06f60ee_wulianwang/packages/66e2cfd51bd30f6d19a24533,8943,1,0
+11、发送get请求
+AT$HTTPACTION&#x3D;0
+]]></content>
+      <categories>
+        <category>华为云IOT连接</category>
+      </categories>
+      <tags>
+        <tag>华为IOT</tag>
+      </tags>
   </entry>
   <entry>
     <title></title>
-    <url>/2026/09/15/C%20%E8%AF%AD%E8%A8%80%E4%B8%8E%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%9F%BA%E7%A1%80%E5%AE%8C%E6%95%B4%E9%9D%A2%E8%AF%95%E6%89%8B%E5%86%8C/</url>
+    <url>/2026/10/11/C%20%E8%AF%AD%E8%A8%80%E4%B8%8E%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%9F%BA%E7%A1%80%E5%AE%8C%E6%95%B4%E9%9D%A2%E8%AF%95%E6%89%8B%E5%86%8C/</url>
     <content><![CDATA[
 C 语言与嵌入式基础面试手册
 适用：嵌入式软件、MCU、RTOS、驱动和应用方案实习面试。
@@ -1877,64 +1935,6 @@ Linux man-pages：fork(2)、execve(2)、mmap(2)、select(2)、poll(2)、epoll(7)
 ]]></content>
   </entry>
   <entry>
-    <title>CSS第一天</title>
-    <url>/2023/10/24/CSS%E7%AC%AC%E4%B8%80%E5%A4%A9/</url>
-    <content><![CDATA[1.CSS 语法规范h1&#123;color:red; font-size:25px;&#125;选择器 属性 值
-
-2.类选择器&lt;div class=&quot;red font20&quot;&gt;亚瑟&lt;/div&gt;
-
-3.id 选择器#id名&#123;	属性1：属性值1；&#125;
-
-4.通配符选择器*&#123;	属性1：属性值1；&#125;
-]]></content>
-      <categories>
-        <category>前端</category>
-      </categories>
-      <tags>
-        <tag>CSS</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>CSS第二天</title>
-    <url>/2023/10/24/CSS%E7%AC%AC%E4%BA%8C%E5%A4%A9/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title>Dx-C511模块连接华为云OTA</title>
-    <url>/2024/09/26/Dx-C511%E6%A8%A1%E5%9D%97%E8%BF%9E%E6%8E%A5%E5%8D%8E%E4%B8%BA%E4%BA%91%E4%B8%8B%E8%BD%BD%E5%9B%BA%E4%BB%B6/</url>
-    <content><![CDATA[1、配置APN
-AT+QICSGP&#x3D;1,1,”cmnbiot”,””,””
-2、开启移动网络
-AT+NETOPEN
-3、设置客户端ID
-AT+MCONFIG&#x3D;”id”,”用户名”,”密码”AT+MCONFIG=&quot;667145986bc31504f06f60ee_wulianwang_0_0_20&quot;,&quot;667145986bc31504f06f60ee_wulianwang&quot;,&quot;63e106dff798f9ed7d313f33c5e1cffe4ad206abe2121b993d464a8f111a97ba&quot;
-4、连接mqtt服务器
-AT+MIPSTART&#x3D;”服务器IP地址”,1883,4
-AT+MIPSTART=&quot;0ae1ed433d.st1.iotda-device.cn-north-4.myhuaweicloud.com&quot;,1883,4
-5、连接服务器，设置心跳60秒
-AT+MCONNECT&#x3D;1,60
-6、订阅数据
-AT+MSUB=&quot;$oc/devices/667145986bc31504f06f6/sys/events/down&quot;,0
-7、发布长数据
-AT+MPUBEX=&quot;$oc/devices/667145986bc31504f06f/sys/events/up&quot;,0,0,149
-{“services”:[{“service_id”:”$ota”,”event_type”:”version_report”,”event_time”:”20151212T121212Z”,”paras”:{“sw_version”:”v1.0”,”fw_version”: “v1.0”}}]}
-8、开启HTTP模式
-AT$HTTPOPEN
-9、发送请求头
-AT$HTTPRQH&#x3D;Authorization,Bearer 627fd1b1a3f07e7e977b388c112a3af8acf60349c885e3d7c4490661e208b64a
-10、发送URL
-AT$HTTPPARA&#x3D;https://117.78.5.125:8943/iodm/dev/v2.0/upgradefile/applications/d47eeb52098345898ba95b1be5cbd7c4/devices/667145986bc31504f06f60ee_wulianwang/packages/66e2cfd51bd30f6d19a24533,8943,1,0
-11、发送get请求
-AT$HTTPACTION&#x3D;0
-]]></content>
-      <categories>
-        <category>华为云IOT连接</category>
-      </categories>
-      <tags>
-        <tag>华为IOT</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>ESP32-P4 骑行终端项目深挖面试准备</title>
     <url>/2026/08/28/ESP32-P4%20%E9%AA%91%E8%A1%8C%E7%BB%88%E7%AB%AF%E9%A1%B9%E7%9B%AE%E6%B7%B1%E6%8C%96%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/</url>
     <content><![CDATA[# ESP32-P4 骑行终端项目深挖面试准备&gt; 项目源码：`/home/weixun/esp32p4/lvgl9/p4-idf6_co5300-mipi_lvgl-common-demo`&gt;&gt; 目标岗位：韵音科技嵌入式开发实习生。&gt;&gt; 本文依据项目源码、项目文档和 Git 历史整理。第三方组件集成、算法原理、自主实现和实机验证必须分开表述，不把调用开源库说成自己实现算法。---## 1. 先纠正项目定位这不是“ESP32 无线透传小项目”，而是一套基于 ESP32-P4 的圆屏骑行终端原型。项目以 ESP-IDF 和 FreeRTOS 为系统基础，集成 LVGL、MIPI DSI 显示、触摸、电源管理、BLE、离线地图、路线导航、运动数据模型、IMU/磁力计融合和语音链路。### 硬件与软件栈| 模块 | 项目实际实现 ||---|---|| 主控 | ESP32-P4 || 无线协处理器 | ESP32-C6 || P4-C6 链路 | ESP-Hosted over SDIO || RTOS | ESP-IDF FreeRTOS || UI | LVGL 9.5，466×466 CO5300 MIPI DSI 圆屏 || 触摸 | CST9217 || PMIC | AXP2101 || BLE | P4 上 NimBLE Host/GATT Server，C6 提供 Controller || 存储 | 16 MB Flash、PSRAM、NVS、SD 卡 || 传感器 | LSM6DS3TR-C + QMC5883P || 姿态算法 | Mahony 9 轴融合、四元数、陀螺仪零偏和磁力计校准 || 音频输入 | ICS43434，I2S，16 kHz，32-bit slot 转 PCM16 mono || 音频输出 | MAX98357A，I2S || 编解码 | OPUS，16 kHz mono，60 ms/960 samples || 地图 | SD 卡分块离线矢量地图、路线预览和导航跟随 |### Git 可核验的个人工作仓库共 18 个提交，作者一致。关键提交包括：- `3a8d4b7`：加入 IMU 融合并优化转向；- `b10c08f`：修复定位和导航视觉路线抖动；- `278054a`：修复停车速度、速度误差、提前到达和终点不触发；- `2f2652a`：加入 SD 卡路线、路线下发和导航视觉；- `3b80c36`：修复 Xiaozhi 运行时 LVGL 卡顿；- `afb4879`：加入本地语音导航播报；- `4b1cd76`：修复数据播报和数据溢出；- `fc3c769`：修复上下拉菜单卡顿。这些提交可以作为面试证据，但仍要能解释代码、调试过程和验证方式。---## 2. 已确认事实与表达边界| 内容 | 当前证据 | 面试前动作 ||---|---|---|| 项目周期 | 用户确认从 5 月持续到 8 月，具体年份未填写 | 口述可说“从 5 月做到 8 月”；简历需补准确年份 || 团队与个人职责 | 三人团队；用户确认仓库中的嵌入式软件实现由本人完成 | 可以说“我独立负责嵌入式端软件”，但仍要说明另外两人的真实职责 || PCB | 用户确认 PCB 由本人绘制 | 准备原理图分块、电源、接口、层数和一次硬件问题，防止只停留在一句“我画的” || 2～2048 路线点 | 协议文档和宏 `APP_BLE_ROUTE_MAX_POINTS=2048` 可核验 | 可以讲 || CRC32、route_id、offset、Route Status | 源码和协议文档可核验 | 可以讲 || 40 ms 导航状态、100 ms 地图绘制下限 | 项目文档和代码设计可核验 | 说“刷新周期/下限”，不要说成 CPU 实测耗时 || Mahony 9 轴融合 | 源码和提交可核验 | 可以讲，但需掌握公式思想 || 静止航向 30 秒变化不超过 5° | 只是项目验收线，没有保留测试记录 | 不能说“实测达到”，只可说这是计划验证的指标 || 音频延迟和连续运行时长 | 没有保留测试记录 | 不报数字，只讲链路、参数、故障和验证方法 || 导航抖动优化效果 | 有代码和提交，但没有正式对比测试 | 可说“针对抖动修改过算法并做过运行观察”，不能声称量化提升 || SRAM 启动断言 | 有排查文档，但本人已忘记最后修改和复测结果 | 只作为排查思路备用题，补回证据前不要包装成闭环成果 || GNSS 是否已稳定工作 | 文档明确板载 GNSS 曾不稳定，手机定位作为有效来源 | 不要说板载 GNSS 已完全打通 || 姿态航向是否已接入地图 | 文档写明尚未写入统一运动模型 | 不要说融合航向已驱动导航 || 量产经历 | 项目为可运行原型 | 说做了工程化设计，不说已量产 |团队表述要特别注意。不要直接说“三个人，但所有东西都是我做的”，这会让面试官立即追问另外两个人的作用，也可能被理解为缺少协作。当前最稳妥且符合你确认信息的说法是：&gt; 这是一个三人项目，我独立负责嵌入式端软件实现和 PCB 绘制。软件部分包括系统架构、驱动与任务、界面、通信、地图导航、姿态和音频链路。其他两位成员的职责我会按实际分工说明。最后一句仍需补上另外两位成员的真实职责。面试官可能沿着需求分析、结构设计、焊接装配、测试、文档和演示继续追问分工，必须按实际情况回答。---## 3. 三种长度的项目介绍### 3.1 30 秒版本&gt; 我在一个三人项目中独立负责嵌入式端软件，并绘制了项目 PCB。终端基于 ESP32-P4、ESP-IDF、FreeRTOS 和 LVGL，集成圆形 MIPI 屏、BLE、离线地图、路线导航、IMU/磁力计融合和语音链路。比较有挑战的是协调界面、无线和实时任务，以及完成传感器校准、Mahony 姿态融合和分包路线协议。### 3.2 两分钟版本&gt; 这是一个从 5 月持续到 8 月的三人项目，我独立负责嵌入式端软件实现，同时绘制了项目 PCB。终端面向骑行和山地运动，主控是 ESP32-P4，无线由 ESP32-C6 协处理器提供，两者通过 ESP-Hosted SDIO 通信。界面使用 LVGL 9.5 驱动 466×466 的 MIPI 圆屏。软件按板级驱动、数据模型、通信、地图导航和 UI 分层，实时运动数据通过统一快照提供给地图、数据页、BLE、历史记录和语音模块，避免各页面各自维护一套状态。&gt;&gt; 通信方面，我在 P4 上使用 NimBLE Host，将手机下发的完整路线设计成 BEGIN、DATA、COMMIT 和状态查询流程，支持 2 到 2048 个点。协议包含 route_id、顺序 offset、长度和 CRC32，接收缓冲与解析任务放在 PSRAM，BLE 回调不直接做地图计算或操作 LVGL。&gt;&gt; 对韵音岗位最相关的是姿态和音频部分。我接入了 LSM6DS3TR-C 和 QMC5883P，用 GPIO 中断通知独立任务，在任务里完成坐标变换、陀螺仪零偏、磁力计硬铁/软铁近似校准和 Mahony 9 轴融合，通过四元数输出横滚、俯仰和磁航向。音频链路使用 ICS43434 采集 16 kHz PCM，调用 OPUS 库编码后上传，下行 OPUS 解码后通过 MAX98357A 播放。我还针对语音运行时 LVGL 卡顿调整过任务和数据流。当前没有保留延迟、长稳和导航优化的量化数据，所以面试中我会重点讲实现、问题定位方法和后续测试方案，不虚报指标。### 3.3 五分钟版本结构不要连续背稿，按下面顺序画图讲：1. 产品目标和硬件平台；2. 系统分层和任务关系；3. 选一条核心数据流；4. 重点讲一个算法模块；5. 重点讲一个疑难 Bug；6. 给出验证结果和当前边界；7. 说明下一步改进。---## 4. 系统架构怎么画```text                       手机 / 小程序 / 服务端                          | BLE / Wi-Fi                          v                 ESP32-C6 无线 Controller                          | ESP-Hosted SDIO                          v+----------------------------------------------------------------+|                         ESP32-P4                               ||                                                                ||  Board/HAL                                                     ||  PMIC  Touch  LCD  SD  I2S  IMU  Magnetometer  Button         ||    |      |     |    |    |    |        |          |           ||    +------+-----+----+----+----+--------+----------+           ||                          |                                     ||  Services/Tasks          v                                     ||  BLE task  Route task  Attitude task  Audio task  Wi-Fi task   ||       |         |           |              |          |         ||       +---------+-----------+--------------+----------+         ||                          |                                     ||  Models                  v                                     ||  motion snapshot / route snapshot / weather / history / time   ||                          |                                     ||  UI                      v                                     ||  LVGL page manager -&gt; cycling / MTB / map / history / settings |+----------------------------------------------------------------+
@@ -2766,21 +2766,6 @@ http请求代码：
       </tags>
   </entry>
   <entry>
-    <title> 一篇牢骚</title>
-    <url>/2024/03/30/%E4%B8%80%E7%AF%87%E7%89%A2%E9%AA%9A/</url>
-    <content><![CDATA[愿我此生脚步不停，览尽世间美景。即使路途遥远且艰难，至少，至少，我经历过。以巽为名，行遍千山万水，看尽人间青山。青山不言，我自知晓其壮美。来自抖音博主hx888888000长穿毕
-
-
-
-来自抖音博主zkai6999那拉提
-
-
-来自抖音博主zkai6999阿勒泰
-
-
-]]></content>
-  </entry>
-  <entry>
     <title>关于使用wsl使用idf提供编译速度遇到的问题</title>
     <url>/2024/04/20/%E5%85%B3%E4%BA%8E%E4%BD%BF%E7%94%A8wsl%E4%BD%BF%E7%94%A8idf%E6%8F%90%E4%BE%9B%E7%BC%96%E8%AF%91%E9%80%9F%E5%BA%A6%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/</url>
     <content><![CDATA[
@@ -2855,6 +2840,21 @@ map_route_project_gcj02() 只是“转换坐标 + world 投影”的组合；map
       </categories>
   </entry>
   <entry>
+    <title> 一篇牢骚</title>
+    <url>/2024/03/30/%E4%B8%80%E7%AF%87%E7%89%A2%E9%AA%9A/</url>
+    <content><![CDATA[愿我此生脚步不停，览尽世间美景。即使路途遥远且艰难，至少，至少，我经历过。以巽为名，行遍千山万水，看尽人间青山。青山不言，我自知晓其壮美。来自抖音博主hx888888000长穿毕
+
+
+
+来自抖音博主zkai6999那拉提
+
+
+来自抖音博主zkai6999阿勒泰
+
+
+]]></content>
+  </entry>
+  <entry>
     <title>嵌入式面试八股文之C语言</title>
     <url>/2026/09/14/%E5%B5%8C%E5%85%A5%E5%BC%8F%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1%E6%96%87/</url>
     <content><![CDATA[C语言1、const主要用于定义常量，起到强制保护的作用，确保不会被意外修改。
@@ -2905,493 +2905,6 @@ typedef struct&#123;      char name[20];      int age;      float score;&#125;St
       </categories>
       <tags>
         <tag>八股文</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>思澈面试笔记-RTOS</title>
-    <url>/2026/06/17/%E6%80%9D%E6%BE%88%E9%9D%A2%E8%AF%95%E7%AC%94%E8%AE%B0-RTOS/</url>
-    <content><![CDATA[RTOS 高频问点这份笔记用于准备 RT-Thread、FreeRTOS、Zephyr 等实时操作系统相关面试。重点是任务调度、同步通信、中断配合、资源保护和常见问题排查。
-1. RTOS 是什么？RTOS 是 Real-Time Operating System，实时操作系统。它为嵌入式系统提供任务调度、任务间通信、同步机制、定时器和内存管理等能力。
-RTOS 不等于“速度一定更快”，它的重点是：
-
-让多个任务结构更清晰。
-提供可控的实时响应。
-管理任务优先级。
-提供任务间通信和同步机制。
-
-面试答法：
-
-RTOS 主要解决复杂嵌入式程序的结构和实时性问题。裸机程序通常依靠主循环和中断，业务复杂后会变得难维护；RTOS 可以把通信、采集、控制、显示等功能拆成不同任务，通过队列、信号量、事件等机制协作。
-
-2. RTOS 和裸机程序的区别裸机程序特点：
-
-一个 while(1) 主循环。
-外设事件通常靠中断处理。
-程序结构简单。
-适合小项目、逻辑简单的设备。
-
-缺点：
-
-多功能并发时结构容易混乱。
-延时函数可能阻塞其他逻辑。
-任务优先级不好管理。
-
-RTOS 程序特点：
-
-多任务并发运行。
-每个任务有独立栈。
-调度器根据优先级切换任务。
-提供信号量、互斥锁、队列、事件等机制。
-
-缺点：
-
-有调度开销。
-需要管理任务栈和优先级。
-并发问题更复杂。
-
-面试答法：
-
-裸机适合简单控制逻辑，RTOS 适合多任务场景。例如一个设备同时要采集传感器、处理串口协议、刷新屏幕、控制电机，用 RTOS 拆任务会更清晰。但 RTOS 也会带来优先级、栈大小和共享资源保护的问题。
-
-3. 任务和线程任务是什么？任务是 RTOS 调度的基本单位。每个任务通常包含：
-
-任务函数。
-任务栈。
-优先级。
-任务控制块。
-任务状态。
-
-示例：
-void sensor_task(void *arg)&#123;    while (1) &#123;        read_sensor();        vTaskDelay(pdMS_TO_TICKS(100));    &#125;&#125;
-
-任务状态常见状态：
-
-Running：正在运行。
-Ready：就绪，等待 CPU。
-Blocked：阻塞，等待延时、信号量、队列等。
-Suspended：挂起。
-Deleted：删除。
-
-面试答法：
-
-任务不是一直运行的，它会在运行、就绪、阻塞等状态之间切换。比如调用延时函数后任务进入阻塞状态，等时间到后重新进入就绪状态。
-
-4. 调度器高频问点：RTOS 如何决定运行哪个任务？调度器根据任务状态和优先级选择任务。
-常见规则：
-
-高优先级就绪任务先运行。
-同优先级任务可能时间片轮转。
-阻塞任务不参与调度。
-
-面试答法：
-
-大多数 RTOS 使用基于优先级的抢占式调度。只要高优先级任务进入就绪态，就可以抢占低优先级任务。这样能保证关键任务及时响应。
-
-抢占式调度和协作式调度抢占式：
-
-高优先级任务可以打断低优先级任务。
-实时性更好。
-需要注意共享资源保护。
-
-协作式：
-
-任务主动让出 CPU。
-实现简单。
-某个任务不让出 CPU 会影响系统。
-
-时间片轮转同优先级任务之间，RTOS 可以按 tick 时间片轮流运行，避免某个同优先级任务长期占用 CPU。
-5. 任务优先级高频问点：任务优先级怎么设置？原则：
-
-实时性要求高的任务优先级高。
-耗时但不紧急的任务优先级低。
-不要所有任务都设成高优先级。
-高优先级任务不能长时间占用 CPU。
-低优先级任务也要有机会运行。
-
-示例：
-
-
-
-任务
-优先级建议
-
-
-
-电机保护、紧急停止
-高
-
-
-通信接收解析
-较高
-
-
-传感器周期采集
-中
-
-
-屏幕刷新
-中低
-
-
-日志输出
-低
-
-
-面试答法：
-
-优先级要根据实时性设置。高优先级任务应该短小，处理关键事件后尽快阻塞或让出 CPU。如果高优先级任务一直运行，低优先级任务会被饿死。
-
-高频问点：什么是任务饥饿？低优先级任务长期得不到 CPU，就是任务饥饿。
-原因：
-
-高优先级任务没有阻塞或延时。
-高优先级任务死循环。
-优先级设计不合理。
-
-解决：
-
-高优先级任务等待事件而不是空转。
-增加适当延时。
-调整优先级。
-检查 CPU 使用率。
-
-6. 任务栈高频问点：每个任务为什么需要独立栈？每个任务都有自己的函数调用链、局部变量、返回地址和上下文，因此需要独立栈。
-任务栈太小会导致：
-
-程序异常。
-HardFault。
-数据被覆盖。
-随机崩溃。
-
-任务栈过大：
-
-浪费 RAM。
-
-如何估算任务栈？关注：
-
-函数调用深度。
-局部变量大小。
-是否使用 printf。
-是否有大数组。
-是否调用复杂库函数。
-
-调试方式：
-
-使用栈水位检测。
-增大栈观察问题是否消失。
-查看 map 文件和 RTOS 统计信息。
-
-面试答法：
-
-RTOS 中每个任务都有自己的栈，栈大小需要根据任务函数调用深度和局部变量估算。嵌入式 RAM 有限，不能盲目给很大，也不能太小。实际项目中会用栈水位检测来确认余量。
-
-7. 延时与 Tickdelay_ms 和 RTOS 延时有什么区别？裸机忙等延时：
-
-CPU 一直空转。
-会阻塞其他逻辑。
-
-RTOS 延时：
-
-当前任务进入阻塞。
-CPU 可以调度其他任务。
-
-示例：
-vTaskDelay(pdMS_TO_TICKS(100));
-
-面试答法：
-
-在 RTOS 任务中不应该使用长时间忙等延时，而应该使用 RTOS 提供的 delay，让当前任务阻塞，把 CPU 让给其他任务。
-
-Tick 是什么？Tick 是 RTOS 的系统节拍，通常由 SysTick 或定时器周期中断产生。
-用途：
-
-时间片调度。
-任务延时。
-软件定时器。
-超时判断。
-
-8. 信号量信号量是什么？信号量用于任务同步或资源计数。
-常见类型：
-
-二值信号量。
-计数信号量。
-
-二值信号量只有 0 和 1 两种状态，常用于事件通知。
-场景：
-
-UART 接收完成后通知任务。
-GPIO 中断通知按键任务。
-DMA 完成中断通知处理任务。
-
-面试答法：
-
-二值信号量常用于中断和任务之间的同步。中断里释放信号量，任务阻塞等待信号量，收到后再执行耗时处理。
-
-计数信号量可以表示多个资源数量。
-场景：
-
-缓冲区个数。
-连接池。
-多个相同资源。
-
-9. 互斥锁互斥锁是什么？互斥锁用于保护共享资源，保证同一时间只有一个任务访问。
-共享资源例子：
-
-I2C 总线。
-SPI 总线。
-全局数据结构。
-文件系统。
-日志输出。
-
-示例：
-mutex_lock(i2c_mutex);i2c_read_sensor();mutex_unlock(i2c_mutex);
-
-面试答法：
-
-如果多个任务会访问同一个 I2C 或 SPI 总线，需要用互斥锁保护，避免两个任务的传输交叉导致总线数据混乱。
-
-高频问点：信号量和互斥锁有什么区别？信号量：
-
-更偏事件通知或资源计数。
-可以由一个任务释放，另一个任务获取。
-二值信号量可用于中断通知任务。
-
-互斥锁：
-
-用于保护共享资源。
-谁加锁谁解锁。
-通常支持优先级继承。
-
-面试答法：
-
-信号量解决“有没有事件或资源”，互斥锁解决“同一时间只能一个任务访问共享资源”。保护共享资源时优先用 mutex，而不是普通二值信号量。
-
-10. 队列队列是什么？队列用于任务之间传递数据。
-场景：
-
-UART 接收任务把数据发给协议解析任务。
-传感器任务把采样结果发给显示任务。
-中断把事件发送给事件处理任务。
-
-示例：
-typedef struct &#123;    uint16_t temperature;    uint16_t humidity;&#125; sensor_msg_t;
-
-高频问点：队列和共享全局变量哪个好？队列更适合任务间传递数据：
-
-数据边界清晰。
-可以阻塞等待。
-减少共享变量竞争。
-更容易维护。
-
-全局变量适合简单状态，但需要考虑同步。
-面试答法：
-
-如果是任务间传递一条条消息，我更倾向用队列，而不是多个任务直接读写全局变量。队列可以自带同步机制，也能让数据流向更清楚。
-
-11. 事件标志事件标志用于等待一个或多个事件。
-场景：
-
-等待 Wi-Fi 连接成功。
-等待传感器数据就绪。
-等待多个初始化条件完成。
-
-示例思路：
-
-bit0 表示网络连接。
-bit1 表示时间同步完成。
-bit2 表示配置加载完成。
-
-任务可以等待全部事件或任意事件。
-12. 软件定时器软件定时器是什么？软件定时器由 RTOS tick 驱动，到期后执行回调或通知任务。
-适合：
-
-周期状态检查。
-超时处理。
-LED 心跳。
-延迟执行。
-
-注意：
-
-软件定时器回调中不要做耗时操作。
-精度受 tick 影响。
-
-13. 中断和 RTOS高频问点：中断里能调用 RTOS API 吗？可以，但必须使用 RTOS 专门提供的 FromISR 版本或中断安全接口。
-例如 FreeRTOS 中：
-
-xSemaphoreGiveFromISR
-xQueueSendFromISR
-portYIELD_FROM_ISR
-
-不能在中断中调用可能阻塞的 API。
-面试答法：
-
-中断上下文不能阻塞，所以不能随便调用普通任务 API。需要使用 RTOS 提供的 ISR 安全版本，把事件通知给任务处理。
-
-高频问点：中断和任务如何配合？推荐模式：
-
-中断中读取状态、清标志。
-中断中释放信号量或发送消息。
-高优先级任务被唤醒。
-任务中处理耗时逻辑。
-
-这样中断短，任务逻辑清晰。
-14. 优先级反转什么是优先级反转？低优先级任务持有互斥资源，高优先级任务等待该资源；此时中优先级任务一直运行，导致高优先级任务无法及时运行。
-示例：
-
-低优先级任务拿到 I2C mutex。
-高优先级任务也要用 I2C，被阻塞。
-中优先级任务运行，占用 CPU。
-低优先级任务无法运行释放 mutex。
-高优先级任务一直等。
-
-如何解决？
-使用支持优先级继承的 mutex。
-缩短持锁时间。
-不要持锁做耗时操作。
-合理设计任务优先级。
-
-面试答法：
-
-优先级反转可以通过优先级继承缓解。持有 mutex 的低优先级任务会临时继承等待它的高优先级任务优先级，尽快运行并释放资源。
-
-15. 死锁什么是死锁？多个任务互相等待对方持有的资源，导致都无法继续运行。
-例子：
-
-任务 A 持有 mutex1，等待 mutex2。
-任务 B 持有 mutex2，等待 mutex1。
-
-避免方法：
-
-固定加锁顺序。
-避免嵌套锁。
-设置锁超时。
-缩短临界区。
-明确资源所有权。
-
-16. 临界区临界区是访问共享资源时不希望被打断的代码区域。
-常见方式：
-
-关中断。
-加 mutex。
-使用原子操作。
-
-选择：
-
-中断和主循环共享变量：短时间关中断。
-多任务共享资源：mutex。
-简单计数：原子操作。
-
-注意：
-
-临界区要尽量短，不能在关中断状态下做耗时操作，否则会影响实时性。
-
-17. 内存管理RTOS 中内存从哪里来？RTOS 通常需要为以下对象分配内存：
-
-任务控制块。
-任务栈。
-队列。
-信号量。
-定时器。
-事件组。
-
-分配方式：
-
-静态分配。
-动态分配。
-
-静态分配和动态分配怎么选？静态分配：
-
-更确定。
-没有运行时分配失败。
-适合安全性要求高的系统。
-
-动态分配：
-
-灵活。
-需要处理失败。
-有碎片风险。
-
-面试答法：
-
-资源固定的嵌入式系统更适合静态分配，实时性和可靠性更好。动态分配适合资源变化较大的场景，但要考虑失败处理和碎片问题。
-
-18. RTOS 调试常见问题：
-
-某个任务不运行。
-系统卡死。
-栈溢出。
-队列满。
-信号量丢失。
-死锁。
-CPU 占用过高。
-
-排查思路：
-
-查看任务状态。
-查看任务优先级。
-查看栈水位。
-查看队列长度。
-查看是否有任务一直不阻塞。
-检查 mutex 是否未释放。
-检查中断优先级和 FromISR API。
-
-面试答法：
-
-RTOS 调试我会先看任务状态和优先级，判断任务是没有创建、被阻塞、栈溢出还是被高优先级任务饿死。再看队列、信号量、mutex 等同步对象的状态。
-
-19. 任务划分示例一个传感器设备可以这样划分：
-
-
-
-任务
-作用
-通信方式
-
-
-
-sensor_task
-周期读取 I2C&#x2F;ADC 数据
-队列发送数据
-
-
-uart_task
-处理串口命令
-队列接收命令
-
-
-control_task
-根据数据控制输出
-队列&#x2F;事件
-
-
-led_task
-状态指示
-事件标志
-
-
-log_task
-统一输出日志
-消息队列
-
-
-面试表达：
-
-我会把周期采集、通信处理、控制逻辑和日志输出拆成不同任务。任务之间尽量用队列或事件通信，减少共享全局变量。访问 I2C、SPI 这类共享总线时用 mutex 保护。
-
-20. 高频问答速背RTOS 一定比裸机好吗？不是。简单项目裸机更轻量。复杂多任务项目使用 RTOS 更清晰，但会增加调度、栈和同步复杂度。
-任务里能不能一直 while(1) 不延时？一般不行。如果高优先级任务一直运行不阻塞，会导致低优先级任务得不到 CPU。任务应等待事件、队列、信号量或适当 delay。
-中断里为什么不能直接处理复杂逻辑？中断执行太久会影响系统实时性，阻塞其他中断。应该只做短处理，把耗时逻辑交给任务。
-什么时候用队列？任务之间传递数据时用队列，例如串口接收数据传给解析任务。
-什么时候用信号量？通知事件或表示资源可用时用信号量，例如 DMA 完成中断通知处理任务。
-什么时候用互斥锁？保护共享资源时用互斥锁，例如多个任务访问同一条 I2C 总线。
-什么是优先级反转？低优先级任务持有资源，高优先级任务等待资源，中优先级任务占用 CPU，导致高优先级任务被间接阻塞。
-RTOS 中最容易出的问题是什么？任务栈不足、优先级设计不合理、共享资源没保护、死锁、中断里调用错误 API、队列满或信号量使用错误。
-]]></content>
-      <categories>
-        <category>求职</category>
-      </categories>
-      <tags>
-        <tag>面试</tag>
       </tags>
   </entry>
   <entry>
@@ -4416,6 +3929,493 @@ volatile 为什么不等于原子操作？因为 volatile 只约束编译器访�
 如何看待全局变量？全局变量方便但容易导致耦合和并发问题。能限制作用域就用 static，能通过接口访问就不要直接暴露。
 嵌入式 C 代码最重要的习惯是什么？参数检查、边界检查、清晰的错误码、控制作用域、避免大栈对象、共享变量考虑并发、硬件相关变量使用 volatile。
 
+]]></content>
+      <categories>
+        <category>求职</category>
+      </categories>
+      <tags>
+        <tag>面试</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>思澈面试笔记-RTOS</title>
+    <url>/2026/06/17/%E6%80%9D%E6%BE%88%E9%9D%A2%E8%AF%95%E7%AC%94%E8%AE%B0-RTOS/</url>
+    <content><![CDATA[RTOS 高频问点这份笔记用于准备 RT-Thread、FreeRTOS、Zephyr 等实时操作系统相关面试。重点是任务调度、同步通信、中断配合、资源保护和常见问题排查。
+1. RTOS 是什么？RTOS 是 Real-Time Operating System，实时操作系统。它为嵌入式系统提供任务调度、任务间通信、同步机制、定时器和内存管理等能力。
+RTOS 不等于“速度一定更快”，它的重点是：
+
+让多个任务结构更清晰。
+提供可控的实时响应。
+管理任务优先级。
+提供任务间通信和同步机制。
+
+面试答法：
+
+RTOS 主要解决复杂嵌入式程序的结构和实时性问题。裸机程序通常依靠主循环和中断，业务复杂后会变得难维护；RTOS 可以把通信、采集、控制、显示等功能拆成不同任务，通过队列、信号量、事件等机制协作。
+
+2. RTOS 和裸机程序的区别裸机程序特点：
+
+一个 while(1) 主循环。
+外设事件通常靠中断处理。
+程序结构简单。
+适合小项目、逻辑简单的设备。
+
+缺点：
+
+多功能并发时结构容易混乱。
+延时函数可能阻塞其他逻辑。
+任务优先级不好管理。
+
+RTOS 程序特点：
+
+多任务并发运行。
+每个任务有独立栈。
+调度器根据优先级切换任务。
+提供信号量、互斥锁、队列、事件等机制。
+
+缺点：
+
+有调度开销。
+需要管理任务栈和优先级。
+并发问题更复杂。
+
+面试答法：
+
+裸机适合简单控制逻辑，RTOS 适合多任务场景。例如一个设备同时要采集传感器、处理串口协议、刷新屏幕、控制电机，用 RTOS 拆任务会更清晰。但 RTOS 也会带来优先级、栈大小和共享资源保护的问题。
+
+3. 任务和线程任务是什么？任务是 RTOS 调度的基本单位。每个任务通常包含：
+
+任务函数。
+任务栈。
+优先级。
+任务控制块。
+任务状态。
+
+示例：
+void sensor_task(void *arg)&#123;    while (1) &#123;        read_sensor();        vTaskDelay(pdMS_TO_TICKS(100));    &#125;&#125;
+
+任务状态常见状态：
+
+Running：正在运行。
+Ready：就绪，等待 CPU。
+Blocked：阻塞，等待延时、信号量、队列等。
+Suspended：挂起。
+Deleted：删除。
+
+面试答法：
+
+任务不是一直运行的，它会在运行、就绪、阻塞等状态之间切换。比如调用延时函数后任务进入阻塞状态，等时间到后重新进入就绪状态。
+
+4. 调度器高频问点：RTOS 如何决定运行哪个任务？调度器根据任务状态和优先级选择任务。
+常见规则：
+
+高优先级就绪任务先运行。
+同优先级任务可能时间片轮转。
+阻塞任务不参与调度。
+
+面试答法：
+
+大多数 RTOS 使用基于优先级的抢占式调度。只要高优先级任务进入就绪态，就可以抢占低优先级任务。这样能保证关键任务及时响应。
+
+抢占式调度和协作式调度抢占式：
+
+高优先级任务可以打断低优先级任务。
+实时性更好。
+需要注意共享资源保护。
+
+协作式：
+
+任务主动让出 CPU。
+实现简单。
+某个任务不让出 CPU 会影响系统。
+
+时间片轮转同优先级任务之间，RTOS 可以按 tick 时间片轮流运行，避免某个同优先级任务长期占用 CPU。
+5. 任务优先级高频问点：任务优先级怎么设置？原则：
+
+实时性要求高的任务优先级高。
+耗时但不紧急的任务优先级低。
+不要所有任务都设成高优先级。
+高优先级任务不能长时间占用 CPU。
+低优先级任务也要有机会运行。
+
+示例：
+
+
+
+任务
+优先级建议
+
+
+
+电机保护、紧急停止
+高
+
+
+通信接收解析
+较高
+
+
+传感器周期采集
+中
+
+
+屏幕刷新
+中低
+
+
+日志输出
+低
+
+
+面试答法：
+
+优先级要根据实时性设置。高优先级任务应该短小，处理关键事件后尽快阻塞或让出 CPU。如果高优先级任务一直运行，低优先级任务会被饿死。
+
+高频问点：什么是任务饥饿？低优先级任务长期得不到 CPU，就是任务饥饿。
+原因：
+
+高优先级任务没有阻塞或延时。
+高优先级任务死循环。
+优先级设计不合理。
+
+解决：
+
+高优先级任务等待事件而不是空转。
+增加适当延时。
+调整优先级。
+检查 CPU 使用率。
+
+6. 任务栈高频问点：每个任务为什么需要独立栈？每个任务都有自己的函数调用链、局部变量、返回地址和上下文，因此需要独立栈。
+任务栈太小会导致：
+
+程序异常。
+HardFault。
+数据被覆盖。
+随机崩溃。
+
+任务栈过大：
+
+浪费 RAM。
+
+如何估算任务栈？关注：
+
+函数调用深度。
+局部变量大小。
+是否使用 printf。
+是否有大数组。
+是否调用复杂库函数。
+
+调试方式：
+
+使用栈水位检测。
+增大栈观察问题是否消失。
+查看 map 文件和 RTOS 统计信息。
+
+面试答法：
+
+RTOS 中每个任务都有自己的栈，栈大小需要根据任务函数调用深度和局部变量估算。嵌入式 RAM 有限，不能盲目给很大，也不能太小。实际项目中会用栈水位检测来确认余量。
+
+7. 延时与 Tickdelay_ms 和 RTOS 延时有什么区别？裸机忙等延时：
+
+CPU 一直空转。
+会阻塞其他逻辑。
+
+RTOS 延时：
+
+当前任务进入阻塞。
+CPU 可以调度其他任务。
+
+示例：
+vTaskDelay(pdMS_TO_TICKS(100));
+
+面试答法：
+
+在 RTOS 任务中不应该使用长时间忙等延时，而应该使用 RTOS 提供的 delay，让当前任务阻塞，把 CPU 让给其他任务。
+
+Tick 是什么？Tick 是 RTOS 的系统节拍，通常由 SysTick 或定时器周期中断产生。
+用途：
+
+时间片调度。
+任务延时。
+软件定时器。
+超时判断。
+
+8. 信号量信号量是什么？信号量用于任务同步或资源计数。
+常见类型：
+
+二值信号量。
+计数信号量。
+
+二值信号量只有 0 和 1 两种状态，常用于事件通知。
+场景：
+
+UART 接收完成后通知任务。
+GPIO 中断通知按键任务。
+DMA 完成中断通知处理任务。
+
+面试答法：
+
+二值信号量常用于中断和任务之间的同步。中断里释放信号量，任务阻塞等待信号量，收到后再执行耗时处理。
+
+计数信号量可以表示多个资源数量。
+场景：
+
+缓冲区个数。
+连接池。
+多个相同资源。
+
+9. 互斥锁互斥锁是什么？互斥锁用于保护共享资源，保证同一时间只有一个任务访问。
+共享资源例子：
+
+I2C 总线。
+SPI 总线。
+全局数据结构。
+文件系统。
+日志输出。
+
+示例：
+mutex_lock(i2c_mutex);i2c_read_sensor();mutex_unlock(i2c_mutex);
+
+面试答法：
+
+如果多个任务会访问同一个 I2C 或 SPI 总线，需要用互斥锁保护，避免两个任务的传输交叉导致总线数据混乱。
+
+高频问点：信号量和互斥锁有什么区别？信号量：
+
+更偏事件通知或资源计数。
+可以由一个任务释放，另一个任务获取。
+二值信号量可用于中断通知任务。
+
+互斥锁：
+
+用于保护共享资源。
+谁加锁谁解锁。
+通常支持优先级继承。
+
+面试答法：
+
+信号量解决“有没有事件或资源”，互斥锁解决“同一时间只能一个任务访问共享资源”。保护共享资源时优先用 mutex，而不是普通二值信号量。
+
+10. 队列队列是什么？队列用于任务之间传递数据。
+场景：
+
+UART 接收任务把数据发给协议解析任务。
+传感器任务把采样结果发给显示任务。
+中断把事件发送给事件处理任务。
+
+示例：
+typedef struct &#123;    uint16_t temperature;    uint16_t humidity;&#125; sensor_msg_t;
+
+高频问点：队列和共享全局变量哪个好？队列更适合任务间传递数据：
+
+数据边界清晰。
+可以阻塞等待。
+减少共享变量竞争。
+更容易维护。
+
+全局变量适合简单状态，但需要考虑同步。
+面试答法：
+
+如果是任务间传递一条条消息，我更倾向用队列，而不是多个任务直接读写全局变量。队列可以自带同步机制，也能让数据流向更清楚。
+
+11. 事件标志事件标志用于等待一个或多个事件。
+场景：
+
+等待 Wi-Fi 连接成功。
+等待传感器数据就绪。
+等待多个初始化条件完成。
+
+示例思路：
+
+bit0 表示网络连接。
+bit1 表示时间同步完成。
+bit2 表示配置加载完成。
+
+任务可以等待全部事件或任意事件。
+12. 软件定时器软件定时器是什么？软件定时器由 RTOS tick 驱动，到期后执行回调或通知任务。
+适合：
+
+周期状态检查。
+超时处理。
+LED 心跳。
+延迟执行。
+
+注意：
+
+软件定时器回调中不要做耗时操作。
+精度受 tick 影响。
+
+13. 中断和 RTOS高频问点：中断里能调用 RTOS API 吗？可以，但必须使用 RTOS 专门提供的 FromISR 版本或中断安全接口。
+例如 FreeRTOS 中：
+
+xSemaphoreGiveFromISR
+xQueueSendFromISR
+portYIELD_FROM_ISR
+
+不能在中断中调用可能阻塞的 API。
+面试答法：
+
+中断上下文不能阻塞，所以不能随便调用普通任务 API。需要使用 RTOS 提供的 ISR 安全版本，把事件通知给任务处理。
+
+高频问点：中断和任务如何配合？推荐模式：
+
+中断中读取状态、清标志。
+中断中释放信号量或发送消息。
+高优先级任务被唤醒。
+任务中处理耗时逻辑。
+
+这样中断短，任务逻辑清晰。
+14. 优先级反转什么是优先级反转？低优先级任务持有互斥资源，高优先级任务等待该资源；此时中优先级任务一直运行，导致高优先级任务无法及时运行。
+示例：
+
+低优先级任务拿到 I2C mutex。
+高优先级任务也要用 I2C，被阻塞。
+中优先级任务运行，占用 CPU。
+低优先级任务无法运行释放 mutex。
+高优先级任务一直等。
+
+如何解决？
+使用支持优先级继承的 mutex。
+缩短持锁时间。
+不要持锁做耗时操作。
+合理设计任务优先级。
+
+面试答法：
+
+优先级反转可以通过优先级继承缓解。持有 mutex 的低优先级任务会临时继承等待它的高优先级任务优先级，尽快运行并释放资源。
+
+15. 死锁什么是死锁？多个任务互相等待对方持有的资源，导致都无法继续运行。
+例子：
+
+任务 A 持有 mutex1，等待 mutex2。
+任务 B 持有 mutex2，等待 mutex1。
+
+避免方法：
+
+固定加锁顺序。
+避免嵌套锁。
+设置锁超时。
+缩短临界区。
+明确资源所有权。
+
+16. 临界区临界区是访问共享资源时不希望被打断的代码区域。
+常见方式：
+
+关中断。
+加 mutex。
+使用原子操作。
+
+选择：
+
+中断和主循环共享变量：短时间关中断。
+多任务共享资源：mutex。
+简单计数：原子操作。
+
+注意：
+
+临界区要尽量短，不能在关中断状态下做耗时操作，否则会影响实时性。
+
+17. 内存管理RTOS 中内存从哪里来？RTOS 通常需要为以下对象分配内存：
+
+任务控制块。
+任务栈。
+队列。
+信号量。
+定时器。
+事件组。
+
+分配方式：
+
+静态分配。
+动态分配。
+
+静态分配和动态分配怎么选？静态分配：
+
+更确定。
+没有运行时分配失败。
+适合安全性要求高的系统。
+
+动态分配：
+
+灵活。
+需要处理失败。
+有碎片风险。
+
+面试答法：
+
+资源固定的嵌入式系统更适合静态分配，实时性和可靠性更好。动态分配适合资源变化较大的场景，但要考虑失败处理和碎片问题。
+
+18. RTOS 调试常见问题：
+
+某个任务不运行。
+系统卡死。
+栈溢出。
+队列满。
+信号量丢失。
+死锁。
+CPU 占用过高。
+
+排查思路：
+
+查看任务状态。
+查看任务优先级。
+查看栈水位。
+查看队列长度。
+查看是否有任务一直不阻塞。
+检查 mutex 是否未释放。
+检查中断优先级和 FromISR API。
+
+面试答法：
+
+RTOS 调试我会先看任务状态和优先级，判断任务是没有创建、被阻塞、栈溢出还是被高优先级任务饿死。再看队列、信号量、mutex 等同步对象的状态。
+
+19. 任务划分示例一个传感器设备可以这样划分：
+
+
+
+任务
+作用
+通信方式
+
+
+
+sensor_task
+周期读取 I2C&#x2F;ADC 数据
+队列发送数据
+
+
+uart_task
+处理串口命令
+队列接收命令
+
+
+control_task
+根据数据控制输出
+队列&#x2F;事件
+
+
+led_task
+状态指示
+事件标志
+
+
+log_task
+统一输出日志
+消息队列
+
+
+面试表达：
+
+我会把周期采集、通信处理、控制逻辑和日志输出拆成不同任务。任务之间尽量用队列或事件通信，减少共享全局变量。访问 I2C、SPI 这类共享总线时用 mutex 保护。
+
+20. 高频问答速背RTOS 一定比裸机好吗？不是。简单项目裸机更轻量。复杂多任务项目使用 RTOS 更清晰，但会增加调度、栈和同步复杂度。
+任务里能不能一直 while(1) 不延时？一般不行。如果高优先级任务一直运行不阻塞，会导致低优先级任务得不到 CPU。任务应等待事件、队列、信号量或适当 delay。
+中断里为什么不能直接处理复杂逻辑？中断执行太久会影响系统实时性，阻塞其他中断。应该只做短处理，把耗时逻辑交给任务。
+什么时候用队列？任务之间传递数据时用队列，例如串口接收数据传给解析任务。
+什么时候用信号量？通知事件或表示资源可用时用信号量，例如 DMA 完成中断通知处理任务。
+什么时候用互斥锁？保护共享资源时用互斥锁，例如多个任务访问同一条 I2C 总线。
+什么是优先级反转？低优先级任务持有资源，高优先级任务等待资源，中优先级任务占用 CPU，导致高优先级任务被间接阻塞。
+RTOS 中最容易出的问题是什么？任务栈不足、优先级设计不合理、共享资源没保护、死锁、中断里调用错误 API、队列满或信号量使用错误。
 ]]></content>
       <categories>
         <category>求职</category>
@@ -6027,56 +6027,6 @@ FLASH：G 表示 1024KB,C 表示 256，E 表示 512，I 表示 2048
       </tags>
   </entry>
   <entry>
-    <title>第七章 启动文件详解</title>
-    <url>/2024/03/03/%E7%AC%AC%E4%B8%83%E7%AB%A0%20%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/</url>
-    <content><![CDATA[7.1启动文件介绍1、初始化堆栈指针 SP&#x3D;_initial_sp
-2、初始化PC指针  &#x3D;Rest_Handler
-3、初始化中断向量表
-4、配置系统时钟
-5、调用C库函数_main初始化用户堆栈，调用main函数
-7.2 ARM汇编指令EQU：给数字常量去一个富豪们，相当于C语言的define
-AREA：汇编一个新的代码段或者数据段
-SPACE：分配内存空间
-PRE-SERVE8：当前文件堆栈按照8位字节对齐
-EX-PORT：声明一个符号具有全局属性，可被外部的文件使用
-DCD：字节单位分配，要求4字节对齐，要去初始化这些内存
-PROC：定义子程序，与ENDP成对使用，表示子程序结束
-WEAK：弱定义，如果外部文件声明了一个标号，则优先使用外部文件定义的标号，如果外部文件没有定义也不出错。要注意的是：这个不是 ARM 的指令，是编译器的，这里放在一起只是为了方便。
-IM-PORT：跳转到一个符号
-ALIGN：编译器对指令或者数据的存放地址进行对齐，一般需要跟一个立即数，缺省表示 4 字节对齐要注意的是：这个不是 ARM 的指令，是编译器的，这里放在一起只是为了方便。
-END：到达文件的末尾，文件结束
-IF,ELSE,ENDIF：汇编条件分子语句，跟c语言的if else如此
-7.3 启动文件代码讲解7.3.1 Stack栈Stack_Size     EQU 0x00000400 //开辟栈的大小为0X00000400（1KB）               AREA STACK, NOINIT, READWRITE, ALIGN=3              //名字为STACK      可读写       8（2^3）Stack_Mem      SPACE Stack_Size   //分配内存空间，单位 字节，这里指定大小为Strack_Size__initial_sp  //栈的结束地址，由高向低生长
-
-栈的作用是用于局部变量，函数调用，函数形参等开销，栈的大小不能超过内部SRAM的大小，超过要修改栈的大小。
-7.3.2 Heap堆Heap\_Size EQU 0x00000200    //开辟堆大小0X00000200（512字节）   AREA HEAP, NOINIT, READWRITE, ALIGN=3   //名字     不初始化，可读写，8（2^3）\_\_heap\_base  //堆的起始地址          Heap_Mem SPACE Heap_Size__heap_limit    //堆的结束地址       堆由低到高生长和栈相反
-
-堆用来动态内存的分配，像malloc()函数申请的内存就在堆上面
-7.3.3 向量表AREA RESET, DATA, READONLY//定义数据段为RESET 可读，生命三个标号具有全局属性，可供外部文件调用EXPORT __VectorsEXPORT __Vectors_EndEXPORT __Vectors_Size
-
-__Vectors 为向量表起始地址，__Vectors_End 为向量表结束地址，两个相减即可算出向量表大小
-7.3.4 复位程序AREA |.text|, CODE, READONLY//定义一个名称为.text 的代码段，可读。.textReset_Handler PROCEXPORT Reset_Handler [WEAK]IMPORT SystemInitIMPORT __mainLDR R0, =SystemInitBLX R0LDR R0, =__mainBX R0ENDP
-
-复位子程序是系统上电后第一个执行的程序，调用 SystemInit 函数初始化系统时钟，然后调用 C库函数 _mian，最终调用 main 函数去到 C 的世界。
-SystemInit() 是一个标准的库函数，在 system_stm32f103xe.c 这个库文件中定义。主要作用是配置系统时钟，这里调用这个函数之后，单片机的系统时钟配被配置为 72M。
-__main 是一个标准的 C 库函数，主要作用是初始化用户堆栈。
-7.3.5 中断服务程序NMI_Handler PROC ; 系统异常      EXPORT NMI_Handler [WEAK]      B .      ENDP; 限于篇幅，中间代码省略SysTick_Handler PROC      EXPORT SysTick_Handler [WEAK]      B .      ENDPDefault_Handler PROC ; 外部中断      EXPORT WWDG_IRQHandler [WEAK]      EXPORT PVD_IRQHandler [WEAK]      EXPORT TAMP_STAMP_IRQHandler [WEAK]; 限于篇幅，中间代码省略LTDC_IRQHandlerLTDC_ER_IRQHandlerDMA2D_IRQHandler      B .      ENDP
-
-B：跳转到一个标号。这里跳转到一个‘.’，即表示无线循环。
-7.3.6 用户堆栈初始化ALIGN：对指令或者数据存放的地址进行对齐，后面会跟一个立即数。缺省表示 4 字节对齐。
-; 用户栈和堆初始化, 由 C 库函数_main 来完成IF : DEF :__MICROLIB ; 这个宏在 KEIL 里面开启EXPORT __initial_spEXPORT __heap_baseEXPORT __heap_limitELSE  IMPORT __use_two_region_memory ; 这个函数由用户自己实现  EXPORT __user_initial_stackheap  __user_initial_stackheap  LDR R0, = Heap_Mem  LDR R1, =(Stack_Mem + Stack_Size)  LDR R2, = (Heap_Mem + Heap_Size)  LDR R3, = Stack_Mem  BX LR  ALIGN  ENDIF  END
-
-
-首先判断是否定义了 __MICROLIB，如果定义了这个宏则赋予标号 __initial_sp（栈顶地址）、__heap_base（堆起始地址）、__heap_limit（堆结束地址）全局属性，可供外部文件调用。
-]]></content>
-      <categories>
-        <category>野火 STM32</category>
-      </categories>
-      <tags>
-        <tag>STM32</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>第三章 线性表</title>
     <url>/2024/09/09/%E7%AC%AC%E4%B8%89%E7%AB%A0%20%E7%BA%BF%E6%80%A7%E8%A1%A8/</url>
     <content><![CDATA[1.线性表的定义线性表：零个或多个数据元素的有限序列。
@@ -6347,6 +6297,56 @@ GPIO 引脚将信号传输到 stm32 其他片上外设，由该外设读取引�
       </tags>
   </entry>
   <entry>
+    <title>第七章 启动文件详解</title>
+    <url>/2024/03/03/%E7%AC%AC%E4%B8%83%E7%AB%A0%20%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/</url>
+    <content><![CDATA[7.1启动文件介绍1、初始化堆栈指针 SP&#x3D;_initial_sp
+2、初始化PC指针  &#x3D;Rest_Handler
+3、初始化中断向量表
+4、配置系统时钟
+5、调用C库函数_main初始化用户堆栈，调用main函数
+7.2 ARM汇编指令EQU：给数字常量去一个富豪们，相当于C语言的define
+AREA：汇编一个新的代码段或者数据段
+SPACE：分配内存空间
+PRE-SERVE8：当前文件堆栈按照8位字节对齐
+EX-PORT：声明一个符号具有全局属性，可被外部的文件使用
+DCD：字节单位分配，要求4字节对齐，要去初始化这些内存
+PROC：定义子程序，与ENDP成对使用，表示子程序结束
+WEAK：弱定义，如果外部文件声明了一个标号，则优先使用外部文件定义的标号，如果外部文件没有定义也不出错。要注意的是：这个不是 ARM 的指令，是编译器的，这里放在一起只是为了方便。
+IM-PORT：跳转到一个符号
+ALIGN：编译器对指令或者数据的存放地址进行对齐，一般需要跟一个立即数，缺省表示 4 字节对齐要注意的是：这个不是 ARM 的指令，是编译器的，这里放在一起只是为了方便。
+END：到达文件的末尾，文件结束
+IF,ELSE,ENDIF：汇编条件分子语句，跟c语言的if else如此
+7.3 启动文件代码讲解7.3.1 Stack栈Stack_Size     EQU 0x00000400 //开辟栈的大小为0X00000400（1KB）               AREA STACK, NOINIT, READWRITE, ALIGN=3              //名字为STACK      可读写       8（2^3）Stack_Mem      SPACE Stack_Size   //分配内存空间，单位 字节，这里指定大小为Strack_Size__initial_sp  //栈的结束地址，由高向低生长
+
+栈的作用是用于局部变量，函数调用，函数形参等开销，栈的大小不能超过内部SRAM的大小，超过要修改栈的大小。
+7.3.2 Heap堆Heap\_Size EQU 0x00000200    //开辟堆大小0X00000200（512字节）   AREA HEAP, NOINIT, READWRITE, ALIGN=3   //名字     不初始化，可读写，8（2^3）\_\_heap\_base  //堆的起始地址          Heap_Mem SPACE Heap_Size__heap_limit    //堆的结束地址       堆由低到高生长和栈相反
+
+堆用来动态内存的分配，像malloc()函数申请的内存就在堆上面
+7.3.3 向量表AREA RESET, DATA, READONLY//定义数据段为RESET 可读，生命三个标号具有全局属性，可供外部文件调用EXPORT __VectorsEXPORT __Vectors_EndEXPORT __Vectors_Size
+
+__Vectors 为向量表起始地址，__Vectors_End 为向量表结束地址，两个相减即可算出向量表大小
+7.3.4 复位程序AREA |.text|, CODE, READONLY//定义一个名称为.text 的代码段，可读。.textReset_Handler PROCEXPORT Reset_Handler [WEAK]IMPORT SystemInitIMPORT __mainLDR R0, =SystemInitBLX R0LDR R0, =__mainBX R0ENDP
+
+复位子程序是系统上电后第一个执行的程序，调用 SystemInit 函数初始化系统时钟，然后调用 C库函数 _mian，最终调用 main 函数去到 C 的世界。
+SystemInit() 是一个标准的库函数，在 system_stm32f103xe.c 这个库文件中定义。主要作用是配置系统时钟，这里调用这个函数之后，单片机的系统时钟配被配置为 72M。
+__main 是一个标准的 C 库函数，主要作用是初始化用户堆栈。
+7.3.5 中断服务程序NMI_Handler PROC ; 系统异常      EXPORT NMI_Handler [WEAK]      B .      ENDP; 限于篇幅，中间代码省略SysTick_Handler PROC      EXPORT SysTick_Handler [WEAK]      B .      ENDPDefault_Handler PROC ; 外部中断      EXPORT WWDG_IRQHandler [WEAK]      EXPORT PVD_IRQHandler [WEAK]      EXPORT TAMP_STAMP_IRQHandler [WEAK]; 限于篇幅，中间代码省略LTDC_IRQHandlerLTDC_ER_IRQHandlerDMA2D_IRQHandler      B .      ENDP
+
+B：跳转到一个标号。这里跳转到一个‘.’，即表示无线循环。
+7.3.6 用户堆栈初始化ALIGN：对指令或者数据存放的地址进行对齐，后面会跟一个立即数。缺省表示 4 字节对齐。
+; 用户栈和堆初始化, 由 C 库函数_main 来完成IF : DEF :__MICROLIB ; 这个宏在 KEIL 里面开启EXPORT __initial_spEXPORT __heap_baseEXPORT __heap_limitELSE  IMPORT __use_two_region_memory ; 这个函数由用户自己实现  EXPORT __user_initial_stackheap  __user_initial_stackheap  LDR R0, = Heap_Mem  LDR R1, =(Stack_Mem + Stack_Size)  LDR R2, = (Heap_Mem + Heap_Size)  LDR R3, = Stack_Mem  BX LR  ALIGN  ENDIF  END
+
+
+首先判断是否定义了 __MICROLIB，如果定义了这个宏则赋予标号 __initial_sp（栈顶地址）、__heap_base（堆起始地址）、__heap_limit（堆结束地址）全局属性，可供外部文件调用。
+]]></content>
+      <categories>
+        <category>野火 STM32</category>
+      </categories>
+      <tags>
+        <tag>STM32</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>第九章 STM32中断应用</title>
     <url>/2024/05/09/%E7%AC%AC%E4%B9%9D%E7%AB%A0%20STM32%E4%B8%AD%E6%96%AD%E5%BA%94%E7%94%A8/</url>
     <content><![CDATA[一、中断概述中断时出现某些意外需要主机干预，机器能自动停止运行的程序，转入新的处理的程序，处理完之后返回程序被暂停的程序，继续运行。
@@ -6372,42 +6372,6 @@ GPIO 引脚将信号传输到 stm32 其他片上外设，由该外设读取引�
       </categories>
       <tags>
         <tag>STM32</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>第二章 算法</title>
-    <url>/2024/02/29/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[2.1 算法定义算法是解决特定问题求解步骤的描述，计算机中表现位指令的有限序列，并且每条指令表示一个或多个操作。
-2.2 算法的特性算法具有：输入、输出、有穷性、确定性和可行性。
-2.2.1 输入输出算法具有零个或多个输入和至少一个或多个输出。
-2.2.2 有穷性指的是算法在执行有限步骤之后，自动结束而不会出现无限循环，并且每一个步骤可接受在时间内完成。
-2.2.3 确定性算法的每一步骤具有确定的含义，不会出现二义性。
-2.2.4 可行性算法的每一步都必须可行的，每一步都能狗通过执行有限次数完成。
-2.3 算法设计的要求2.3.1 正确性指的是至少具有输入、输出和加工处理无歧义性，能正确反映问题的需求，能够得到问题的正确答案。
-2.3.2 可读性算法设计的另外一个目的，为了便于阅读、理解和交流。
-2.3.3 健壮性输入数据不合法，算法也能够做出相关处理，而不是产生异常或者莫名其妙的结果。
-2.3.4 时间效率高和存储量低时间效率高：算法的执行时间。存储量低：执行过中需要的最大存储控件，运行时所占用的内存或外部硬盘存储控件。
-应该满足时间效率和存储量低的需求。
-2.4 算法效率的度量方法2.4.1 事后统计方法通过设计好的测试程序和数据，利用计算机计时器对不同算法编制的程序的运行时间进行对比，确定算法效率的高低。
-2.4.2 事前分析估算方法在计算机程序编制前，依据统计方法对算法进行估算。
-
-一个程序的运行时间，依据赖与算法的好坏和问题的输入规模。问题输出规模是指输入量的多少。
-2.5 函数的渐近增长给定义两个函数f（n）和g（n），如果存在一个整数N，使得对于所有的n&gt;N，f（n）总是大于g（n），所以f（n）的增长渐近快于g（n）。
-判断一个算法效率时，函数中的常数和其他次要项常常可以忽略，而更应该关注主项（最高阶项） 的阶数。
-
-可以分析出：某个算法，随着n的增大，它会优越于另外一个算法，或者差于另外一个算法。
-2.6 算法时间的复杂度2.6.1 算法时间复杂度定义在进行算法分析时，语句总的执行次数T（n）是关于问题规模n的函数，进而分析T（n）随n的变化情况并而确定T（n）的数量级。算法的时间复杂度（时间量度），记作T（n）&#x3D;O（f（n））。表示随着问题规模n的增大，算法执行时间的增长率和f（n）的增长率相同，称为算法的渐近时间赋值度，简称时间复杂度。其中f（n）是问题规模n的某个函数。
-2.6.2 推导大O阶方法推导大O阶：
-（1）常数1取代运行时间中的所有加法常数。
-（2）在修改后运行次数函数中，只保留最高阶项。
-（3）如果最高阶项存在且系数不是1，则去除与这个项相乘的系数，得到结果最大O阶。
-2.6.3 常数阶int sum = 0,n = 100;  //一次sum = (1 + n) * n /2; //一次printf(&quot;%d&quot;, sum);    //一次
-]]></content>
-      <categories>
-        <category>数据结构</category>
-      </categories>
-      <tags>
-        <tag>算法</tag>
       </tags>
   </entry>
   <entry>
@@ -6711,102 +6675,39 @@ Release_Note.html:：库的版本更新说明。
       </tags>
   </entry>
   <entry>
-    <title>第五章-指针</title>
-    <url>/2023/08/14/%E7%AC%AC%E4%BA%94%E7%AB%A0-%E6%8C%87%E9%92%88/</url>
-    <content><![CDATA[一、指针的概念操作系统给每个存储单元分配了一个编号，从 0x00 00 00 00 00 ~0xff ff ff ff 称之为内存
-指针变量：是变量也是指针变量，这个变量用来存放一个地址编号。在 32 位系统下，有 4 个字节
-注：
-​ 1、无论声明类型的地址，都有存储单元的编号，在 32 位下都是 4 个总控二。所以 任何类型的指针变量都是 4 个字节
-​ 2、对应类型的指针变量，只能存放对应类型的变量地址
-​ 比如：整形的指针变量，就是存放整型变量的地址
-扩展：
-字符变量 char ch; ch 占一个字节，它有一个地址编号，这个地址编号就是 ch 的地址整型变量 int a； a 占四个字节，占有四个字节的存储单位，有四个地址编号
+    <title>第二章 算法</title>
+    <url>/2024/02/29/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[2.1 算法定义算法是解决特定问题求解步骤的描述，计算机中表现位指令的有限序列，并且每条指令表示一个或多个操作。
+2.2 算法的特性算法具有：输入、输出、有穷性、确定性和可行性。
+2.2.1 输入输出算法具有零个或多个输入和至少一个或多个输出。
+2.2.2 有穷性指的是算法在执行有限步骤之后，自动结束而不会出现无限循环，并且每一个步骤可接受在时间内完成。
+2.2.3 确定性算法的每一步骤具有确定的含义，不会出现二义性。
+2.2.4 可行性算法的每一步都必须可行的，每一步都能狗通过执行有限次数完成。
+2.3 算法设计的要求2.3.1 正确性指的是至少具有输入、输出和加工处理无歧义性，能正确反映问题的需求，能够得到问题的正确答案。
+2.3.2 可读性算法设计的另外一个目的，为了便于阅读、理解和交流。
+2.3.3 健壮性输入数据不合法，算法也能够做出相关处理，而不是产生异常或者莫名其妙的结果。
+2.3.4 时间效率高和存储量低时间效率高：算法的执行时间。存储量低：执行过中需要的最大存储控件，运行时所占用的内存或外部硬盘存储控件。
+应该满足时间效率和存储量低的需求。
+2.4 算法效率的度量方法2.4.1 事后统计方法通过设计好的测试程序和数据，利用计算机计时器对不同算法编制的程序的运行时间进行对比，确定算法效率的高低。
+2.4.2 事前分析估算方法在计算机程序编制前，依据统计方法对算法进行估算。
 
-二、指针的定义方法1、简单指针
-数据类型 * 指针变量名
-int * P;//定义一个指针变量P
+一个程序的运行时间，依据赖与算法的好坏和问题的输入规模。问题输出规模是指输入量的多少。
+2.5 函数的渐近增长给定义两个函数f（n）和g（n），如果存在一个整数N，使得对于所有的n&gt;N，f（n）总是大于g（n），所以f（n）的增长渐近快于g（n）。
+判断一个算法效率时，函数中的常数和其他次要项常常可以忽略，而更应该关注主项（最高阶项） 的阶数。
 
-2、指针的运算符
-&amp; 取地址 ：获取一个变量的地址
-*取值：标识作用
-
-#include &lt;stdio.h&gt;int main()&#123;    int a = 100;    int * p;//指针变量    p = &amp;a;//a的地址保存在p中    printf(&quot;a = %d %d\n&quot;,a,*p);    ptintf(&quot;&amp;a = %p %p\n&quot;,&amp;a,p);&#125;
-
-
-3、指针大小
-在 32 位系统下，所以类型的指针都是 4 个字节
-三、指针的分类1、字符指针
-​ char *p;&#x2F;&#x2F;只能存放字符串类型的地址编号
-​ char ch;
-​ p &#x3D; &ch;
-2、短整型指针
-​ short int *p;
-​ short int a;
-​ p &#x3D;&a;
-3、整形指针
-​ int *p;
-​ int a;
-​ p &#x3D;&a;
-4：长整型指针
-long int *p;
-long int a;
-p &#x3D;&a;
-5：float 型的指针
-float *p;
-float a;
-p &#x3D;&a;
-6：double 型的指针
-​ double *p;
-​ double a;
-​ p &#x3D;&a;
-7：函数指针
-8、结构体指针
-9、指针的指针
-10、数组指针
-四、指针和变量的关系指针可以存放变量地址编号
-1、变量的名称引用变量
-​ int a;
-​ a&#x3D;100;
-2、通过指针变量引来变量
-​ int *p;
-​ p &#x3D;&a;&#x2F;&#x2F;p 保存了 a 的地址，也可以说 p 指向了 a
-​ *p&#x3D;100;
-注意：指针变量的定义可以初始化
-int a;
-int *p&#x3D;&a;&#x2F;&#x2F;指针就是存放变量地址的
-#include &lt;stdio.h&gt;int main()&#123;    int *p1,*p2,temp,a,b;    p1=&amp;a;    p2=&amp;b;    printf(&quot;输入a b的值：\n&quot;);    scanf(&quot;%d %d&quot;,p1,p2);//70 90    temp = *p1;//p1指向a的值给temp赋值 70    *p1 = *p2;//p2指向b的值给p1的变量a赋值 90    *p2 = temp;//temp给p2指向的变量b赋值 70    printf(&quot;a=%d b=%d\n&quot;,a,b);	printf(&quot;*p1=%d *p2=%d\n&quot;,*p1,*p2);&#125;
-
-
-扩展：
-对应类型的指针，只能保存对应类型数据的地址
-如果想让不同类型的指针互相赋值，需要强制类型转换
-#include &lt;stdio.h&gt;int main()&#123;    int a=0x1234,b=5678;    char *p1,*p2;    printf(&quot;%#x %#x\n&quot;,a,b);    p1=(char *)&amp;a;    p2=(char *)&amp;b;    printf(&quot;%#x %#x\n&quot;,*p1,*p2);    p1++;    p2++;    printf(&quot;%#x %#x\n&quot;,*p1,*p2);&#125;
-
-
-
-五、指针和数组元素之间的关系1、数组元素和指针的基本关系
-变量存放在内存中，有地址编号，定义的数组，是的哟个相同类型的变量的集合。每个变量都占内存空间，都有地址编号。指针变量可以存放数组元素的地址（数组首元素）
-int a[10];//int *p =&amp;a[0];int *p;p=&amp;a[0]; //指针变量p保存了数组a中第0个元素的地址，即a[0]的地址
-
-2、数组元素的引用方式
-（1）数组名[下标]
-int a[10];a[2]=100;
-
-（2）指针名加下标
-int a[10];int *p;p=a;p[2]=100;
-
-（3）指针运算加取值
-int a[10];int *p;p = a;*(p+2)=100;//a[2]=100
-
-#include &lt;stdio.h&gt;int main()&#123;    int a[5]=&#123;0,1,2,3,4&#125;;    int *p;    p=a;    printf(&quot;a[2]=%d\n&quot;,a[2]);//2    printf(&quot;p[2]=%d\n&quot;,p[2]);//2    printf(&quot;*(p+2) = %d\n&quot;,*(p+2));//2 	printf(&quot;*(a+2) = %d\n&quot;,*(a+2));//2 	printf(&quot;p=%p\n&quot;,p); 	printf(&quot;p+2=%p\n&quot;,p+2); 	printf(&quot;&amp;a[0] = %p\n&quot;, &amp;a[0]); 	printf(&quot;&amp;a[2] = %p\n&quot;, &amp;a[2]);&#125;
-
-
+可以分析出：某个算法，随着n的增大，它会优越于另外一个算法，或者差于另外一个算法。
+2.6 算法时间的复杂度2.6.1 算法时间复杂度定义在进行算法分析时，语句总的执行次数T（n）是关于问题规模n的函数，进而分析T（n）随n的变化情况并而确定T（n）的数量级。算法的时间复杂度（时间量度），记作T（n）&#x3D;O（f（n））。表示随着问题规模n的增大，算法执行时间的增长率和f（n）的增长率相同，称为算法的渐近时间赋值度，简称时间复杂度。其中f（n）是问题规模n的某个函数。
+2.6.2 推导大O阶方法推导大O阶：
+（1）常数1取代运行时间中的所有加法常数。
+（2）在修改后运行次数函数中，只保留最高阶项。
+（3）如果最高阶项存在且系数不是1，则去除与这个项相乘的系数，得到结果最大O阶。
+2.6.3 常数阶int sum = 0,n = 100;  //一次sum = (1 + n) * n /2; //一次printf(&quot;%d&quot;, sum);    //一次
 ]]></content>
       <categories>
-        <category>千锋C语言</category>
+        <category>数据结构</category>
       </categories>
       <tags>
-        <tag>嵌入式C</tag>
+        <tag>算法</tag>
       </tags>
   </entry>
   <entry>
@@ -6981,36 +6882,103 @@ S(2,4)在预处理代替成字符串的形参 2 * 4
       </tags>
   </entry>
   <entry>
-    <title>音频链路与本地主动播报深挖</title>
-    <url>/2026/09/12/%E9%9F%B3%E9%A2%91%E9%93%BE%E8%B7%AF%E4%B8%8E%E6%9C%AC%E5%9C%B0%E4%B8%BB%E5%8A%A8%E6%92%AD%E6%8A%A5%E6%B7%B1%E6%8C%96/</url>
-    <content><![CDATA[1. 两条独立音频路径Xiaozhi 下行：WebSocket binary raw OPUS -&gt; ai_audio -&gt; libopus -&gt; PCM16 -&gt; MAX98357AXiaozhi 上行：ICS43434 I2S 32 bit -&gt; PCM16 mono -&gt; 静音门 -&gt; libopus -&gt; WebSocket本地主动播报：SD 裸 PCM16 -&gt; 2048 B PSRAM buffer -&gt; MAX98357A
+    <title>第五章-指针</title>
+    <url>/2023/08/14/%E7%AC%AC%E4%BA%94%E7%AB%A0-%E6%8C%87%E9%92%88/</url>
+    <content><![CDATA[一、指针的概念操作系统给每个存储单元分配了一个编号，从 0x00 00 00 00 00 ~0xff ff ff ff 称之为内存
+指针变量：是变量也是指针变量，这个变量用来存放一个地址编号。在 32 位系统下，有 4 个字节
+注：
+​ 1、无论声明类型的地址，都有存储单元的编号，在 32 位下都是 4 个总控二。所以 任何类型的指针变量都是 4 个字节
+​ 2、对应类型的指针变量，只能存放对应类型的变量地址
+​ 比如：整形的指针变量，就是存放整型变量的地址
+扩展：
+字符变量 char ch; ch 占一个字节，它有一个地址编号，这个地址编号就是 ch 的地址整型变量 int a； a 占四个字节，占有四个字节的存储单位，有四个地址编号
 
-本地播报不让服务端生成文本，运动&#x2F;导航事件直接组合预录数字和单位片段，延迟和离线可控。
-2. Xiaozhi 会话启动app_ai_voice_task 等待 Wi-Fi ready event。顺序固定为：稳定等待 1 s -&gt; esp_xiaozhi_chat_get_info() -&gt; 再等 1 s -&gt; 创建 MCP engine、注册 chat callback、强制 WebSocket -&gt; 等 connected 最多 8 s -&gt; 再等 0.5 s -&gt; 打开 OPUS channel、启动麦克风、发送 realtime start listening。
-组件返回 MQTT 和 WebSocket 配置时仍强制 WebSocket，避免两种 transport 同时争用。关闭或断线时清 event bits、停音频、释放 chat&#x2F;MCP，3 s 后由应用层重启。
-3. 下行解码细节音频 callback 不直接解码，只把包复制到内部 8-bit 内存，再投递 s_audio_queue。ai_audio 取包后先调用 opus_packet_get_nb_samples() 验证采样数，再 opus_decode() 到内部 PCM buffer；帧参数是 16 kHz、mono、60 ms，即每帧 960 samples，典型 PCM 长度 1920 B。
-decoder 使用源码版 78/esp-opus 1.0.5，不再调用曾触发崩溃的预编译 esp_audio_codec OPUS 路径。解码成功后调用 board_max98357a_write()；MAX98357A 负责 3 倍饱和增益和 mono 到 I2S stereo slot 的复制。
-下行队列深度 12，满时释放最旧包，避免 TTS burst 导致延迟越来越大。播放前再次检查 s_audio_channel_opened、Wi-Fi 和 stopping 标志，关闭会话后不会把已取出的最后一包继续写入 I2S。
-4. 麦克风上行细节ICS43434 使用 I2S1：BCLK&#x3D;36、DIN&#x3D;37、WS&#x3D;38，16 kHz、32 bit、right slot。ai_mic 以 60 ms 读一帧 960 samples，从 32 bit 原始值取有效 PCM16。
-先计算平均绝对值。语音开始需要连续 2 帧超过 150；语音结束需要连续 12 帧低于 120。静音帧直接丢弃，不进入 OPUS 编码；编码器启用 DTX，opus_len &lt;= 2 的小包也不上传。TTS 播放期间保持采样但暂停上传，降低回声回送。
-OPUS encoder 为 VOIP、bitrate&#x3D;16 kbps、complexity&#x3D;1。连续 3 次 send_audio_data 失败后停止本轮上传并触发会话重启。encoder 状态对象使用 PSRAM；I2S raw、PCM16 和 OPUS packet 缓冲使用内部 8-bit，保证实时读取、编码和发送路径可用。ai_mic 栈 32 KiB 放 PSRAM，解决 silk_encode_frame_FIX() 栈保护异常。
-5. 本地 PCM 播报资源目录 /sdcard/navigation_audio/，格式为裸 signed 16-bit little-endian、16 kHz、mono，无 WAV 头。生成脚本预先移除头尾静音，运行时不扫描静音、不解码、不重采样。
-事件检测 task 每 1000 ms 读取运动快照。P0：转向、到达；P1：每公里、每五分钟、持续速度变化。动态数字拆为 num_0..num_10000、小数点和单位文件，播放 task 依次从队列读取文件并以 2048 B PSRAM 缓冲写 MAX98357A。
-优先级策略：P0 到来时调用 app_ai_voice_local_playback_begin(true)，停止当前 TTS 并清 OPUS 队列；本地播放期间暂停麦克风和下行。P1 在 Xiaozhi 回复时等待，P0 到来可以打断 P1。播放结束根据会话是否仍有效恢复监听，否则关闭 MAX98357A stream。
-6. 失败降级SD 未挂载、PCM 缺失、I2S 写失败只终止当前句并记录 esp_err_t，不影响 UI 和运动记录。主动播报任务创建失败时 Xiaozhi 对话仍可用。音频内存不足时不扩大队列或挤占 DMA 区，而是让本轮音频进入错误状态。
-7. 面试追问为什么不用 WAV？ WAV 头对裸片段拼接没有价值，且每段都要处理格式；固定 PCM 使播放路径只有读文件和 DMA 写入。
-为什么上行不用 32 bit PCM？ 麦克风 I2S 为 32 bit slot，但协议与 OPUS 处理统一为 PCM16 mono，减少网络带宽和编码输入量。
-如何验证音频崩溃根因？ 保留完整 backtrace，先区分任务栈、decoder 内存和 packet 格式；本项目通过切换源码 libopus、确认 samples=960 连续播放，证明不是 WebSocket 头或封装层问题。
+二、指针的定义方法1、简单指针
+数据类型 * 指针变量名
+int * P;//定义一个指针变量P
+
+2、指针的运算符
+&amp; 取地址 ：获取一个变量的地址
+*取值：标识作用
+
+#include &lt;stdio.h&gt;int main()&#123;    int a = 100;    int * p;//指针变量    p = &amp;a;//a的地址保存在p中    printf(&quot;a = %d %d\n&quot;,a,*p);    ptintf(&quot;&amp;a = %p %p\n&quot;,&amp;a,p);&#125;
+
+
+3、指针大小
+在 32 位系统下，所以类型的指针都是 4 个字节
+三、指针的分类1、字符指针
+​ char *p;&#x2F;&#x2F;只能存放字符串类型的地址编号
+​ char ch;
+​ p &#x3D; &ch;
+2、短整型指针
+​ short int *p;
+​ short int a;
+​ p &#x3D;&a;
+3、整形指针
+​ int *p;
+​ int a;
+​ p &#x3D;&a;
+4：长整型指针
+long int *p;
+long int a;
+p &#x3D;&a;
+5：float 型的指针
+float *p;
+float a;
+p &#x3D;&a;
+6：double 型的指针
+​ double *p;
+​ double a;
+​ p &#x3D;&a;
+7：函数指针
+8、结构体指针
+9、指针的指针
+10、数组指针
+四、指针和变量的关系指针可以存放变量地址编号
+1、变量的名称引用变量
+​ int a;
+​ a&#x3D;100;
+2、通过指针变量引来变量
+​ int *p;
+​ p &#x3D;&a;&#x2F;&#x2F;p 保存了 a 的地址，也可以说 p 指向了 a
+​ *p&#x3D;100;
+注意：指针变量的定义可以初始化
+int a;
+int *p&#x3D;&a;&#x2F;&#x2F;指针就是存放变量地址的
+#include &lt;stdio.h&gt;int main()&#123;    int *p1,*p2,temp,a,b;    p1=&amp;a;    p2=&amp;b;    printf(&quot;输入a b的值：\n&quot;);    scanf(&quot;%d %d&quot;,p1,p2);//70 90    temp = *p1;//p1指向a的值给temp赋值 70    *p1 = *p2;//p2指向b的值给p1的变量a赋值 90    *p2 = temp;//temp给p2指向的变量b赋值 70    printf(&quot;a=%d b=%d\n&quot;,a,b);	printf(&quot;*p1=%d *p2=%d\n&quot;,*p1,*p2);&#125;
+
+
+扩展：
+对应类型的指针，只能保存对应类型数据的地址
+如果想让不同类型的指针互相赋值，需要强制类型转换
+#include &lt;stdio.h&gt;int main()&#123;    int a=0x1234,b=5678;    char *p1,*p2;    printf(&quot;%#x %#x\n&quot;,a,b);    p1=(char *)&amp;a;    p2=(char *)&amp;b;    printf(&quot;%#x %#x\n&quot;,*p1,*p2);    p1++;    p2++;    printf(&quot;%#x %#x\n&quot;,*p1,*p2);&#125;
+
+
+
+五、指针和数组元素之间的关系1、数组元素和指针的基本关系
+变量存放在内存中，有地址编号，定义的数组，是的哟个相同类型的变量的集合。每个变量都占内存空间，都有地址编号。指针变量可以存放数组元素的地址（数组首元素）
+int a[10];//int *p =&amp;a[0];int *p;p=&amp;a[0]; //指针变量p保存了数组a中第0个元素的地址，即a[0]的地址
+
+2、数组元素的引用方式
+（1）数组名[下标]
+int a[10];a[2]=100;
+
+（2）指针名加下标
+int a[10];int *p;p=a;p[2]=100;
+
+（3）指针运算加取值
+int a[10];int *p;p = a;*(p+2)=100;//a[2]=100
+
+#include &lt;stdio.h&gt;int main()&#123;    int a[5]=&#123;0,1,2,3,4&#125;;    int *p;    p=a;    printf(&quot;a[2]=%d\n&quot;,a[2]);//2    printf(&quot;p[2]=%d\n&quot;,p[2]);//2    printf(&quot;*(p+2) = %d\n&quot;,*(p+2));//2 	printf(&quot;*(a+2) = %d\n&quot;,*(a+2));//2 	printf(&quot;p=%p\n&quot;,p); 	printf(&quot;p+2=%p\n&quot;,p+2); 	printf(&quot;&amp;a[0] = %p\n&quot;, &amp;a[0]); 	printf(&quot;&amp;a[2] = %p\n&quot;, &amp;a[2]);&#125;
+
 
 ]]></content>
-  </entry>
-  <entry>
-    <title>项目测试</title>
-    <url>/2024/02/18/%E9%A1%B9%E7%9B%AE%E6%B5%8B%E8%AF%95/</url>
-    <content><![CDATA[]]></content>
       <categories>
-        <category>项目</category>
+        <category>千锋C语言</category>
       </categories>
+      <tags>
+        <tag>嵌入式C</tag>
+      </tags>
   </entry>
   <entry>
     <title>面经</title>
@@ -7372,6 +7340,38 @@ SPI&#x2F;I2C&#x2F;UART&#x2F;DMA、GPIO 中断、逻辑分析仪、JTAG、非阻�
 这比编造使用经历更容易获得面试官信任，也能把问题引导到你真正掌握的原理上。
 
 ]]></content>
+  </entry>
+  <entry>
+    <title>音频链路与本地主动播报深挖</title>
+    <url>/2026/09/12/%E9%9F%B3%E9%A2%91%E9%93%BE%E8%B7%AF%E4%B8%8E%E6%9C%AC%E5%9C%B0%E4%B8%BB%E5%8A%A8%E6%92%AD%E6%8A%A5%E6%B7%B1%E6%8C%96/</url>
+    <content><![CDATA[1. 两条独立音频路径Xiaozhi 下行：WebSocket binary raw OPUS -&gt; ai_audio -&gt; libopus -&gt; PCM16 -&gt; MAX98357AXiaozhi 上行：ICS43434 I2S 32 bit -&gt; PCM16 mono -&gt; 静音门 -&gt; libopus -&gt; WebSocket本地主动播报：SD 裸 PCM16 -&gt; 2048 B PSRAM buffer -&gt; MAX98357A
+
+本地播报不让服务端生成文本，运动&#x2F;导航事件直接组合预录数字和单位片段，延迟和离线可控。
+2. Xiaozhi 会话启动app_ai_voice_task 等待 Wi-Fi ready event。顺序固定为：稳定等待 1 s -&gt; esp_xiaozhi_chat_get_info() -&gt; 再等 1 s -&gt; 创建 MCP engine、注册 chat callback、强制 WebSocket -&gt; 等 connected 最多 8 s -&gt; 再等 0.5 s -&gt; 打开 OPUS channel、启动麦克风、发送 realtime start listening。
+组件返回 MQTT 和 WebSocket 配置时仍强制 WebSocket，避免两种 transport 同时争用。关闭或断线时清 event bits、停音频、释放 chat&#x2F;MCP，3 s 后由应用层重启。
+3. 下行解码细节音频 callback 不直接解码，只把包复制到内部 8-bit 内存，再投递 s_audio_queue。ai_audio 取包后先调用 opus_packet_get_nb_samples() 验证采样数，再 opus_decode() 到内部 PCM buffer；帧参数是 16 kHz、mono、60 ms，即每帧 960 samples，典型 PCM 长度 1920 B。
+decoder 使用源码版 78/esp-opus 1.0.5，不再调用曾触发崩溃的预编译 esp_audio_codec OPUS 路径。解码成功后调用 board_max98357a_write()；MAX98357A 负责 3 倍饱和增益和 mono 到 I2S stereo slot 的复制。
+下行队列深度 12，满时释放最旧包，避免 TTS burst 导致延迟越来越大。播放前再次检查 s_audio_channel_opened、Wi-Fi 和 stopping 标志，关闭会话后不会把已取出的最后一包继续写入 I2S。
+4. 麦克风上行细节ICS43434 使用 I2S1：BCLK&#x3D;36、DIN&#x3D;37、WS&#x3D;38，16 kHz、32 bit、right slot。ai_mic 以 60 ms 读一帧 960 samples，从 32 bit 原始值取有效 PCM16。
+先计算平均绝对值。语音开始需要连续 2 帧超过 150；语音结束需要连续 12 帧低于 120。静音帧直接丢弃，不进入 OPUS 编码；编码器启用 DTX，opus_len &lt;= 2 的小包也不上传。TTS 播放期间保持采样但暂停上传，降低回声回送。
+OPUS encoder 为 VOIP、bitrate&#x3D;16 kbps、complexity&#x3D;1。连续 3 次 send_audio_data 失败后停止本轮上传并触发会话重启。encoder 状态对象使用 PSRAM；I2S raw、PCM16 和 OPUS packet 缓冲使用内部 8-bit，保证实时读取、编码和发送路径可用。ai_mic 栈 32 KiB 放 PSRAM，解决 silk_encode_frame_FIX() 栈保护异常。
+5. 本地 PCM 播报资源目录 /sdcard/navigation_audio/，格式为裸 signed 16-bit little-endian、16 kHz、mono，无 WAV 头。生成脚本预先移除头尾静音，运行时不扫描静音、不解码、不重采样。
+事件检测 task 每 1000 ms 读取运动快照。P0：转向、到达；P1：每公里、每五分钟、持续速度变化。动态数字拆为 num_0..num_10000、小数点和单位文件，播放 task 依次从队列读取文件并以 2048 B PSRAM 缓冲写 MAX98357A。
+优先级策略：P0 到来时调用 app_ai_voice_local_playback_begin(true)，停止当前 TTS 并清 OPUS 队列；本地播放期间暂停麦克风和下行。P1 在 Xiaozhi 回复时等待，P0 到来可以打断 P1。播放结束根据会话是否仍有效恢复监听，否则关闭 MAX98357A stream。
+6. 失败降级SD 未挂载、PCM 缺失、I2S 写失败只终止当前句并记录 esp_err_t，不影响 UI 和运动记录。主动播报任务创建失败时 Xiaozhi 对话仍可用。音频内存不足时不扩大队列或挤占 DMA 区，而是让本轮音频进入错误状态。
+7. 面试追问为什么不用 WAV？ WAV 头对裸片段拼接没有价值，且每段都要处理格式；固定 PCM 使播放路径只有读文件和 DMA 写入。
+为什么上行不用 32 bit PCM？ 麦克风 I2S 为 32 bit slot，但协议与 OPUS 处理统一为 PCM16 mono，减少网络带宽和编码输入量。
+如何验证音频崩溃根因？ 保留完整 backtrace，先区分任务栈、decoder 内存和 packet 格式；本项目通过切换源码 libopus、确认 samples=960 连续播放，证明不是 WebSocket 头或封装层问题。
+
+]]></content>
+  </entry>
+  <entry>
+    <title>项目测试</title>
+    <url>/2024/02/18/%E9%A1%B9%E7%9B%AE%E6%B5%8B%E8%AF%95/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>项目</category>
+      </categories>
   </entry>
   <entry>
     <title>骑行码表面试深挖问答手册</title>

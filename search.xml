@@ -35,6 +35,30 @@
 ]]></content>
   </entry>
   <entry>
+    <title>BLE 路线传输与运动数据同步深挖</title>
+    <url>/2026/09/12/BLE%20%E8%B7%AF%E7%BA%BF%E4%BC%A0%E8%BE%93%E4%B8%8E%E8%BF%90%E5%8A%A8%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%E6%B7%B1%E6%8C%96/</url>
+    <content><![CDATA[1. ESP-Hosted BLE 架构P4 关闭本地 Bluetooth Controller，运行 NimBLE Host&#x2F;GATT Server；C6 提供 Controller，HCI 通过 ESP-Hosted VHCI over SDIO。P4 上的 bt/app_ble.c 负责广播、连接和 notify，app_ble_gatt.c 定义 characteristic，app_ble_proto.c 解析统一包头，业务数据再进入各自 task。
+设备名 Aero-Wtach，单连接，preferred MTU&#x3D;247，Legacy connectable advertising。Ride Service 下有 Live Metrics、Command、Config、Ride Record、Route Status；另注册标准 Battery Service。
+2. 通用 Commandcmd_id:u8 | seq:u8 | payload_len:u8 | payload[payload_len]
+
+实际长度必须等于 3+payload_len，写缓存上限 128 B。seq 只用于日志，不能当 ACK、时间戳或去重依据。GATT 层先做长度、版本、flags 和范围校验，业务成功以对应状态&#x2F;快照为准。
+3. 完整路线 0x22~0x25V1：普通 Cycling，8 B&#x2F;点；V2：显式 activity_type，12 B&#x2F;点，增加 altitude_cm，MTB 必须用 V2。点数 2~2048，最大数据 24576 B，坐标固定 GCJ-02。
+BEGINV1 payload 16 B：version、coordinate_system、route_id、point_count、total_length、crc32。V2 payload 18 B，在头部增加 activity_type 和 point_format。有效 BEGIN 会释放旧接收缓冲，PSRAM 申请完整数据区，状态变为 RECEIVING。
+DATApayload 含 version、route_id、offset 和 1~116 B data。设备只接受 offset == received_length；相同 offset 且字节内容完全一致允许重复发送，跳 offset、越界或内容不同返回 INVALID_OFFSET。116 B 是协议上限，实际还受 negotiated_mtu-15 限制。
+COMMIT只有收到总长度后才计算 CRC32（多项式 0xEDB88320，初值&#x2F;异或 0xFFFFFFFF）。CRC 正确后一次性解析所有点、校验纬度&#x2F;经度范围，生成点数组和最多 64 点的归一化缩略图，再在 mutex 内替换 LOADED 快照。接收缓冲和点数组短时并存，V2 峰值约 49 KiB，不含地图投影。
+ABORT&#x2F;断开ABORT 只释放未完成传输，不清除已 LOADED 路线；断 BLE 会中止接收但保留已加载路线。0x21 才清除完整路线和旧途经点路线。Route Status 固定 20 B，包含 state&#x2F;error&#x2F;route_id&#x2F;received&#x2F;total&#x2F;point_count&#x2F;generation，支持 Read&#x2F;Notify。
+4. PHONE 定位 0x3024 B payload：version、flags、timestamp_ms、lat&#x2F;lon e7、altitude cm、speed cm&#x2F;s、course 0.1°、accuracy cm。最小有效 flags 是经纬度+精度。GATT callback 只解析后投递长度 4 的队列；phone_location_task 检查 accuracy&lt;&#x3D;50 m、时间戳单调、跳点和 3 s 超时，再调用运动模型。
+运行状态下才累计距离和时间。路线存在时，PHONE GCJ-02 先转 WGS84，再投影到路线，更新 route_progress_cm。BLE 断开不跨断连时间累计，定位模式不会自动回退 DEMO。
+5. Live Metrics 与历史记录Live Metrics 每 1 s notify，固定 17 B：elapsed_s、distance_m、speed_x100、avg_speed_x100，电池字段目前是保留值；真实电量走 Battery Level。完整历史不复用实时包，而使用 Ride Record characteristic：记录 payload v2 固定 99 B，新增 route_id；包头 11 B，默认 MTU 23 时每分包 9 B，另有 CRC 完成、同步完成和删除标记包。
+记录 SAVE 后先写 ride_history NVS，状态 pending；小程序完整校验后发 0x41(record_id) 才变 synced。0x40 flags 可请求最新、pending、删除标记；0x42 请求重传。删除标记最多 32 条，跨断线和重启保留。
+6. 时间和天气0x02 用 UTC Unix 秒+时区分钟更新统一时间快照，不写 Flash；0x10 固定 58 B，由天气 task 更新快照，数据变化时才写 NVS。两者都要求有响应 Write，业务成功不是“写入 API 返回”，而是任务更新后的状态&#x2F;generation。
+7. 面试追问为什么完整路线不用单个 GATT Write？ MTU 和写缓存有限，分包允许断点续传和 CRC 完整性校验；offset 严格递进避免乱序覆盖。
+为什么 Route Status 不增加 activity_type？ 保持 20 B 旧客户端兼容，activity_type 保存在终端内部快照，Cycling&#x2F;MTB 通过内部匹配消费。
+GATT Write 成功是否代表路线成功？ 不是，只代表包通过同步校验并进入队列；必须等待 Route Status LOADED。
+
+]]></content>
+  </entry>
+  <entry>
     <title>24年技能大赛广东样题</title>
     <url>/2024/01/17/24%E5%B9%B4%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E5%B9%BF%E4%B8%9C%E6%A0%B7%E9%A2%98/</url>
     <content><![CDATA[24年样题1一、接线二、维护三、sql server维护
@@ -72,30 +96,6 @@
       <tags>
         <tag>样题</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>BLE 路线传输与运动数据同步深挖</title>
-    <url>/2026/09/12/BLE%20%E8%B7%AF%E7%BA%BF%E4%BC%A0%E8%BE%93%E4%B8%8E%E8%BF%90%E5%8A%A8%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%E6%B7%B1%E6%8C%96/</url>
-    <content><![CDATA[1. ESP-Hosted BLE 架构P4 关闭本地 Bluetooth Controller，运行 NimBLE Host&#x2F;GATT Server；C6 提供 Controller，HCI 通过 ESP-Hosted VHCI over SDIO。P4 上的 bt/app_ble.c 负责广播、连接和 notify，app_ble_gatt.c 定义 characteristic，app_ble_proto.c 解析统一包头，业务数据再进入各自 task。
-设备名 Aero-Wtach，单连接，preferred MTU&#x3D;247，Legacy connectable advertising。Ride Service 下有 Live Metrics、Command、Config、Ride Record、Route Status；另注册标准 Battery Service。
-2. 通用 Commandcmd_id:u8 | seq:u8 | payload_len:u8 | payload[payload_len]
-
-实际长度必须等于 3+payload_len，写缓存上限 128 B。seq 只用于日志，不能当 ACK、时间戳或去重依据。GATT 层先做长度、版本、flags 和范围校验，业务成功以对应状态&#x2F;快照为准。
-3. 完整路线 0x22~0x25V1：普通 Cycling，8 B&#x2F;点；V2：显式 activity_type，12 B&#x2F;点，增加 altitude_cm，MTB 必须用 V2。点数 2~2048，最大数据 24576 B，坐标固定 GCJ-02。
-BEGINV1 payload 16 B：version、coordinate_system、route_id、point_count、total_length、crc32。V2 payload 18 B，在头部增加 activity_type 和 point_format。有效 BEGIN 会释放旧接收缓冲，PSRAM 申请完整数据区，状态变为 RECEIVING。
-DATApayload 含 version、route_id、offset 和 1~116 B data。设备只接受 offset == received_length；相同 offset 且字节内容完全一致允许重复发送，跳 offset、越界或内容不同返回 INVALID_OFFSET。116 B 是协议上限，实际还受 negotiated_mtu-15 限制。
-COMMIT只有收到总长度后才计算 CRC32（多项式 0xEDB88320，初值&#x2F;异或 0xFFFFFFFF）。CRC 正确后一次性解析所有点、校验纬度&#x2F;经度范围，生成点数组和最多 64 点的归一化缩略图，再在 mutex 内替换 LOADED 快照。接收缓冲和点数组短时并存，V2 峰值约 49 KiB，不含地图投影。
-ABORT&#x2F;断开ABORT 只释放未完成传输，不清除已 LOADED 路线；断 BLE 会中止接收但保留已加载路线。0x21 才清除完整路线和旧途经点路线。Route Status 固定 20 B，包含 state&#x2F;error&#x2F;route_id&#x2F;received&#x2F;total&#x2F;point_count&#x2F;generation，支持 Read&#x2F;Notify。
-4. PHONE 定位 0x3024 B payload：version、flags、timestamp_ms、lat&#x2F;lon e7、altitude cm、speed cm&#x2F;s、course 0.1°、accuracy cm。最小有效 flags 是经纬度+精度。GATT callback 只解析后投递长度 4 的队列；phone_location_task 检查 accuracy&lt;&#x3D;50 m、时间戳单调、跳点和 3 s 超时，再调用运动模型。
-运行状态下才累计距离和时间。路线存在时，PHONE GCJ-02 先转 WGS84，再投影到路线，更新 route_progress_cm。BLE 断开不跨断连时间累计，定位模式不会自动回退 DEMO。
-5. Live Metrics 与历史记录Live Metrics 每 1 s notify，固定 17 B：elapsed_s、distance_m、speed_x100、avg_speed_x100，电池字段目前是保留值；真实电量走 Battery Level。完整历史不复用实时包，而使用 Ride Record characteristic：记录 payload v2 固定 99 B，新增 route_id；包头 11 B，默认 MTU 23 时每分包 9 B，另有 CRC 完成、同步完成和删除标记包。
-记录 SAVE 后先写 ride_history NVS，状态 pending；小程序完整校验后发 0x41(record_id) 才变 synced。0x40 flags 可请求最新、pending、删除标记；0x42 请求重传。删除标记最多 32 条，跨断线和重启保留。
-6. 时间和天气0x02 用 UTC Unix 秒+时区分钟更新统一时间快照，不写 Flash；0x10 固定 58 B，由天气 task 更新快照，数据变化时才写 NVS。两者都要求有响应 Write，业务成功不是“写入 API 返回”，而是任务更新后的状态&#x2F;generation。
-7. 面试追问为什么完整路线不用单个 GATT Write？ MTU 和写缓存有限，分包允许断点续传和 CRC 完整性校验；offset 严格递进避免乱序覆盖。
-为什么 Route Status 不增加 activity_type？ 保持 20 B 旧客户端兼容，activity_type 保存在终端内部快照，Cycling&#x2F;MTB 通过内部匹配消费。
-GATT Write 成功是否代表路线成功？ 不是，只代表包通过同步校验并进入队列；必须等待 Route Status LOADED。
-
-]]></content>
   </entry>
   <entry>
     <title></title>
@@ -1895,11 +1895,6 @@ Linux man-pages：fork(2)、execve(2)、mmap(2)、select(2)、poll(2)、epoll(7)
       </tags>
   </entry>
   <entry>
-    <title>CSS第二天</title>
-    <url>/2023/10/24/CSS%E7%AC%AC%E4%BA%8C%E5%A4%A9/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>Dx-C511模块连接华为云OTA</title>
     <url>/2024/09/26/Dx-C511%E6%A8%A1%E5%9D%97%E8%BF%9E%E6%8E%A5%E5%8D%8E%E4%B8%BA%E4%BA%91%E4%B8%8B%E8%BD%BD%E5%9B%BA%E4%BB%B6/</url>
     <content><![CDATA[1、配置APN
@@ -2299,65 +2294,9 @@ main/ui_app/pages/map_sd_route/page_map_sd_route.c：体现离线地图、导航
 ]]></content>
   </entry>
   <entry>
-    <title>HTML第三天</title>
-    <url>/2023/10/13/HTML%E7%AC%AC%E4%B8%89%E5%A4%A9/</url>
-    <content><![CDATA[1.font-familyfont-family //定义文本系列
-
-2. font-size属性定义字体大小。
-3.font-weight文本字体的粗细
-
-
-
-notmal
-默认值
-
-
-
-bold
-加粗
-
-
-100-900
-400&#x3D;normal,700&#x3D;bold
-
-
-4.font-style文本风格
-normal //默认值 italic//斜体
-
-
-5.text-align文本内容水平对齐方式
-left //左对齐 right //右对齐 center //居中对齐
-
-6.text-decoration给文本添加下划线、删除线、上划线等
-
-
-
-none
-默认
-
-
-
-underline
-下划线
-
-
-overline
-上划线
-
-
-line-through
-删除线
-
-
-7.text-indent段落首行缩进
-8.line-height设置行间的距离（行高）
-]]></content>
-      <categories>
-        <category>前端</category>
-      </categories>
-      <tags>
-        <tag>HTML</tag>
-      </tags>
+    <title>CSS第二天</title>
+    <url>/2023/10/24/CSS%E7%AC%AC%E4%BA%8C%E5%A4%A9/</url>
+    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>HTML第一天</title>
@@ -2414,6 +2353,67 @@ border
 9.超链接标签&lt;a href=&quot;跳转目标&quot; target=&quot;目标窗口的弹出方式&quot;&gt;文本或者图像&lt;/a&gt;
 
 10.特殊字符&amp;nbsp; //空格&amp;ly;  //小于号&amp;gt;  //大于号
+]]></content>
+      <categories>
+        <category>前端</category>
+      </categories>
+      <tags>
+        <tag>HTML</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>HTML第三天</title>
+    <url>/2023/10/13/HTML%E7%AC%AC%E4%B8%89%E5%A4%A9/</url>
+    <content><![CDATA[1.font-familyfont-family //定义文本系列
+
+2. font-size属性定义字体大小。
+3.font-weight文本字体的粗细
+
+
+
+notmal
+默认值
+
+
+
+bold
+加粗
+
+
+100-900
+400&#x3D;normal,700&#x3D;bold
+
+
+4.font-style文本风格
+normal //默认值 italic//斜体
+
+
+5.text-align文本内容水平对齐方式
+left //左对齐 right //右对齐 center //居中对齐
+
+6.text-decoration给文本添加下划线、删除线、上划线等
+
+
+
+none
+默认
+
+
+
+underline
+下划线
+
+
+overline
+上划线
+
+
+line-through
+删除线
+
+
+7.text-indent段落首行缩进
+8.line-height设置行间的距离（行高）
 ]]></content>
       <categories>
         <category>前端</category>
@@ -2686,24 +2686,6 @@ var roleUpgrader = &#123;    /** @param &#123;Creep&#125; creep **/    run: func
 ]]></content>
   </entry>
   <entry>
-    <title>SF32LB52—个人毕设笔记—添加Borad及修改PinMux（1）</title>
-    <url>/2025/11/24/SF32LB52%E2%80%94%E4%B8%AA%E4%BA%BA%E6%AF%95%E8%AE%BE%E7%AC%94%E8%AE%B0%EF%BC%881%EF%BC%89/</url>
-    <content><![CDATA[1.在SiFli-SDK中创建Borad请参考SiFli Wiki，链接https://docs.sifli.com/projects/sdk/latest/sf32lb52x/app_development/create_board.html
-2.修改自己Borad中的PinMux以下为本人设计板子所使用的IO
-（1）bsp_lcd_tp.c#include &quot;bsp_board.h&quot;#define LCD_RESET_PIN (0)  //LCD复位#define TP_RESET (41) //TP复位#define LCD_VADD_EN (1) //LCD电源#define LCD_POWER_EN (9) //LCD开关/***************************LCD ***********************************/extern void BSP_PIN_LCD(void);void BSP_LCD_Reset(uint8_t high1_low0)&#123;    BSP_GPIO_Set(LCD_RESET_PIN, high1_low0, 1);&#125;void BSP_LCD_PowerDown(void)&#123;    // TODO: LCD power down    BSP_GPIO_Set(LCD_RESET_PIN, 0, 1);    BSP_GPIO_Set(LCD_VADD_EN, 0, 1); // POwer down VADD EN&#125;void BSP_LCD_PowerUp(void)&#123;    // TODO: LCD power up    HAL_Delay_us(500); // lcd power on finish ,need 500us    BSP_PIN_LCD();    BSP_GPIO_Set(LCD_VADD_EN, 1, 1); // POwer up VADD EN&#125;void BSP_LCD_PowerOff(void)&#123;    BSP_GPIO_Set(LCD_POWER_EN, 0, 1);&#125;void BSP_LCD_PowerOn(void)&#123;    BSP_GPIO_Set(LCD_POWER_EN, 1, 1);&#125;/***************************Touch ***********************************/extern void BSP_PIN_Touch(void);void BSP_TP_PowerUp(void)&#123;    // TODO: Setup TP power up pin    BSP_PIN_Touch();    BSP_GPIO_Set(TP_RESET, 1, 1);&#125;void BSP_TP_PowerDown(void)&#123;    // TODO: Setup TP power down pin    BSP_GPIO_Set(TP_RESET, 0, 1);&#125;void BSP_TP_Reset(uint8_t high1_low0)&#123;    BSP_GPIO_Set(TP_RESET, high1_low0, 1);&#125;
-
-(2)bsp_pinmux.c// LCD_RESETBHAL_PIN_Set(PAD_PA00, GPIO_A0, PIN_PULLDOWN, 1);// AUDIO_PA_CTRL// HAL_PIN_Set(PAD_PA10, GPIO_A10, PIN_PULLDOWN, 1);// UART1 - debugHAL_PIN_Set(PAD_PA18, USART1_RXD, PIN_PULLUP, 1);HAL_PIN_Set(PAD_PA19, USART1_TXD, PIN_PULLUP, 1);// SPI1 - TFcardHAL_PIN_Set(PAD_PA24, SPI1_DI, PIN_PULLDOWN, 1);HAL_PIN_Set(PAD_PA25, SPI1_CLK, PIN_NOPULL, 1);HAL_PIN_Set(PAD_PA27, SPI1_DIO, PIN_NOPULL, 1);HAL_PIN_Set(PAD_PA28, SPI1_CS, PIN_NOPULL, 1);//  #XTAL32K_XI// HAL_PIN_Set(PAD_PA22, GPIO_A22, PIN_NOPULL, 1);//  #XTAL32K_XO// HAL_PIN_Set(PAD_PA23, GPIO_A23, PIN_NOPULL, 1);// I2C2 - SensorHAL_PIN_Set(PAD_PA31, I2C2_SDA, PIN_PULLUP, 1);HAL_PIN_Set(PAD_PA32, I2C2_SCL, PIN_PULLUP, 1);// Key1 - Power key/* Keep default pull-down unchanged. Uart download driver would use this * function, if pulldown is disabled, download driver would not work on the * board without external pull-down */HAL_PIN_Set(PAD_PA34, GPIO_A34, PIN_NOPULL, 1);// Key2HAL_PIN_Set(PAD_PA26, GPIO_A11, PIN_NOPULL, 1);// USBDHAL_PIN_Set_Analog(PAD_PA35, 1); // USB_DPHAL_PIN_Set_Analog(PAD_PA36, 1); // USB_DM#if defined(BSP_USING_PWM3) || defined(BSP_USING_RGBLED_WITCH_PWM3)HAL_PIN_Set(PAD_PA32, GPTIM2_CH1, PIN_PULLUP, 1); // RGB LED#endif// GPIOs
-
-(3)修改触摸中断引脚config ASIC    bool    default yconfig TOUCH_IRQ_PIN    int    default 42config LCD_PWM_BACKLIGHT_INTERFACE_NAME    string    default &quot;pwm2&quot;config LCD_PWM_BACKLIGHT_CHANEL_NUM    int    default 4config LCD_BACKLIGHT_CONTROL_PIN    int    default 1
-]]></content>
-      <categories>
-        <category>SF32</category>
-      </categories>
-      <tags>
-        <tag>SF32</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Wi-Fi 与小智语音深挖</title>
     <url>/2026/09/12/Wi-Fi%20%E4%B8%8E%E5%B0%8F%E6%99%BA%E8%AF%AD%E9%9F%B3%E6%B7%B1%E6%8C%96/</url>
     <content><![CDATA[1. 责任边界esp_xiaozhi 组件不负责扫描、配网或 Wi-Fi 重连。main/app_net/app_wifi.c 负责 Remote STA、扫描、连接、超时、重试和 profile NVS；main/ai_voice/app_ai_voice.c 负责 HTTP 获取配置、MCP、WebSocket、OPUS 音频；app_xiaozhi_controller.c 负责双击按键、页面确认和跨模块通知。
@@ -2742,6 +2724,24 @@ http请求代码：
       </categories>
       <tags>
         <tag>华为云IOT</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SF32LB52—个人毕设笔记—添加Borad及修改PinMux（1）</title>
+    <url>/2025/11/24/SF32LB52%E2%80%94%E4%B8%AA%E4%BA%BA%E6%AF%95%E8%AE%BE%E7%AC%94%E8%AE%B0%EF%BC%881%EF%BC%89/</url>
+    <content><![CDATA[1.在SiFli-SDK中创建Borad请参考SiFli Wiki，链接https://docs.sifli.com/projects/sdk/latest/sf32lb52x/app_development/create_board.html
+2.修改自己Borad中的PinMux以下为本人设计板子所使用的IO
+（1）bsp_lcd_tp.c#include &quot;bsp_board.h&quot;#define LCD_RESET_PIN (0)  //LCD复位#define TP_RESET (41) //TP复位#define LCD_VADD_EN (1) //LCD电源#define LCD_POWER_EN (9) //LCD开关/***************************LCD ***********************************/extern void BSP_PIN_LCD(void);void BSP_LCD_Reset(uint8_t high1_low0)&#123;    BSP_GPIO_Set(LCD_RESET_PIN, high1_low0, 1);&#125;void BSP_LCD_PowerDown(void)&#123;    // TODO: LCD power down    BSP_GPIO_Set(LCD_RESET_PIN, 0, 1);    BSP_GPIO_Set(LCD_VADD_EN, 0, 1); // POwer down VADD EN&#125;void BSP_LCD_PowerUp(void)&#123;    // TODO: LCD power up    HAL_Delay_us(500); // lcd power on finish ,need 500us    BSP_PIN_LCD();    BSP_GPIO_Set(LCD_VADD_EN, 1, 1); // POwer up VADD EN&#125;void BSP_LCD_PowerOff(void)&#123;    BSP_GPIO_Set(LCD_POWER_EN, 0, 1);&#125;void BSP_LCD_PowerOn(void)&#123;    BSP_GPIO_Set(LCD_POWER_EN, 1, 1);&#125;/***************************Touch ***********************************/extern void BSP_PIN_Touch(void);void BSP_TP_PowerUp(void)&#123;    // TODO: Setup TP power up pin    BSP_PIN_Touch();    BSP_GPIO_Set(TP_RESET, 1, 1);&#125;void BSP_TP_PowerDown(void)&#123;    // TODO: Setup TP power down pin    BSP_GPIO_Set(TP_RESET, 0, 1);&#125;void BSP_TP_Reset(uint8_t high1_low0)&#123;    BSP_GPIO_Set(TP_RESET, high1_low0, 1);&#125;
+
+(2)bsp_pinmux.c// LCD_RESETBHAL_PIN_Set(PAD_PA00, GPIO_A0, PIN_PULLDOWN, 1);// AUDIO_PA_CTRL// HAL_PIN_Set(PAD_PA10, GPIO_A10, PIN_PULLDOWN, 1);// UART1 - debugHAL_PIN_Set(PAD_PA18, USART1_RXD, PIN_PULLUP, 1);HAL_PIN_Set(PAD_PA19, USART1_TXD, PIN_PULLUP, 1);// SPI1 - TFcardHAL_PIN_Set(PAD_PA24, SPI1_DI, PIN_PULLDOWN, 1);HAL_PIN_Set(PAD_PA25, SPI1_CLK, PIN_NOPULL, 1);HAL_PIN_Set(PAD_PA27, SPI1_DIO, PIN_NOPULL, 1);HAL_PIN_Set(PAD_PA28, SPI1_CS, PIN_NOPULL, 1);//  #XTAL32K_XI// HAL_PIN_Set(PAD_PA22, GPIO_A22, PIN_NOPULL, 1);//  #XTAL32K_XO// HAL_PIN_Set(PAD_PA23, GPIO_A23, PIN_NOPULL, 1);// I2C2 - SensorHAL_PIN_Set(PAD_PA31, I2C2_SDA, PIN_PULLUP, 1);HAL_PIN_Set(PAD_PA32, I2C2_SCL, PIN_PULLUP, 1);// Key1 - Power key/* Keep default pull-down unchanged. Uart download driver would use this * function, if pulldown is disabled, download driver would not work on the * board without external pull-down */HAL_PIN_Set(PAD_PA34, GPIO_A34, PIN_NOPULL, 1);// Key2HAL_PIN_Set(PAD_PA26, GPIO_A11, PIN_NOPULL, 1);// USBDHAL_PIN_Set_Analog(PAD_PA35, 1); // USB_DPHAL_PIN_Set_Analog(PAD_PA36, 1); // USB_DM#if defined(BSP_USING_PWM3) || defined(BSP_USING_RGBLED_WITCH_PWM3)HAL_PIN_Set(PAD_PA32, GPTIM2_CH1, PIN_PULLUP, 1); // RGB LED#endif// GPIOs
+
+(3)修改触摸中断引脚config ASIC    bool    default yconfig TOUCH_IRQ_PIN    int    default 42config LCD_PWM_BACKLIGHT_INTERFACE_NAME    string    default &quot;pwm2&quot;config LCD_PWM_BACKLIGHT_CHANEL_NUM    int    default 4config LCD_BACKLIGHT_CONTROL_PIN    int    default 1
+]]></content>
+      <categories>
+        <category>SF32</category>
+      </categories>
+      <tags>
+        <tag>SF32</tag>
       </tags>
   </entry>
   <entry>
@@ -2802,18 +2802,12 @@ http请求代码：
 ]]></content>
   </entry>
   <entry>
-    <title>利用MQTT连接华为IOT平台，进行数据上报与下发</title>
-    <url>/2024/03/09/%E5%88%A9%E7%94%A8MQTT%E8%BF%9E%E6%8E%A5%E5%8D%8E%E4%B8%BAIOT%E5%B9%B3%E5%8F%B0%EF%BC%8C%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E4%B8%8A%E6%8A%A5%E4%B8%8E%E4%B8%8B%E5%8F%91/</url>
-    <content><![CDATA[一、查看接入信息
-二、创建产品
-三、注册设备
-]]></content>
+    <title>大学生活</title>
+    <url>/2024/02/17/%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%B4%BB/</url>
+    <content><![CDATA[]]></content>
       <categories>
-        <category>华为IOT平台连接</category>
+        <category>阅读</category>
       </categories>
-      <tags>
-        <tag>HarmonyOS</tag>
-      </tags>
   </entry>
   <entry>
     <title>地图数据转换与导航投影深挖</title>
@@ -2847,64 +2841,17 @@ map_route_project_gcj02() 只是“转换坐标 + world 投影”的组合；map
 ]]></content>
   </entry>
   <entry>
-    <title>大学生活</title>
-    <url>/2024/02/17/%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%B4%BB/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>阅读</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>嵌入式面试八股文之C语言</title>
-    <url>/2026/09/14/%E5%B5%8C%E5%85%A5%E5%BC%8F%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1%E6%96%87/</url>
-    <content><![CDATA[C语言1、const主要用于定义常量，起到强制保护的作用，确保不会被意外修改。
-有以下三个用法：
-（1）修饰常量
-（2）修饰形参
-（3）修饰类型成员函数
-2、static主要用于以下三种：
-（1）静态局部变量-生周期延长到程序结束。
-（2）静态全局变量-限制作用域在本文件。
-（3）静态函数-限制作用域为本文。
-局部变量存放到哪里：.bss（未初始化）&#x2F;.data（已初始化）。
-3、volatile主要用于：告诉编译器此变量有可能会意外被修改，不要优化对它的读写。
-在嵌入式中常用于：
-（1）硬件寄存器。
-（2）中断服务程序修改的全局变量。
-（3）多线程&#x2F;RTOS共享的变量。
-（4）DMA传输的缓冲区。
-4、指针指针是一个变量，它存储的值是另一个变量的内存地址。
-5、函数指针函数指针就是存储函数的入口地址，通过它可以间接调用函数。也就是说：是一个指针，指向函数的地址。
-在嵌入式常用于：回调函数，状态机、函数跳转表
-//定义一个函数int add(int a,int b) &#123;return a + b;&#125;//声明函数指针变量int (*fun)(int,int);fun=add;
-
-6、指针函数指针函数就是它是一个函数，函数的返回值是一个地址。
-//定义一个函数，返回值为指针int *fun(int a,int b)&#123;      static int result;      result = a + b;      return &amp;result;&#125;//调用后得到的是地址int *p = fun(2,3);//取值print(&quot;%d\n&quot;,*p);
-
-7、指针数组指针数组就是由指针组成的数组。
-//5个 int *指针组成的数组int *p1[5];
-
-8、数组指针
-数组指针就是指向数组的指针
-int (*p2)[5];
-
-9、返回函数指针的函数返回函数指针的函数就是返回值为函数指针的函数。
-//定义普通函数int add(int a,int b)&#123;return a + b;&#125;//定义一个返回函数指针的函数int (*get_fun(char op))(int,int)&#123;     if(op == &#x27;+&#x27;) return add;     return NULL;&#125;//调用得到的是函数指针int (*fun)(int,int);fun = get_fun(&#x27;+&#x27;);//通过函数指针调用函数printf(&quot;%d\n&quot;,fun(2,3));
-
-10、struct 与 unionstruct：所有成员各占独立内存
-union：所有成员共用一块内存，大小是最大成员
-11、结构体结构体就是把不同类型的数据打包成一个整体。
-在嵌入式中常用于：组织寄存器映射，协议帧、配置参数等复合数据。
-typedef struct&#123;      char name[20];      int age;      float score;&#125;Student;Student s1 = &#123;&quot;Alice&quot;,20,95.5&#125;;Student *ps = &amp;s1;printf(&quot;%s %d %f\n&quot;,ps-&gt;name,ps-&gt;age,ps-&gt;score);
-
-12、链表链表就是用指针把分散的内存块串起来的数据结构：访问慢（必须从头找），但插入删除快（只改指针），且大小可以动态增长（随用随 malloc）。
-//链表节点：数据 + 指向下一个节点的指针struct node &#123;    int data;              //数据域    struct node *next;     //指针域，指向下一个节点&#125;;//手动构建一个链表：1 -&gt; 2 -&gt; 3 -&gt; NULLstruct node n1 = &#123;1, NULL&#125;;struct node n2 = &#123;2, NULL&#125;;struct node n3 = &#123;3, NULL&#125;;n1.next = &amp;n2;    //n1 指向 n2n2.next = &amp;n3;    //n2 指向 n3//遍历链表struct node *p = &amp;n1;      //p 是头指针while(p != NULL)&#123;    printf(&quot;%d\n&quot;, p-&gt;data);    p = p-&gt;next;           //走到下一个节点&#125;//头插法动态创建链表（新节点插到链表头部）struct node *head = NULL;void insert_head(int val)&#123;    struct node *new_node = malloc(sizeof(struct node));    new_node-&gt;data = val;    new_node-&gt;next = head;   //新节点指向原来的头    head = new_node;         //头指针更新为新节点&#125;//删除指定值的节点void delete_node(int val)&#123;    struct node *p = head, *prev = NULL;    while(p &amp;&amp; p-&gt;data != val)&#123;   //找到目标节点        prev = p;        p = p-&gt;next;    &#125;    if(p == NULL) return;         //没找到    if(prev == NULL) head = p-&gt;next;      //删的是头节点    else             prev-&gt;next = p-&gt;next;//中间/尾部节点    free(p);                      //释放内存&#125;
+    <title>利用MQTT连接华为IOT平台，进行数据上报与下发</title>
+    <url>/2024/03/09/%E5%88%A9%E7%94%A8MQTT%E8%BF%9E%E6%8E%A5%E5%8D%8E%E4%B8%BAIOT%E5%B9%B3%E5%8F%B0%EF%BC%8C%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E4%B8%8A%E6%8A%A5%E4%B8%8E%E4%B8%8B%E5%8F%91/</url>
+    <content><![CDATA[一、查看接入信息
+二、创建产品
+三、注册设备
 ]]></content>
       <categories>
-        <category>面试</category>
+        <category>华为IOT平台连接</category>
       </categories>
       <tags>
-        <tag>八股文</tag>
+        <tag>HarmonyOS</tag>
       </tags>
   </entry>
   <entry>
@@ -3392,6 +3339,146 @@ RTOS 中最容易出的问题是什么？任务栈不足、优先级设计不合
       </categories>
       <tags>
         <tag>面试</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>嵌入式面试八股文之C语言</title>
+    <url>/2026/09/14/%E5%B5%8C%E5%85%A5%E5%BC%8F%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1%E6%96%87/</url>
+    <content><![CDATA[C语言1、const主要用于定义常量，起到强制保护的作用，确保不会被意外修改。
+有以下三个用法：
+（1）修饰常量
+（2）修饰形参
+（3）修饰类型成员函数
+2、static主要用于以下三种：
+（1）静态局部变量-生周期延长到程序结束。
+（2）静态全局变量-限制作用域在本文件。
+（3）静态函数-限制作用域为本文。
+局部变量存放到哪里：.bss（未初始化）&#x2F;.data（已初始化）。
+3、volatile主要用于：告诉编译器此变量有可能会意外被修改，不要优化对它的读写。
+在嵌入式中常用于：
+（1）硬件寄存器。
+（2）中断服务程序修改的全局变量。
+（3）多线程&#x2F;RTOS共享的变量。
+（4）DMA传输的缓冲区。
+4、指针指针是一个变量，它存储的值是另一个变量的内存地址。
+5、函数指针函数指针就是存储函数的入口地址，通过它可以间接调用函数。也就是说：是一个指针，指向函数的地址。
+在嵌入式常用于：回调函数，状态机、函数跳转表
+//定义一个函数int add(int a,int b) &#123;return a + b;&#125;//声明函数指针变量int (*fun)(int,int);fun=add;
+
+6、指针函数指针函数就是它是一个函数，函数的返回值是一个地址。
+//定义一个函数，返回值为指针int *fun(int a,int b)&#123;      static int result;      result = a + b;      return &amp;result;&#125;//调用后得到的是地址int *p = fun(2,3);//取值print(&quot;%d\n&quot;,*p);
+
+7、指针数组指针数组就是由指针组成的数组。
+//5个 int *指针组成的数组int *p1[5];
+
+8、数组指针
+数组指针就是指向数组的指针
+int (*p2)[5];
+
+9、返回函数指针的函数返回函数指针的函数就是返回值为函数指针的函数。
+//定义普通函数int add(int a,int b)&#123;return a + b;&#125;//定义一个返回函数指针的函数int (*get_fun(char op))(int,int)&#123;     if(op == &#x27;+&#x27;) return add;     return NULL;&#125;//调用得到的是函数指针int (*fun)(int,int);fun = get_fun(&#x27;+&#x27;);//通过函数指针调用函数printf(&quot;%d\n&quot;,fun(2,3));
+
+10、struct 与 unionstruct：所有成员各占独立内存
+union：所有成员共用一块内存，大小是最大成员
+11、结构体结构体就是把不同类型的数据打包成一个整体。
+在嵌入式中常用于：组织寄存器映射，协议帧、配置参数等复合数据。
+typedef struct&#123;      char name[20];      int age;      float score;&#125;Student;Student s1 = &#123;&quot;Alice&quot;,20,95.5&#125;;Student *ps = &amp;s1;printf(&quot;%s %d %f\n&quot;,ps-&gt;name,ps-&gt;age,ps-&gt;score);
+
+12、链表链表就是用指针把分散的内存块串起来的数据结构：访问慢（必须从头找），但插入删除快（只改指针），且大小可以动态增长（随用随 malloc）。
+//链表节点：数据 + 指向下一个节点的指针struct node &#123;    int data;              //数据域    struct node *next;     //指针域，指向下一个节点&#125;;//手动构建一个链表：1 -&gt; 2 -&gt; 3 -&gt; NULLstruct node n1 = &#123;1, NULL&#125;;struct node n2 = &#123;2, NULL&#125;;struct node n3 = &#123;3, NULL&#125;;n1.next = &amp;n2;    //n1 指向 n2n2.next = &amp;n3;    //n2 指向 n3//遍历链表struct node *p = &amp;n1;      //p 是头指针while(p != NULL)&#123;    printf(&quot;%d\n&quot;, p-&gt;data);    p = p-&gt;next;           //走到下一个节点&#125;//头插法动态创建链表（新节点插到链表头部）struct node *head = NULL;void insert_head(int val)&#123;    struct node *new_node = malloc(sizeof(struct node));    new_node-&gt;data = val;    new_node-&gt;next = head;   //新节点指向原来的头    head = new_node;         //头指针更新为新节点&#125;//删除指定值的节点void delete_node(int val)&#123;    struct node *p = head, *prev = NULL;    while(p &amp;&amp; p-&gt;data != val)&#123;   //找到目标节点        prev = p;        p = p-&gt;next;    &#125;    if(p == NULL) return;         //没找到    if(prev == NULL) head = p-&gt;next;      //删的是头节点    else             prev-&gt;next = p-&gt;next;//中间/尾部节点    free(p);                      //释放内存&#125;
+
+13、栈&#x2F;堆//栈：编译器自动管理，函数结束自动回收void fun()&#123;    int a = 10;              //局部变量，栈上    int arr[10];             //栈上&#125;                            //函数返回，a和arr自动销毁//堆：程序员手动管理，malloc申请，free释放void fun2()&#123;    int *p = malloc(10 * sizeof(int));  //堆上申请40字节    if(p == NULL) return;    //必须判空    p[0] = 1;    free(p);                 //必须手动释放    p = NULL;                //释放后置空，防止悬空&#125;
+
+
+
+
+
+
+栈
+堆
+
+
+
+管理
+系统自动分配&#x2F;回收
+程序员手动 malloc&#x2F;free
+
+
+速度
+快（移动栈指针）
+慢（需查找空闲内存）
+
+
+大小
+较小（通常几MB，易栈溢出）
+较大（受限于系统内存）
+
+
+生长方向
+向低地址生长
+向高地址生长
+
+
+碎片
+无
+频繁申请释放会产生碎片
+
+
+生命周期
+函数结束即销毁
+free 之前一直存在
+
+
+14、野指针&#x2F;悬空指针//野指针：未初始化的指针，指向不确定int *p;                     //未初始化，p的值是随机的*p = 10;                    //危险！不知道写到了哪里//悬空指针：指向的内存已被释放int *p = malloc(sizeof(int));free(p);                    //内存已释放*p = 10;                    //危险！指针还在，但内存已不属于你//常见悬空场景：返回局部变量地址int *fun()&#123;    int a = 10;             //栈上，函数结束销毁    return &amp;a;              //悬空！返回已销毁内存的地址&#125;
+
+野指针：指针变量没初始化，指向随机地址 —— 未初始化造成。悬空指针：指针原来有效，但指向的内存已被 free&#x2F;销毁 —— 释放后造成。
+两者共同点：指针本身的值还在，但指向的内存不可安全访问，读写会崩溃或产生不可预知后果。
+//预防三板斧int *p = NULL;              //1.定义时初始化为NULLp = malloc(100);if(p) &#123; ... &#125;free(p);p = NULL;                   //2.free后立即置NULL//3.不返回局部变量地址；跨函数传数据用出参/堆/静态区
+
+置 NULL 后再误访问会立刻崩溃（段错误），快速暴露问题，比悄悄写坏内存容易排查得多。
+15、内存分区//一个C程序从低地址到高地址分为五大区+---------------------+ 高地址|   栈 stack          |  局部变量、函数参数、返回地址|      ↓ 向下生长      ||                     ||      ↑ 向上生长      ||   堆 heap           |  malloc/free管理的动态内存+---------------------+|   .bss              |  未初始化/初始化为0的全局变量和static变量+---------------------+|   .data             |  初始化为非0的全局变量和static变量+---------------------+|   .rodata           |  const常量、字符串字面量+---------------------+|   .text             |  代码（函数），只读可执行+---------------------+ 低地址
+
+
+
+
+
+分区
+生命周期
+读写属性
+
+
+
+.text
+程序运行期间
+只读可执行，写会段错误
+
+
+.rodata
+程序运行期间
+只读，写会段错误
+
+
+.data &#x2F; .bss
+程序运行期间
+可读写，main前就存在
+
+
+堆
+malloc 到 free 之间
+可读写，手动管理
+
+
+栈
+函数调用到返回之间
+可读写，自动管理
+
+
+]]></content>
+      <categories>
+        <category>面试</category>
+      </categories>
+      <tags>
+        <tag>八股文</tag>
       </tags>
   </entry>
   <entry>
@@ -5623,82 +5710,6 @@ CPU 和主存器的有机组合。
       </tags>
   </entry>
   <entry>
-    <title>第一章 C数据类型及语句01</title>
-    <url>/2023/08/06/%E7%AC%AC%E4%B8%80%E7%AB%A0-C%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%8F%8A%E8%AF%AD%E5%8F%A501/</url>
-    <content><![CDATA[1.1 C 语言的特点1.#include&lt;stdio.h&gt; 头文件包含，一定要有
-2.每一个 c 语言的程序有且只有一个 main 函数，这是整个程序的开始位置
-3.C 语言中()、[]、{}、“”、’’、都必须成对出现,必须是英文符号
-4.C 语言中语句要以分号结束。
-5.&#x2F;&#x2F;为注释 &#x2F;* *&#x2F;为多行注释
-1.2 关键字1、char 字符型
-char ch1 = &#x27;zifu&#x27;;
-
-2、short 短整型 占 2 个字节
-short int a = 11; -32768 - ---32767
-
-3、int 整形，在 32 位占 4 个字节，16 位站 2 个
-int a = 44; -20 亿---20 亿
-
-4、long 长整型 在 32 位占 4 个字节
-long int a = 66;
-
-5、float 单精度浮点型（实数），占 4 个字节
-float b = 3.8f;
-
-6、 double 双精度浮点型 （实数），占 8 个字节
-double b=3.8;
-
-7、 struct 这个关键字是与结构体类型相关的关键字，可以用它来定义结构体类型
-8、 union 这个关键字是与共用体（联合体）相关的关键字
-9、 enum 与枚举类型相关的关键字
-10、signed 有符号(正负)的意思
-//定义cahr，整形数据使用signed修饰，代表数据是有符号的，可以保存整数，复数signed int b = -6;  //关键字可以省略
-
-11、unsigned 无符号的意思
-unsigned int a = 101; //只能保存整数和0
-
-12、void 空类型的关键字
-//void 是用来修饰函数的参数或者返回值，代表函数没有参数或没有返回值//例：void fun(void)&#123;&#125;//代表 fun 函数没有返回值，fun 函数没有参数
-
-1.1.2 存储相关关键字
-1、register 是寄存器的意思，用 register 修饰的变量是寄存器变量（尽量分配存储空间在寄存器中）
-(1): 定义的变量不一定真的存放在寄存器中。
-(2)：cpu 取数据的时候去寄存器中拿数据比去内存中拿数据要快
-(3)：因为寄存器比较宝贵，所以不能定义寄存器数组
-(4)：register 只能修饰 字符型及整型的，不能修饰浮点型
-(5)：因为 register 修饰的变量可能存放在寄存器中不存放在内存中，所以不能对寄存器变量取地址。因为只有存放在内存中的数据才有地址
-register int a;int *p;p = &amp;a; //错误的，a 可能没有地址
-
-2、static 是静态的意思
-static 可以修饰全局变量、局部变量、函数
-3、const 常量的意思
-用 const 修饰的变量是只读的，不能修改它的值（可以修改指针）
-4、auto int a;和 int a 是等价的，auto 关键字现在基本不用
-5、extern 是外部的意思，一般用于函数和全局变量的声明
-1.1.3 控制语句相关的关键字if 、else 、break、continue、for 、while、do、switch case、goto、default
-1.1.4 其他关键字1、sizeof
-使用来测变量、数组的占用存储空间的大小（字节数）
-例 3：
-int a=10;int num;num=sizeof(a);
-
-2、typedef 重命名相关的关键字
-关键字 ，作用是给一个已有的类型，重新起个类型名，并没有创造一个新的类型
-以前大家看程序的时候见过类似的变量定义方法
-INT16 a;
-U8 ch;
-INT32 b
-3、volatile 易改变的意思
-用 volatile 定义的变量，是易改变的，即告诉 cpu 每次用 volatile 变量的时候，重新去内存中取 。保证用的是最新的值,而不是寄存器中的备份。
-//volatile 关键字现在较少适用volatile int a=10;
-]]></content>
-      <categories>
-        <category>千锋C语言</category>
-      </categories>
-      <tags>
-        <tag>嵌入式C</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>第一章 C数据类型及语句02</title>
     <url>/2023/08/06/%E7%AC%AC%E4%B8%80%E7%AB%A0-C%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%8F%8A%E8%AF%AD%E5%8F%A502/</url>
     <content><![CDATA[1.2 数据类型1.2.1 基本类型
@@ -5906,36 +5917,79 @@ continue 结束本次循环，进入下一次循环
       </tags>
   </entry>
   <entry>
-    <title>Mysql数据库</title>
-    <url>/2023/08/29/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E4%BA%86%E8%A7%A3%E6%95%B0%E6%8D%AE%E5%BA%93/</url>
-    <content><![CDATA[一、了解 SQL1、什么是数据库数据库是以某种组织的方式存储的数据集合。
-数据库（database）保存有组织的数据的容器（一个文件或者一组文件）
-更准确的来说，数据库软件称为数据库管理系统（DBMS）。通过 DBMS 创建和操作的容器
-2、什么是表表 是一种结构化的文件，用来存储某种特定类型的数据。
-3、什么是模式模式 关于数据库和表的布局以及特性的信息。
-4、列和数据类型表是由列组成。列中存储这表中某种部分的信息。
-列 表中的一个字段。所有表都是由一个或多个列组成的。
-数据类型 所容许的数据的类型。每个字段都有相应的数据类型。
-5、行表中的数据都是按行存储的，保存的记录存储在自己的行内。
-行 表中的一个记录。
-6、主键主键（又称键码、码） 一列（一组列），其值能够唯一区分表中的每个行。
-满足条件：
-任意两行都不具有相同的主键值。
-每个行都必须具有一个主键值（主键列不允许 null 值）
-二、了解 mysql一、客户机-服务器软件MySQL、Oracle 以及 Microsoft SQL Server 等数据库是基于客户机—服务器的数据库
-DBMS（数据库管理系统）可以分为两类：
-（1）基于共享文件系统的 DBMS（2）基于客户机-服务器的 DBMS
+    <title>第一章 C数据类型及语句01</title>
+    <url>/2023/08/06/%E7%AC%AC%E4%B8%80%E7%AB%A0-C%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%8F%8A%E8%AF%AD%E5%8F%A501/</url>
+    <content><![CDATA[1.1 C 语言的特点1.#include&lt;stdio.h&gt; 头文件包含，一定要有
+2.每一个 c 语言的程序有且只有一个 main 函数，这是整个程序的开始位置
+3.C 语言中()、[]、{}、“”、’’、都必须成对出现,必须是英文符号
+4.C 语言中语句要以分号结束。
+5.&#x2F;&#x2F;为注释 &#x2F;* *&#x2F;为多行注释
+1.2 关键字1、char 字符型
+char ch1 = &#x27;zifu&#x27;;
 
-与数据文件打交道的只有服务器软件。关于数据、数据添加、删除和数据更新的所有请求都是由服务器软件完成。
-客户机是与用户打交道的软件。例如：请求一个按字母顺序列出的产品表，则客户机软件通过网阔提交该请求给服务器软件。服务器软件处理这个请求，根据需求过滤、丢弃和排序数据，然后送回客户机软件。
+2、short 短整型 占 2 个字节
+short int a = 11; -32768 - ---32767
 
-三、排序索检数据一、子句有些字句是必需，有一些是可选的。一个子句通常由一个关键字和所提供的数据组成。
+3、int 整形，在 32 位占 4 个字节，16 位站 2 个
+int a = 44; -20 亿---20 亿
+
+4、long 长整型 在 32 位占 4 个字节
+long int a = 66;
+
+5、float 单精度浮点型（实数），占 4 个字节
+float b = 3.8f;
+
+6、 double 双精度浮点型 （实数），占 8 个字节
+double b=3.8;
+
+7、 struct 这个关键字是与结构体类型相关的关键字，可以用它来定义结构体类型
+8、 union 这个关键字是与共用体（联合体）相关的关键字
+9、 enum 与枚举类型相关的关键字
+10、signed 有符号(正负)的意思
+//定义cahr，整形数据使用signed修饰，代表数据是有符号的，可以保存整数，复数signed int b = -6;  //关键字可以省略
+
+11、unsigned 无符号的意思
+unsigned int a = 101; //只能保存整数和0
+
+12、void 空类型的关键字
+//void 是用来修饰函数的参数或者返回值，代表函数没有参数或没有返回值//例：void fun(void)&#123;&#125;//代表 fun 函数没有返回值，fun 函数没有参数
+
+1.1.2 存储相关关键字
+1、register 是寄存器的意思，用 register 修饰的变量是寄存器变量（尽量分配存储空间在寄存器中）
+(1): 定义的变量不一定真的存放在寄存器中。
+(2)：cpu 取数据的时候去寄存器中拿数据比去内存中拿数据要快
+(3)：因为寄存器比较宝贵，所以不能定义寄存器数组
+(4)：register 只能修饰 字符型及整型的，不能修饰浮点型
+(5)：因为 register 修饰的变量可能存放在寄存器中不存放在内存中，所以不能对寄存器变量取地址。因为只有存放在内存中的数据才有地址
+register int a;int *p;p = &amp;a; //错误的，a 可能没有地址
+
+2、static 是静态的意思
+static 可以修饰全局变量、局部变量、函数
+3、const 常量的意思
+用 const 修饰的变量是只读的，不能修改它的值（可以修改指针）
+4、auto int a;和 int a 是等价的，auto 关键字现在基本不用
+5、extern 是外部的意思，一般用于函数和全局变量的声明
+1.1.3 控制语句相关的关键字if 、else 、break、continue、for 、while、do、switch case、goto、default
+1.1.4 其他关键字1、sizeof
+使用来测变量、数组的占用存储空间的大小（字节数）
+例 3：
+int a=10;int num;num=sizeof(a);
+
+2、typedef 重命名相关的关键字
+关键字 ，作用是给一个已有的类型，重新起个类型名，并没有创造一个新的类型
+以前大家看程序的时候见过类似的变量定义方法
+INT16 a;
+U8 ch;
+INT32 b
+3、volatile 易改变的意思
+用 volatile 定义的变量，是易改变的，即告诉 cpu 每次用 volatile 变量的时候，重新去内存中取 。保证用的是最新的值,而不是寄存器中的备份。
+//volatile 关键字现在较少适用volatile int a=10;
 ]]></content>
       <categories>
-        <category>Mysql</category>
+        <category>千锋C语言</category>
       </categories>
       <tags>
-        <tag>数据库</tag>
+        <tag>嵌入式C</tag>
       </tags>
   </entry>
   <entry>
@@ -5985,6 +6039,39 @@ FLASH：G 表示 1024KB,C 表示 256，E 表示 512，I 表示 2048
       </categories>
       <tags>
         <tag>STM32</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Mysql数据库</title>
+    <url>/2023/08/29/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E4%BA%86%E8%A7%A3%E6%95%B0%E6%8D%AE%E5%BA%93/</url>
+    <content><![CDATA[一、了解 SQL1、什么是数据库数据库是以某种组织的方式存储的数据集合。
+数据库（database）保存有组织的数据的容器（一个文件或者一组文件）
+更准确的来说，数据库软件称为数据库管理系统（DBMS）。通过 DBMS 创建和操作的容器
+2、什么是表表 是一种结构化的文件，用来存储某种特定类型的数据。
+3、什么是模式模式 关于数据库和表的布局以及特性的信息。
+4、列和数据类型表是由列组成。列中存储这表中某种部分的信息。
+列 表中的一个字段。所有表都是由一个或多个列组成的。
+数据类型 所容许的数据的类型。每个字段都有相应的数据类型。
+5、行表中的数据都是按行存储的，保存的记录存储在自己的行内。
+行 表中的一个记录。
+6、主键主键（又称键码、码） 一列（一组列），其值能够唯一区分表中的每个行。
+满足条件：
+任意两行都不具有相同的主键值。
+每个行都必须具有一个主键值（主键列不允许 null 值）
+二、了解 mysql一、客户机-服务器软件MySQL、Oracle 以及 Microsoft SQL Server 等数据库是基于客户机—服务器的数据库
+DBMS（数据库管理系统）可以分为两类：
+（1）基于共享文件系统的 DBMS（2）基于客户机-服务器的 DBMS
+
+与数据文件打交道的只有服务器软件。关于数据、数据添加、删除和数据更新的所有请求都是由服务器软件完成。
+客户机是与用户打交道的软件。例如：请求一个按字母顺序列出的产品表，则客户机软件通过网阔提交该请求给服务器软件。服务器软件处理这个请求，根据需求过滤、丢弃和排序数据，然后送回客户机软件。
+
+三、排序索检数据一、子句有些字句是必需，有一些是可选的。一个子句通常由一个关键字和所提供的数据组成。
+]]></content>
+      <categories>
+        <category>Mysql</category>
+      </categories>
+      <tags>
+        <tag>数据库</tag>
       </tags>
   </entry>
   <entry>
@@ -7431,6 +7518,28 @@ Wi-Fi&#x2F;Xiaozhi：main/app_net/app_wifi.c、main/ai_voice/app_ai_voice.c
 ]]></content>
   </entry>
   <entry>
+    <title>黄山派之BLE</title>
+    <url>/2025/08/20/%E9%BB%84%E5%B1%B1%E6%B4%BE%E4%B9%8BBLE/</url>
+    <content><![CDATA[service服务
+
+代码解析广播设备名称/* 获取设备蓝牙地址并生成包含MAC地址的设备名称 */ret = ble_get_public_address(&amp;addr);if (ret == HL_ERR_NO_ERROR)    rt_snprintf(local_name, 31, &quot;E_Badge&quot;); // 扫描出来的设备名称else    memcpy(local_name, DEFAULT_LOCAL_NAME, sizeof(DEFAULT_LOCAL_NAME));
+
+自定义服务UUID(Unknown Service)/* 自定义服务UUID定义*/#define app_svc_uuid &#123;      \    0x73, 0x69, 0x66, 0x6c, \    0x69, 0x5f, 0x61, 0x70, \    0x70, 0x00, 0x00, 0x00, \    0x00, 0x00, 0x00, 0x00&#125;;/* 自定义特征UUID定义 */#define app_chara_uuid &#123;    \    0x73, 0x69, 0x66, 0x6c, \    0x69, 0x5f, 0x61, 0x70, \    0x70, 0x01, 0x00, 0x00, \    0x00, 0x00, 0x00, 0x00&#125;
+
+服务UUID: 00000000-0000-0070-7061-5f696c666973
+特征UUID: 00000000-0000-0170-7061-5f696c666973
+
+]]></content>
+      <categories>
+        <category>嵌入式</category>
+      </categories>
+      <tags>
+        <tag>嵌入式</tag>
+        <tag>黄山派</tag>
+        <tag>思澈</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>第八章 RCC使用HES/HSI</title>
     <url>/2024/03/21/%E7%AC%AC%E5%85%AB%E7%AB%A0%20RCC%E4%BD%BF%E7%94%A8HES/HSI/</url>
     <content><![CDATA[1、RCC主要作用 时钟部分设置系统时钟SYSCLK、设置AHB分频因子（决定HCLK等于多少）、设置APB2分频因子（决定PLCLK2等于多少）、设置APB1分频因子（决定PLK1等于多少）、设置各个外设的分配因子。控制 AHB、APB2 和 APB1 这三条总线时钟的开启、控制每个外设的时钟的开启。对于 SYSCLK、HCLK、PCLK2、PCLK1 这四个时钟的配置一般是：HCLK &#x3D; SYSCLK&#x3D;PLLCLK ，PCLK1&#x3D;HCLK&#x2F;2，PCLK1&#x3D;HCLK&#x2F;4 。
@@ -7488,28 +7597,6 @@ HSE或者HSI经过PLL时钟输出分频因子M（2~63）分频后，称为VCO的
       </categories>
       <tags>
         <tag>STM32</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>黄山派之BLE</title>
-    <url>/2025/08/20/%E9%BB%84%E5%B1%B1%E6%B4%BE%E4%B9%8BBLE/</url>
-    <content><![CDATA[service服务
-
-代码解析广播设备名称/* 获取设备蓝牙地址并生成包含MAC地址的设备名称 */ret = ble_get_public_address(&amp;addr);if (ret == HL_ERR_NO_ERROR)    rt_snprintf(local_name, 31, &quot;E_Badge&quot;); // 扫描出来的设备名称else    memcpy(local_name, DEFAULT_LOCAL_NAME, sizeof(DEFAULT_LOCAL_NAME));
-
-自定义服务UUID(Unknown Service)/* 自定义服务UUID定义*/#define app_svc_uuid &#123;      \    0x73, 0x69, 0x66, 0x6c, \    0x69, 0x5f, 0x61, 0x70, \    0x70, 0x00, 0x00, 0x00, \    0x00, 0x00, 0x00, 0x00&#125;;/* 自定义特征UUID定义 */#define app_chara_uuid &#123;    \    0x73, 0x69, 0x66, 0x6c, \    0x69, 0x5f, 0x61, 0x70, \    0x70, 0x01, 0x00, 0x00, \    0x00, 0x00, 0x00, 0x00&#125;
-
-服务UUID: 00000000-0000-0070-7061-5f696c666973
-特征UUID: 00000000-0000-0170-7061-5f696c666973
-
-]]></content>
-      <categories>
-        <category>嵌入式</category>
-      </categories>
-      <tags>
-        <tag>嵌入式</tag>
-        <tag>黄山派</tag>
-        <tag>思澈</tag>
       </tags>
   </entry>
 </search>

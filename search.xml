@@ -35,30 +35,6 @@
 ]]></content>
   </entry>
   <entry>
-    <title>BLE 路线传输与运动数据同步深挖</title>
-    <url>/2026/09/12/BLE%20%E8%B7%AF%E7%BA%BF%E4%BC%A0%E8%BE%93%E4%B8%8E%E8%BF%90%E5%8A%A8%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%E6%B7%B1%E6%8C%96/</url>
-    <content><![CDATA[1. ESP-Hosted BLE 架构P4 关闭本地 Bluetooth Controller，运行 NimBLE Host&#x2F;GATT Server；C6 提供 Controller，HCI 通过 ESP-Hosted VHCI over SDIO。P4 上的 bt/app_ble.c 负责广播、连接和 notify，app_ble_gatt.c 定义 characteristic，app_ble_proto.c 解析统一包头，业务数据再进入各自 task。
-设备名 Aero-Wtach，单连接，preferred MTU&#x3D;247，Legacy connectable advertising。Ride Service 下有 Live Metrics、Command、Config、Ride Record、Route Status；另注册标准 Battery Service。
-2. 通用 Commandcmd_id:u8 | seq:u8 | payload_len:u8 | payload[payload_len]
-
-实际长度必须等于 3+payload_len，写缓存上限 128 B。seq 只用于日志，不能当 ACK、时间戳或去重依据。GATT 层先做长度、版本、flags 和范围校验，业务成功以对应状态&#x2F;快照为准。
-3. 完整路线 0x22~0x25V1：普通 Cycling，8 B&#x2F;点；V2：显式 activity_type，12 B&#x2F;点，增加 altitude_cm，MTB 必须用 V2。点数 2~2048，最大数据 24576 B，坐标固定 GCJ-02。
-BEGINV1 payload 16 B：version、coordinate_system、route_id、point_count、total_length、crc32。V2 payload 18 B，在头部增加 activity_type 和 point_format。有效 BEGIN 会释放旧接收缓冲，PSRAM 申请完整数据区，状态变为 RECEIVING。
-DATApayload 含 version、route_id、offset 和 1~116 B data。设备只接受 offset == received_length；相同 offset 且字节内容完全一致允许重复发送，跳 offset、越界或内容不同返回 INVALID_OFFSET。116 B 是协议上限，实际还受 negotiated_mtu-15 限制。
-COMMIT只有收到总长度后才计算 CRC32（多项式 0xEDB88320，初值&#x2F;异或 0xFFFFFFFF）。CRC 正确后一次性解析所有点、校验纬度&#x2F;经度范围，生成点数组和最多 64 点的归一化缩略图，再在 mutex 内替换 LOADED 快照。接收缓冲和点数组短时并存，V2 峰值约 49 KiB，不含地图投影。
-ABORT&#x2F;断开ABORT 只释放未完成传输，不清除已 LOADED 路线；断 BLE 会中止接收但保留已加载路线。0x21 才清除完整路线和旧途经点路线。Route Status 固定 20 B，包含 state&#x2F;error&#x2F;route_id&#x2F;received&#x2F;total&#x2F;point_count&#x2F;generation，支持 Read&#x2F;Notify。
-4. PHONE 定位 0x3024 B payload：version、flags、timestamp_ms、lat&#x2F;lon e7、altitude cm、speed cm&#x2F;s、course 0.1°、accuracy cm。最小有效 flags 是经纬度+精度。GATT callback 只解析后投递长度 4 的队列；phone_location_task 检查 accuracy&lt;&#x3D;50 m、时间戳单调、跳点和 3 s 超时，再调用运动模型。
-运行状态下才累计距离和时间。路线存在时，PHONE GCJ-02 先转 WGS84，再投影到路线，更新 route_progress_cm。BLE 断开不跨断连时间累计，定位模式不会自动回退 DEMO。
-5. Live Metrics 与历史记录Live Metrics 每 1 s notify，固定 17 B：elapsed_s、distance_m、speed_x100、avg_speed_x100，电池字段目前是保留值；真实电量走 Battery Level。完整历史不复用实时包，而使用 Ride Record characteristic：记录 payload v2 固定 99 B，新增 route_id；包头 11 B，默认 MTU 23 时每分包 9 B，另有 CRC 完成、同步完成和删除标记包。
-记录 SAVE 后先写 ride_history NVS，状态 pending；小程序完整校验后发 0x41(record_id) 才变 synced。0x40 flags 可请求最新、pending、删除标记；0x42 请求重传。删除标记最多 32 条，跨断线和重启保留。
-6. 时间和天气0x02 用 UTC Unix 秒+时区分钟更新统一时间快照，不写 Flash；0x10 固定 58 B，由天气 task 更新快照，数据变化时才写 NVS。两者都要求有响应 Write，业务成功不是“写入 API 返回”，而是任务更新后的状态&#x2F;generation。
-7. 面试追问为什么完整路线不用单个 GATT Write？ MTU 和写缓存有限，分包允许断点续传和 CRC 完整性校验；offset 严格递进避免乱序覆盖。
-为什么 Route Status 不增加 activity_type？ 保持 20 B 旧客户端兼容，activity_type 保存在终端内部快照，Cycling&#x2F;MTB 通过内部匹配消费。
-GATT Write 成功是否代表路线成功？ 不是，只代表包通过同步校验并进入队列；必须等待 Route Status LOADED。
-
-]]></content>
-  </entry>
-  <entry>
     <title>24年技能大赛广东样题</title>
     <url>/2024/01/17/24%E5%B9%B4%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E5%B9%BF%E4%B8%9C%E6%A0%B7%E9%A2%98/</url>
     <content><![CDATA[24年样题1一、接线二、维护三、sql server维护
@@ -98,62 +74,28 @@ GATT Write 成功是否代表路线成功？ 不是，只代表包通过同步�
       </tags>
   </entry>
   <entry>
-    <title>CSS第一天</title>
-    <url>/2023/10/24/CSS%E7%AC%AC%E4%B8%80%E5%A4%A9/</url>
-    <content><![CDATA[1.CSS 语法规范h1&#123;color:red; font-size:25px;&#125;选择器 属性 值
+    <title>BLE 路线传输与运动数据同步深挖</title>
+    <url>/2026/09/12/BLE%20%E8%B7%AF%E7%BA%BF%E4%BC%A0%E8%BE%93%E4%B8%8E%E8%BF%90%E5%8A%A8%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%E6%B7%B1%E6%8C%96/</url>
+    <content><![CDATA[1. ESP-Hosted BLE 架构P4 关闭本地 Bluetooth Controller，运行 NimBLE Host&#x2F;GATT Server；C6 提供 Controller，HCI 通过 ESP-Hosted VHCI over SDIO。P4 上的 bt/app_ble.c 负责广播、连接和 notify，app_ble_gatt.c 定义 characteristic，app_ble_proto.c 解析统一包头，业务数据再进入各自 task。
+设备名 Aero-Wtach，单连接，preferred MTU&#x3D;247，Legacy connectable advertising。Ride Service 下有 Live Metrics、Command、Config、Ride Record、Route Status；另注册标准 Battery Service。
+2. 通用 Commandcmd_id:u8 | seq:u8 | payload_len:u8 | payload[payload_len]
 
-2.类选择器&lt;div class=&quot;red font20&quot;&gt;亚瑟&lt;/div&gt;
+实际长度必须等于 3+payload_len，写缓存上限 128 B。seq 只用于日志，不能当 ACK、时间戳或去重依据。GATT 层先做长度、版本、flags 和范围校验，业务成功以对应状态&#x2F;快照为准。
+3. 完整路线 0x22~0x25V1：普通 Cycling，8 B&#x2F;点；V2：显式 activity_type，12 B&#x2F;点，增加 altitude_cm，MTB 必须用 V2。点数 2~2048，最大数据 24576 B，坐标固定 GCJ-02。
+BEGINV1 payload 16 B：version、coordinate_system、route_id、point_count、total_length、crc32。V2 payload 18 B，在头部增加 activity_type 和 point_format。有效 BEGIN 会释放旧接收缓冲，PSRAM 申请完整数据区，状态变为 RECEIVING。
+DATApayload 含 version、route_id、offset 和 1~116 B data。设备只接受 offset == received_length；相同 offset 且字节内容完全一致允许重复发送，跳 offset、越界或内容不同返回 INVALID_OFFSET。116 B 是协议上限，实际还受 negotiated_mtu-15 限制。
+COMMIT只有收到总长度后才计算 CRC32（多项式 0xEDB88320，初值&#x2F;异或 0xFFFFFFFF）。CRC 正确后一次性解析所有点、校验纬度&#x2F;经度范围，生成点数组和最多 64 点的归一化缩略图，再在 mutex 内替换 LOADED 快照。接收缓冲和点数组短时并存，V2 峰值约 49 KiB，不含地图投影。
+ABORT&#x2F;断开ABORT 只释放未完成传输，不清除已 LOADED 路线；断 BLE 会中止接收但保留已加载路线。0x21 才清除完整路线和旧途经点路线。Route Status 固定 20 B，包含 state&#x2F;error&#x2F;route_id&#x2F;received&#x2F;total&#x2F;point_count&#x2F;generation，支持 Read&#x2F;Notify。
+4. PHONE 定位 0x3024 B payload：version、flags、timestamp_ms、lat&#x2F;lon e7、altitude cm、speed cm&#x2F;s、course 0.1°、accuracy cm。最小有效 flags 是经纬度+精度。GATT callback 只解析后投递长度 4 的队列；phone_location_task 检查 accuracy&lt;&#x3D;50 m、时间戳单调、跳点和 3 s 超时，再调用运动模型。
+运行状态下才累计距离和时间。路线存在时，PHONE GCJ-02 先转 WGS84，再投影到路线，更新 route_progress_cm。BLE 断开不跨断连时间累计，定位模式不会自动回退 DEMO。
+5. Live Metrics 与历史记录Live Metrics 每 1 s notify，固定 17 B：elapsed_s、distance_m、speed_x100、avg_speed_x100，电池字段目前是保留值；真实电量走 Battery Level。完整历史不复用实时包，而使用 Ride Record characteristic：记录 payload v2 固定 99 B，新增 route_id；包头 11 B，默认 MTU 23 时每分包 9 B，另有 CRC 完成、同步完成和删除标记包。
+记录 SAVE 后先写 ride_history NVS，状态 pending；小程序完整校验后发 0x41(record_id) 才变 synced。0x40 flags 可请求最新、pending、删除标记；0x42 请求重传。删除标记最多 32 条，跨断线和重启保留。
+6. 时间和天气0x02 用 UTC Unix 秒+时区分钟更新统一时间快照，不写 Flash；0x10 固定 58 B，由天气 task 更新快照，数据变化时才写 NVS。两者都要求有响应 Write，业务成功不是“写入 API 返回”，而是任务更新后的状态&#x2F;generation。
+7. 面试追问为什么完整路线不用单个 GATT Write？ MTU 和写缓存有限，分包允许断点续传和 CRC 完整性校验；offset 严格递进避免乱序覆盖。
+为什么 Route Status 不增加 activity_type？ 保持 20 B 旧客户端兼容，activity_type 保存在终端内部快照，Cycling&#x2F;MTB 通过内部匹配消费。
+GATT Write 成功是否代表路线成功？ 不是，只代表包通过同步校验并进入队列；必须等待 Route Status LOADED。
 
-3.id 选择器#id名&#123;	属性1：属性值1；&#125;
-
-4.通配符选择器*&#123;	属性1：属性值1；&#125;
 ]]></content>
-      <categories>
-        <category>前端</category>
-      </categories>
-      <tags>
-        <tag>CSS</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>CSS第二天</title>
-    <url>/2023/10/24/CSS%E7%AC%AC%E4%BA%8C%E5%A4%A9/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title>Dx-C511模块连接华为云OTA</title>
-    <url>/2024/09/26/Dx-C511%E6%A8%A1%E5%9D%97%E8%BF%9E%E6%8E%A5%E5%8D%8E%E4%B8%BA%E4%BA%91%E4%B8%8B%E8%BD%BD%E5%9B%BA%E4%BB%B6/</url>
-    <content><![CDATA[1、配置APN
-AT+QICSGP&#x3D;1,1,”cmnbiot”,””,””
-2、开启移动网络
-AT+NETOPEN
-3、设置客户端ID
-AT+MCONFIG&#x3D;”id”,”用户名”,”密码”AT+MCONFIG=&quot;667145986bc31504f06f60ee_wulianwang_0_0_20&quot;,&quot;667145986bc31504f06f60ee_wulianwang&quot;,&quot;63e106dff798f9ed7d313f33c5e1cffe4ad206abe2121b993d464a8f111a97ba&quot;
-4、连接mqtt服务器
-AT+MIPSTART&#x3D;”服务器IP地址”,1883,4
-AT+MIPSTART=&quot;0ae1ed433d.st1.iotda-device.cn-north-4.myhuaweicloud.com&quot;,1883,4
-5、连接服务器，设置心跳60秒
-AT+MCONNECT&#x3D;1,60
-6、订阅数据
-AT+MSUB=&quot;$oc/devices/667145986bc31504f06f6/sys/events/down&quot;,0
-7、发布长数据
-AT+MPUBEX=&quot;$oc/devices/667145986bc31504f06f/sys/events/up&quot;,0,0,149
-{“services”:[{“service_id”:”$ota”,”event_type”:”version_report”,”event_time”:”20151212T121212Z”,”paras”:{“sw_version”:”v1.0”,”fw_version”: “v1.0”}}]}
-8、开启HTTP模式
-AT$HTTPOPEN
-9、发送请求头
-AT$HTTPRQH&#x3D;Authorization,Bearer 627fd1b1a3f07e7e977b388c112a3af8acf60349c885e3d7c4490661e208b64a
-10、发送URL
-AT$HTTPPARA&#x3D;https://117.78.5.125:8943/iodm/dev/v2.0/upgradefile/applications/d47eeb52098345898ba95b1be5cbd7c4/devices/667145986bc31504f06f60ee_wulianwang/packages/66e2cfd51bd30f6d19a24533,8943,1,0
-11、发送get请求
-AT$HTTPACTION&#x3D;0
-]]></content>
-      <categories>
-        <category>华为云IOT连接</category>
-      </categories>
-      <tags>
-        <tag>华为IOT</tag>
-      </tags>
   </entry>
   <entry>
     <title></title>
@@ -1935,6 +1877,64 @@ Linux man-pages：fork(2)、execve(2)、mmap(2)、select(2)、poll(2)、epoll(7)
 ]]></content>
   </entry>
   <entry>
+    <title>CSS第一天</title>
+    <url>/2023/10/24/CSS%E7%AC%AC%E4%B8%80%E5%A4%A9/</url>
+    <content><![CDATA[1.CSS 语法规范h1&#123;color:red; font-size:25px;&#125;选择器 属性 值
+
+2.类选择器&lt;div class=&quot;red font20&quot;&gt;亚瑟&lt;/div&gt;
+
+3.id 选择器#id名&#123;	属性1：属性值1；&#125;
+
+4.通配符选择器*&#123;	属性1：属性值1；&#125;
+]]></content>
+      <categories>
+        <category>前端</category>
+      </categories>
+      <tags>
+        <tag>CSS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CSS第二天</title>
+    <url>/2023/10/24/CSS%E7%AC%AC%E4%BA%8C%E5%A4%A9/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>Dx-C511模块连接华为云OTA</title>
+    <url>/2024/09/26/Dx-C511%E6%A8%A1%E5%9D%97%E8%BF%9E%E6%8E%A5%E5%8D%8E%E4%B8%BA%E4%BA%91%E4%B8%8B%E8%BD%BD%E5%9B%BA%E4%BB%B6/</url>
+    <content><![CDATA[1、配置APN
+AT+QICSGP&#x3D;1,1,”cmnbiot”,””,””
+2、开启移动网络
+AT+NETOPEN
+3、设置客户端ID
+AT+MCONFIG&#x3D;”id”,”用户名”,”密码”AT+MCONFIG=&quot;667145986bc31504f06f60ee_wulianwang_0_0_20&quot;,&quot;667145986bc31504f06f60ee_wulianwang&quot;,&quot;63e106dff798f9ed7d313f33c5e1cffe4ad206abe2121b993d464a8f111a97ba&quot;
+4、连接mqtt服务器
+AT+MIPSTART&#x3D;”服务器IP地址”,1883,4
+AT+MIPSTART=&quot;0ae1ed433d.st1.iotda-device.cn-north-4.myhuaweicloud.com&quot;,1883,4
+5、连接服务器，设置心跳60秒
+AT+MCONNECT&#x3D;1,60
+6、订阅数据
+AT+MSUB=&quot;$oc/devices/667145986bc31504f06f6/sys/events/down&quot;,0
+7、发布长数据
+AT+MPUBEX=&quot;$oc/devices/667145986bc31504f06f/sys/events/up&quot;,0,0,149
+{“services”:[{“service_id”:”$ota”,”event_type”:”version_report”,”event_time”:”20151212T121212Z”,”paras”:{“sw_version”:”v1.0”,”fw_version”: “v1.0”}}]}
+8、开启HTTP模式
+AT$HTTPOPEN
+9、发送请求头
+AT$HTTPRQH&#x3D;Authorization,Bearer 627fd1b1a3f07e7e977b388c112a3af8acf60349c885e3d7c4490661e208b64a
+10、发送URL
+AT$HTTPPARA&#x3D;https://117.78.5.125:8943/iodm/dev/v2.0/upgradefile/applications/d47eeb52098345898ba95b1be5cbd7c4/devices/667145986bc31504f06f60ee_wulianwang/packages/66e2cfd51bd30f6d19a24533,8943,1,0
+11、发送get请求
+AT$HTTPACTION&#x3D;0
+]]></content>
+      <categories>
+        <category>华为云IOT连接</category>
+      </categories>
+      <tags>
+        <tag>华为IOT</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>ESP32-P4 骑行终端项目深挖面试准备</title>
     <url>/2026/08/28/ESP32-P4%20%E9%AA%91%E8%A1%8C%E7%BB%88%E7%AB%AF%E9%A1%B9%E7%9B%AE%E6%B7%B1%E6%8C%96%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/</url>
     <content><![CDATA[# ESP32-P4 骑行终端项目深挖面试准备&gt; 项目源码：`/home/weixun/esp32p4/lvgl9/p4-idf6_co5300-mipi_lvgl-common-demo`&gt;&gt; 目标岗位：韵音科技嵌入式开发实习生。&gt;&gt; 本文依据项目源码、项目文档和 Git 历史整理。第三方组件集成、算法原理、自主实现和实机验证必须分开表述，不把调用开源库说成自己实现算法。---## 1. 先纠正项目定位这不是“ESP32 无线透传小项目”，而是一套基于 ESP32-P4 的圆屏骑行终端原型。项目以 ESP-IDF 和 FreeRTOS 为系统基础，集成 LVGL、MIPI DSI 显示、触摸、电源管理、BLE、离线地图、路线导航、运动数据模型、IMU/磁力计融合和语音链路。### 硬件与软件栈| 模块 | 项目实际实现 ||---|---|| 主控 | ESP32-P4 || 无线协处理器 | ESP32-C6 || P4-C6 链路 | ESP-Hosted over SDIO || RTOS | ESP-IDF FreeRTOS || UI | LVGL 9.5，466×466 CO5300 MIPI DSI 圆屏 || 触摸 | CST9217 || PMIC | AXP2101 || BLE | P4 上 NimBLE Host/GATT Server，C6 提供 Controller || 存储 | 16 MB Flash、PSRAM、NVS、SD 卡 || 传感器 | LSM6DS3TR-C + QMC5883P || 姿态算法 | Mahony 9 轴融合、四元数、陀螺仪零偏和磁力计校准 || 音频输入 | ICS43434，I2S，16 kHz，32-bit slot 转 PCM16 mono || 音频输出 | MAX98357A，I2S || 编解码 | OPUS，16 kHz mono，60 ms/960 samples || 地图 | SD 卡分块离线矢量地图、路线预览和导航跟随 |### Git 可核验的个人工作仓库共 18 个提交，作者一致。关键提交包括：- `3a8d4b7`：加入 IMU 融合并优化转向；- `b10c08f`：修复定位和导航视觉路线抖动；- `278054a`：修复停车速度、速度误差、提前到达和终点不触发；- `2f2652a`：加入 SD 卡路线、路线下发和导航视觉；- `3b80c36`：修复 Xiaozhi 运行时 LVGL 卡顿；- `afb4879`：加入本地语音导航播报；- `4b1cd76`：修复数据播报和数据溢出；- `fc3c769`：修复上下拉菜单卡顿。这些提交可以作为面试证据，但仍要能解释代码、调试过程和验证方式。---## 2. 已确认事实与表达边界| 内容 | 当前证据 | 面试前动作 ||---|---|---|| 项目周期 | 用户确认从 5 月持续到 8 月，具体年份未填写 | 口述可说“从 5 月做到 8 月”；简历需补准确年份 || 团队与个人职责 | 三人团队；用户确认仓库中的嵌入式软件实现由本人完成 | 可以说“我独立负责嵌入式端软件”，但仍要说明另外两人的真实职责 || PCB | 用户确认 PCB 由本人绘制 | 准备原理图分块、电源、接口、层数和一次硬件问题，防止只停留在一句“我画的” || 2～2048 路线点 | 协议文档和宏 `APP_BLE_ROUTE_MAX_POINTS=2048` 可核验 | 可以讲 || CRC32、route_id、offset、Route Status | 源码和协议文档可核验 | 可以讲 || 40 ms 导航状态、100 ms 地图绘制下限 | 项目文档和代码设计可核验 | 说“刷新周期/下限”，不要说成 CPU 实测耗时 || Mahony 9 轴融合 | 源码和提交可核验 | 可以讲，但需掌握公式思想 || 静止航向 30 秒变化不超过 5° | 只是项目验收线，没有保留测试记录 | 不能说“实测达到”，只可说这是计划验证的指标 || 音频延迟和连续运行时长 | 没有保留测试记录 | 不报数字，只讲链路、参数、故障和验证方法 || 导航抖动优化效果 | 有代码和提交，但没有正式对比测试 | 可说“针对抖动修改过算法并做过运行观察”，不能声称量化提升 || SRAM 启动断言 | 有排查文档，但本人已忘记最后修改和复测结果 | 只作为排查思路备用题，补回证据前不要包装成闭环成果 || GNSS 是否已稳定工作 | 文档明确板载 GNSS 曾不稳定，手机定位作为有效来源 | 不要说板载 GNSS 已完全打通 || 姿态航向是否已接入地图 | 文档写明尚未写入统一运动模型 | 不要说融合航向已驱动导航 || 量产经历 | 项目为可运行原型 | 说做了工程化设计，不说已量产 |团队表述要特别注意。不要直接说“三个人，但所有东西都是我做的”，这会让面试官立即追问另外两个人的作用，也可能被理解为缺少协作。当前最稳妥且符合你确认信息的说法是：&gt; 这是一个三人项目，我独立负责嵌入式端软件实现和 PCB 绘制。软件部分包括系统架构、驱动与任务、界面、通信、地图导航、姿态和音频链路。其他两位成员的职责我会按实际分工说明。最后一句仍需补上另外两位成员的真实职责。面试官可能沿着需求分析、结构设计、焊接装配、测试、文档和演示继续追问分工，必须按实际情况回答。---## 3. 三种长度的项目介绍### 3.1 30 秒版本&gt; 我在一个三人项目中独立负责嵌入式端软件，并绘制了项目 PCB。终端基于 ESP32-P4、ESP-IDF、FreeRTOS 和 LVGL，集成圆形 MIPI 屏、BLE、离线地图、路线导航、IMU/磁力计融合和语音链路。比较有挑战的是协调界面、无线和实时任务，以及完成传感器校准、Mahony 姿态融合和分包路线协议。### 3.2 两分钟版本&gt; 这是一个从 5 月持续到 8 月的三人项目，我独立负责嵌入式端软件实现，同时绘制了项目 PCB。终端面向骑行和山地运动，主控是 ESP32-P4，无线由 ESP32-C6 协处理器提供，两者通过 ESP-Hosted SDIO 通信。界面使用 LVGL 9.5 驱动 466×466 的 MIPI 圆屏。软件按板级驱动、数据模型、通信、地图导航和 UI 分层，实时运动数据通过统一快照提供给地图、数据页、BLE、历史记录和语音模块，避免各页面各自维护一套状态。&gt;&gt; 通信方面，我在 P4 上使用 NimBLE Host，将手机下发的完整路线设计成 BEGIN、DATA、COMMIT 和状态查询流程，支持 2 到 2048 个点。协议包含 route_id、顺序 offset、长度和 CRC32，接收缓冲与解析任务放在 PSRAM，BLE 回调不直接做地图计算或操作 LVGL。&gt;&gt; 对韵音岗位最相关的是姿态和音频部分。我接入了 LSM6DS3TR-C 和 QMC5883P，用 GPIO 中断通知独立任务，在任务里完成坐标变换、陀螺仪零偏、磁力计硬铁/软铁近似校准和 Mahony 9 轴融合，通过四元数输出横滚、俯仰和磁航向。音频链路使用 ICS43434 采集 16 kHz PCM，调用 OPUS 库编码后上传，下行 OPUS 解码后通过 MAX98357A 播放。我还针对语音运行时 LVGL 卡顿调整过任务和数据流。当前没有保留延迟、长稳和导航优化的量化数据，所以面试中我会重点讲实现、问题定位方法和后续测试方案，不虚报指标。### 3.3 五分钟版本结构不要连续背稿，按下面顺序画图讲：1. 产品目标和硬件平台；2. 系统分层和任务关系；3. 选一条核心数据流；4. 重点讲一个算法模块；5. 重点讲一个疑难 Bug；6. 给出验证结果和当前边界；7. 说明下一步改进。---## 4. 系统架构怎么画```text                       手机 / 小程序 / 服务端                          | BLE / Wi-Fi                          v                 ESP32-C6 无线 Controller                          | ESP-Hosted SDIO                          v+----------------------------------------------------------------+|                         ESP32-P4                               ||                                                                ||  Board/HAL                                                     ||  PMIC  Touch  LCD  SD  I2S  IMU  Magnetometer  Button         ||    |      |     |    |    |    |        |          |           ||    +------+-----+----+----+----+--------+----------+           ||                          |                                     ||  Services/Tasks          v                                     ||  BLE task  Route task  Attitude task  Audio task  Wi-Fi task   ||       |         |           |              |          |         ||       +---------+-----------+--------------+----------+         ||                          |                                     ||  Models                  v                                     ||  motion snapshot / route snapshot / weather / history / time   ||                          |                                     ||  UI                      v                                     ||  LVGL page manager -&gt; cycling / MTB / map / history / settings |+----------------------------------------------------------------+
@@ -2766,6 +2766,21 @@ http请求代码：
       </tags>
   </entry>
   <entry>
+    <title> 一篇牢骚</title>
+    <url>/2024/03/30/%E4%B8%80%E7%AF%87%E7%89%A2%E9%AA%9A/</url>
+    <content><![CDATA[愿我此生脚步不停，览尽世间美景。即使路途遥远且艰难，至少，至少，我经历过。以巽为名，行遍千山万水，看尽人间青山。青山不言，我自知晓其壮美。来自抖音博主hx888888000长穿毕
+
+
+
+来自抖音博主zkai6999那拉提
+
+
+来自抖音博主zkai6999阿勒泰
+
+
+]]></content>
+  </entry>
+  <entry>
     <title>关于使用wsl使用idf提供编译速度遇到的问题</title>
     <url>/2024/04/20/%E5%85%B3%E4%BA%8E%E4%BD%BF%E7%94%A8wsl%E4%BD%BF%E7%94%A8idf%E6%8F%90%E4%BE%9B%E7%BC%96%E8%AF%91%E9%80%9F%E5%BA%A6%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/</url>
     <content><![CDATA[
@@ -2801,6 +2816,14 @@ http请求代码：
       </tags>
   </entry>
   <entry>
+    <title>大学生活</title>
+    <url>/2024/02/17/%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%B4%BB/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>阅读</category>
+      </categories>
+  </entry>
+  <entry>
     <title>地图数据转换与导航投影深挖</title>
     <url>/2026/09/12/%E5%9C%B0%E5%9B%BE%E6%95%B0%E6%8D%AE%E8%BD%AC%E6%8D%A2%E4%B8%8E%E5%AF%BC%E8%88%AA%E6%8A%95%E5%BD%B1%E6%B7%B1%E6%8C%96/</url>
     <content><![CDATA[1. 离线转换为什么做成 mapbin完整广东 GeoJSON 不能在设备上解析。tools/geojson_to_c_array_gui.py 采用两遍流式扫描：第一遍建立边界和网格统计，第二遍写入 SQLite 临时几何，再输出 map.idx&#x2F;map.dat。最终文件先写 .tmp，完成后替换正式文件，避免断电留下半包地图。
@@ -2828,29 +2851,6 @@ map_route_project_gcj02() 只是“转换坐标 + world 投影”的组合；map
 9. 面试追问与回答为什么不用 Web Mercator？ 当前数据量和显示范围是广东局部，局部等距投影在 2 km 网格内足够，公式简单、设备端无需瓦片金字塔。若扩展全球地图，应更换投影并升级 mapbin 版本。
 为什么底图只加载 3x3？ 单 cell 上限 1 MiB，3x3 能覆盖当前视野和拖动缓冲；沿整条长路线一次性加载会造成无上限 SD IO 和 PSRAM 占用。跨网格后异步换中心。
 地图加载失败会不会黑屏？ 不会。无旧图时发布 ERROR，页面显示错误并可返回；有旧图时保留旧几何，只更新 error&#x2F;generation。
-
-]]></content>
-  </entry>
-  <entry>
-    <title>大学生活</title>
-    <url>/2024/02/17/%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%B4%BB/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>阅读</category>
-      </categories>
-  </entry>
-  <entry>
-    <title> 一篇牢骚</title>
-    <url>/2024/03/30/%E4%B8%80%E7%AF%87%E7%89%A2%E9%AA%9A/</url>
-    <content><![CDATA[愿我此生脚步不停，览尽世间美景。即使路途遥远且艰难，至少，至少，我经历过。以巽为名，行遍千山万水，看尽人间青山。青山不言，我自知晓其壮美。来自抖音博主hx888888000长穿毕
-
-
-
-来自抖音博主zkai6999那拉提
-
-
-来自抖音博主zkai6999阿勒泰
-
 
 ]]></content>
   </entry>
@@ -3427,507 +3427,6 @@ I2C 线少，只需要 SDA 和 SCL，适合低速传感器和多个从设备共�
 
 换板子后我会先对照原理图和 board 配置，确认引脚、时钟、电源、外设型号和地址是否一致。嵌入式代码和硬件强相关，不能只看软件逻辑。
 
-
-]]></content>
-      <categories>
-        <category>求职</category>
-      </categories>
-      <tags>
-        <tag>面试</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>思澈面试笔记-嵌入式C</title>
-    <url>/2026/06/17/%E6%80%9D%E6%BE%88%E9%9D%A2%E8%AF%95%E7%AC%94%E8%AE%B0-%E5%B5%8C%E5%85%A5%E5%BC%8FC/</url>
-    <content><![CDATA[# 嵌入式 C 语言高频问点这份笔记面向嵌入式方向面试，重点不是单纯背 C 语言语法，而是把 C 语言和 MCU、寄存器、中断、内存、驱动代码联系起来讲。## 1. 面试回答思路回答嵌入式 C 问题时，尽量使用这个结构：1. 先说概念：这个关键字、语法或机制是什么。2. 再说嵌入式场景：它在 MCU、寄存器、外设、中断、RTOS 中怎么用。3. 补充风险点：容易踩什么坑。4. 给一个小例子：用代码或排查场景证明自己会用。例如回答 `volatile`：&gt; `volatile` 告诉编译器变量可能被当前代码之外的因素改变，不能把读写随意优化掉。嵌入式里常用于硬件寄存器、中断共享变量、DMA 缓冲区状态标志。它解决的是编译器优化可见性问题，不等于线程安全；如果多个任务或中断同时修改变量，还需要临界区、互斥锁或原子操作保护。## 2. 基本数据类型### 高频问点：C 语言中 `int` 一定是 32 位吗？不一定。C 标准只规定了类型之间的最小范围和大小关系，不保证 `int` 一定是 32 位。嵌入式开发中，不同编译器、不同芯片架构下，`char`、`short`、`int`、`long` 的大小可能不同。为了代码可移植，推荐使用 `&lt;stdint.h&gt;` 中的固定宽度类型：```c#include &lt;stdint.h&gt;uint8_t  u8;uint16_t u16;uint32_t u32;int32_t  s32;
-
-面试答法：
-
-int 的位宽和平台有关，不能假设一定是 32 位。在嵌入式项目中，如果寄存器、协议字段或 Flash 数据格式要求固定宽度，我会使用 uint8_t、uint16_t、uint32_t 这类类型，避免平台差异导致问题。
-
-高频问点：char 是否一定是有符号？不一定。char 是 signed 还是 unsigned 由编译器决定。
-如果需要明确范围，应该使用：
-signed char a;unsigned char b;uint8_t c;int8_t d;
-
-嵌入式场景：
-
-处理二进制协议、传感器原始数据、Flash 字节流时，建议使用 uint8_t。
-处理有符号温度、加速度等数据时，明确使用 int8_t、int16_t。
-
-高频问点：有符号和无符号混用有什么风险？C 语言中，表达式计算会发生整数提升和类型转换。无符号类型和有符号类型混用时，可能把负数转换成很大的无符号数。
-示例：
-int a = -1;unsigned int b = 1;if (a &lt; b) &#123;    // 这里不一定符合直觉，因为 a 可能被转换成 unsigned&#125;
-
-嵌入式场景：
-
-长度、数组下标、寄存器值通常使用无符号。
-错误码通常使用有符号，例如返回 -1 表示失败。
-比较长度和错误码时要小心类型转换。
-
-面试答法：
-
-有符号和无符号混用可能导致隐式转换，尤其是负数会变成很大的无符号值。嵌入式里我会尽量让协议长度、缓冲区大小、寄存器值使用明确的无符号类型，错误码使用明确的有符号类型，并避免直接混用比较。
-
-3. 指针高频问点：指针是什么？指针是保存地址的变量。通过指针可以间接访问某块内存。
-int a = 10;int *p = &amp;a;*p = 20;
-
-嵌入式场景：
-
-访问寄存器地址。
-传递缓冲区。
-实现驱动回调。
-操作外设接收数据。
-管理链表、队列等数据结构。
-
-面试答法：
-
-指针本质上保存的是地址。嵌入式中指针非常常见，例如通过固定地址访问外设寄存器，或者把缓冲区地址传给 UART、SPI、DMA 驱动。使用指针时要注意空指针、野指针、越界访问和生命周期。
-
-高频问点：指针和数组有什么区别？数组是一段连续内存，数组名在多数表达式中会退化为首元素地址。指针是一个变量，保存某个地址，可以重新赋值。
-int arr[4] = &#123;1, 2, 3, 4&#125;;int *p = arr;p++;        // 合法，指向下一个元素// arr++;   // 不合法，数组名不能被重新赋值
-
-区别：
-
-sizeof(arr) 得到整个数组大小。
-sizeof(p) 得到指针变量大小。
-数组名不是普通变量，不能重新赋值。
-函数参数中的数组会退化为指针。
-
-示例：
-void foo(uint8_t buf[16])&#123;    // 这里 buf 实际上是 uint8_t *，sizeof(buf) 是指针大小&#125;
-
-面试答法：
-
-数组代表一块连续内存，指针是保存地址的变量。数组名在大多数表达式中会退化成首元素指针，但 sizeof(arr) 和 &amp;arr 这类场景不会简单等同于普通指针。嵌入式里处理缓冲区时，函数参数最好同时传入指针和长度，避免数组退化后丢失长度信息。
-
-高频问点：什么是野指针、空指针、悬空指针？空指针：
-int *p = NULL;
-
-野指针：没有初始化的指针，里面是随机地址。
-int *p;*p = 10; // 危险
-
-悬空指针：指向的对象已经失效。
-int *foo(void)&#123;    int x = 10;    return &amp;x; // 错误，x 是局部变量，函数返回后失效&#125;
-
-嵌入式风险：
-
-访问非法地址可能 HardFault。
-写错地址可能破坏寄存器或内存。
-DMA 使用已经失效的缓冲区会导致随机错误。
-
-高频问点：const 和指针组合怎么理解？看 const 修饰谁。
-const int *p1;       // 指向 const int 的指针，不能通过 p1 修改值，但 p1 可以改指向int const *p2;       // 同上int * const p3 = &amp;x; // const 指针，p3 不能改指向，但可以修改 *p3const int * const p4 = &amp;x; // 指针和指向内容都不能改
-
-面试答法：
-
-const 靠近谁就限制谁。const int *p 表示不能通过这个指针修改目标值；int * const p 表示指针变量本身不能再指向别处。嵌入式里函数参数如果只读缓冲区，我会写成 const uint8_t *buf，这样接口语义更清楚。
-
-高频问点：函数指针有什么用？函数指针保存函数入口地址，可以实现回调、驱动适配、状态机动作表。
-typedef void (*irq_callback_t)(void *arg);static irq_callback_t cb;static void *cb_arg;void register_callback(irq_callback_t callback, void *arg)&#123;    cb = callback;    cb_arg = arg;&#125;void irq_handler(void)&#123;    if (cb) &#123;        cb(cb_arg);    &#125;&#125;
-
-嵌入式场景：
-
-GPIO 中断回调。
-UART 接收完成回调。
-定时器超时回调。
-驱动层和应用层解耦。
-
-面试答法：
-
-函数指针常用于回调机制。驱动层不需要知道应用层具体要做什么，只需要在事件发生时调用注册的回调函数，这样能降低模块耦合。
-
-4. 结构体、联合体、枚举高频问点：结构体有什么用？结构体把相关数据组织在一起。
-typedef struct &#123;    uint8_t id;    uint16_t value;    uint32_t timestamp;&#125; sensor_data_t;
-
-嵌入式场景：
-
-保存传感器数据。
-描述设备配置。
-封装驱动对象。
-映射寄存器布局。
-
-示例：
-typedef struct &#123;    volatile uint32_t MODER;    volatile uint32_t OTYPER;    volatile uint32_t OSPEEDR;    volatile uint32_t PUPDR;    volatile uint32_t IDR;    volatile uint32_t ODR;&#125; GPIO_TypeDef;
-
-高频问点：结构体为什么会有内存对齐？CPU 访问对齐地址通常更高效，有些架构访问未对齐地址还会异常。编译器会在结构体成员之间插入 padding。
-typedef struct &#123;    uint8_t  a;    uint32_t b;    uint8_t  c;&#125; demo_t;
-
-这个结构体大小可能不是 6，而是 12。
-优化方法：
-
-把大成员放前面，小成员放后面。
-协议结构不要盲目直接强转。
-如确实需要紧凑布局，可使用编译器 packed 属性，但要注意未对齐访问风险。
-
-面试答法：
-
-结构体会为了满足 CPU 对齐访问插入填充字节，所以 sizeof(struct) 可能大于成员大小之和。在嵌入式协议解析和 Flash 存储中，不能随意假设结构体内存布局完全等于通信数据格式，必要时要逐字节解析或明确 packed。
-
-高频问点：联合体有什么用？联合体中所有成员共享同一块内存，大小等于最大成员大小。
-typedef union &#123;    uint32_t word;    uint8_t  bytes[4];&#125; word_bytes_t;
-
-用途：
-
-节省内存。
-同一数据的不同视图。
-解析寄存器或协议字段。
-
-风险：
-
-大小端影响字节顺序。
-可读性不如显式位运算。
-
-高频问点：枚举有什么用？枚举用于表示一组有限状态或类型。
-typedef enum &#123;    LED_OFF = 0,    LED_ON,    LED_BLINK,&#125; led_state_t;
-
-嵌入式场景：
-
-状态机状态。
-错误码。
-事件类型。
-设备工作模式。
-
-5. 内存布局高频问点：C 程序的内存区域有哪些？常见区域：
-
-.text：代码段，存放程序指令。
-.rodata：只读数据，例如字符串常量、const 常量。
-.data：已初始化的全局变量和静态变量。
-.bss：未初始化或初始化为 0 的全局变量和静态变量。
-heap：堆，动态分配内存。
-stack：栈，函数调用、局部变量、返回地址。
-
-示例：
-const int a = 1;       // 可能在 rodataint b = 2;             // dataint c;                 // bssstatic int d = 3;      // datavoid foo(void)&#123;    int e = 4;         // stack&#125;
-
-面试答法：
-
-嵌入式里 Flash 通常存放代码和只读数据，SRAM 存放 .data、.bss、堆和栈。启动代码会把 .data 从 Flash 复制到 RAM，并把 .bss 清零，然后再进入 main。因此理解内存布局有助于分析 RAM 占用、栈溢出和启动过程。
-
-高频问点：全局变量和局部变量有什么区别？全局变量：
-
-生命周期是整个程序运行期间。
-默认初始化为 0。
-存放在 .data 或 .bss。
-多个函数都可能访问，容易引入耦合。
-
-局部变量：
-
-生命周期通常是函数调用期间。
-默认不初始化，值不确定。
-通常存放在栈上。
-大数组放局部变量可能导致栈溢出。
-
-面试答法：
-
-嵌入式里我会避免在函数里定义很大的局部数组，因为栈空间有限。较大的缓冲区可以放到静态区，但要控制作用域，能用 static 限制在当前文件就不要暴露为全局变量。
-
-高频问点：为什么嵌入式里慎用 malloc？原因：
-
-小 MCU RAM 很有限。
-频繁申请释放可能产生内存碎片。
-分配失败需要处理。
-实时系统中动态分配耗时不确定。
-调试内存泄漏比较困难。
-
-面试答法：
-
-小型嵌入式项目中我会尽量避免频繁动态分配，尤其是在实时路径和中断中。常见做法是使用静态缓冲区、内存池或固定大小队列。如果必须使用动态分配，需要检查返回值，并明确释放时机。
-
-6. volatile高频问点：volatile 的作用是什么？volatile 告诉编译器：这个变量可能被当前执行流之外的因素改变，每次访问都必须真实读写内存，不能假设它的值不变。
-常见场景：
-
-硬件寄存器。
-中断服务函数和主循环共享变量。
-DMA 状态标志。
-RTOS 中某些简单状态标志。
-
-示例：
-volatile uint32_t *GPIO_ODR = (volatile uint32_t *)0x40020014;
-
-中断共享变量：
-static volatile uint8_t uart_rx_done;void USART_IRQHandler(void)&#123;    uart_rx_done = 1;&#125;int main(void)&#123;    while (!uart_rx_done) &#123;    &#125;&#125;
-
-高频追问：volatile 能保证线程安全吗？不能。
-volatile 只保证编译器不优化访问，不保证操作原子性，也不保证多任务互斥。
-volatile int count;count++; // 可能包含读、加、写三个步骤，不是原子操作
-
-如果 count++ 同时发生在中断和主循环中，仍然可能丢失更新。
-面试答法：
-
-volatile 解决的是编译器优化导致的可见性问题，不解决并发安全问题。多个任务或中断同时读写共享变量时，还需要关中断、临界区、互斥锁或原子操作。
-
-7. static、extern、const高频问点：static 有哪些作用？修饰局部变量：
-void foo(void)&#123;    static int count = 0;    count++;&#125;
-
-特点：
-
-生命周期变成整个程序运行期间。
-作用域仍在函数内部。
-只初始化一次。
-
-修饰全局变量或函数：
-static int module_state;static void helper(void)&#123;&#125;
-
-特点：
-
-只在当前 .c 文件可见。
-避免符号污染和命名冲突。
-有利于模块封装。
-
-面试答法：
-
-static 修饰局部变量时改变生命周期，修饰全局变量或函数时限制链接作用域。嵌入式模块里我会把不需要对外暴露的变量和函数声明为 static，减少全局符号污染。
-
-高频问点：extern 的作用是什么？extern 表示声明一个在其他地方定义的变量或函数。
-// config.cint g_baudrate = 115200;// main.cextern int g_baudrate;
-
-注意：
-
-声明不分配存储空间。
-定义才分配存储空间。
-不要在头文件里直接定义普通全局变量。
-
-错误示例：
-// config.hint g_value; // 如果多个 .c 包含，会导致重复定义
-
-正确示例：
-// config.hextern int g_value;// config.cint g_value;
-
-高频问点：const 在嵌入式中有什么意义？const 表示对象不应该被修改。
-嵌入式场景：
-
-查表数据。
-字符串常量。
-设备固定配置。
-函数只读参数。
-
-static const uint16_t crc_table[256] = &#123;    // ...&#125;;void send_data(const uint8_t *buf, uint16_t len);
-
-面试答法：
-
-const 能表达只读语义，也可能让数据放到只读存储区域，节省 RAM。函数参数中使用 const 可以告诉调用者这个函数不会修改传入缓冲区。
-
-8. 位运算和寄存器操作高频问点：如何置位、清零、翻转、判断某一位？#define BIT(n) (1U &lt;&lt; (n))reg |= BIT(3);       // 置位 bit3reg &amp;= ~BIT(3);      // 清零 bit3reg ^= BIT(3);       // 翻转 bit3if (reg &amp; BIT(3)) &#123;  // 判断 bit3 是否为 1&#125;
-
-高频问点：如何设置多位字段？例如要设置寄存器 bit[5:4] 为 0b10：
-#define FIELD_MASK   (0x3U &lt;&lt; 4)#define FIELD_VALUE  (0x2U &lt;&lt; 4)reg = (reg &amp; ~FIELD_MASK) | FIELD_VALUE;
-
-面试答法：
-
-设置多位字段时，不能直接或上新值，否则旧值可能残留。正确做法是先用 mask 清掉目标位，再把新值移位后写进去。
-
-高频问点：为什么寄存器要用 volatile？硬件寄存器的值可能被硬件改变，例如状态寄存器、接收数据寄存器。编译器无法知道这些变化。如果不加 volatile，编译器可能把寄存器读取优化成一次，导致程序看不到状态变化。
-#define UART_SR (*(volatile uint32_t *)0x40011000)while ((UART_SR &amp; BIT(5)) == 0) &#123;&#125;
-
-9. 宏、条件编译和 inline高频问点：宏有什么优缺点？优点：
-
-编译期展开。
-适合定义常量、寄存器地址、bit mask。
-可用于条件编译。
-
-缺点：
-
-没有类型检查。
-参数可能被重复求值。
-复杂宏可读性差。
-
-错误示例：
-#define SQUARE(x) x * xint y = SQUARE(1 + 2); // 展开为 1 + 2 * 1 + 2
-
-改进：
-#define SQUARE(x) ((x) * (x))
-
-但仍有重复求值问题：
-SQUARE(i++); // i++ 会执行两次
-
-面试答法：
-
-简单常量和 bit 操作用宏很方便，但复杂逻辑我更倾向使用 static inline 函数，因为它有类型检查，也更容易调试。
-
-高频问点：#ifdef 常用于什么？用途：
-
-按芯片型号选择代码。
-打开或关闭调试日志。
-配置功能模块。
-适配不同编译器。
-
-示例：
-#ifdef ENABLE_DEBUG_LOG#define LOG(fmt, ...) printf(fmt, ##__VA_ARGS__)#else#define LOG(fmt, ...)#endif
-
-高频问点：头文件为什么要防止重复包含？同一个头文件可能被多个文件间接包含，如果没有 include guard，可能导致重复定义或编译错误。
-#ifndef DRIVER_UART_H#define DRIVER_UART_Hvoid uart_init(void);#endif
-
-或：
-#pragma once
-
-10. 大小端、对齐和字节序高频问点：什么是大小端？多字节数据在内存中的存放顺序不同：
-
-大端：高位字节放低地址。
-小端：低位字节放低地址。
-
-例如 0x12345678：
-
-大端：12 34 56 78
-小端：78 56 34 12
-
-嵌入式场景：
-
-通信协议解析。
-Flash 数据存储。
-传感器寄存器高低字节合成。
-
-示例：
-uint16_t value = ((uint16_t)buf[0] &lt;&lt; 8) | buf[1]; // 大端解析
-
-面试答法：
-
-协议解析时不要直接把字节数组强转成结构体或整数指针，因为会受到大小端和对齐影响。更稳妥的做法是按协议规定显式移位组合。
-
-高频问点：未对齐访问有什么问题？有些 CPU 支持未对齐访问但效率较低，有些 MCU 访问未对齐地址会产生异常。
-风险场景：
-
-把 uint8_t * 强转为 uint32_t *。
-packed 结构体中直接访问多字节成员。
-协议缓冲区地址不对齐。
-
-安全做法：
-
-使用 memcpy 复制到对齐变量。
-使用字节移位解析。
-
-11. 中断与共享变量高频问点：中断函数里为什么不能做太多事？原因：
-
-中断会打断正常任务。
-中断执行时间过长会影响实时性。
-可能阻塞其他中断。
-不适合做 printf、动态内存分配、长循环、复杂协议解析。
-
-推荐做法：
-
-读取必要状态。
-清除中断标志。
-保存少量数据。
-设置标志位。
-释放信号量或发送简短消息给任务。
-
-面试答法：
-
-中断里应该快进快出，只做必要处理。耗时逻辑放到主循环或 RTOS 任务中执行。这样可以减少中断延迟，提高系统实时性。
-
-高频问点：主循环和中断共享变量要注意什么？注意：
-
-共享变量加 volatile。
-多字节变量读写可能不是原子操作。
-读改写操作需要临界区。
-中断标志要及时清除。
-
-示例：
-static volatile uint32_t tick_count;void SysTick_Handler(void)&#123;    tick_count++;&#125;uint32_t get_tick(void)&#123;    uint32_t t;    __disable_irq();    t = tick_count;    __enable_irq();    return t;&#125;
-
-12. 错误处理和健壮性高频问点：嵌入式函数返回值怎么设计？常见方式：
-typedef enum &#123;    ERR_OK = 0,    ERR_TIMEOUT = -1,    ERR_INVALID_ARG = -2,    ERR_BUSY = -3,&#125; error_t;
-
-函数示例：
-int uart_send(const uint8_t *buf, uint16_t len)&#123;    if (buf == NULL || len == 0) &#123;        return ERR_INVALID_ARG;    &#125;    // send...    return ERR_OK;&#125;
-
-面试答法：
-
-驱动接口要尽量返回明确错误码，而不是只返回成功或失败。这样上层可以区分参数错误、超时、忙状态、硬件错误，并做对应处理。
-
-高频问点：为什么要检查空指针和长度？嵌入式系统没有操作系统保护时，空指针或越界访问可能直接 HardFault，甚至破坏内存。
-接口设计建议：
-
-指针参数先判空。
-长度参数检查范围。
-对外接口不要相信调用者一定正确。
-对关键错误可以使用断言。
-
-13. 代码组织高频问点：.h 和 .c 分别放什么？.h 文件：
-
-类型定义。
-宏定义。
-对外函数声明。
-对外常量声明。
-
-.c 文件：
-
-函数实现。
-私有变量。
-私有函数。
-
-示例：
-// led.h#pragma oncevoid led_init(void);void led_set(uint8_t on);
-
-// led.c#include &quot;led.h&quot;static uint8_t led_state;void led_init(void)&#123;    led_state = 0;&#125;void led_set(uint8_t on)&#123;    led_state = on;&#125;
-
-高频问点：如何设计一个简单驱动接口？建议包含：
-
-初始化函数。
-配置函数。
-读写函数。
-状态查询函数。
-错误返回值。
-
-示例：
-typedef struct &#123;    uint32_t baudrate;    uint8_t data_bits;    uint8_t stop_bits;&#125; uart_config_t;int uart_init(const uart_config_t *config);int uart_write(const uint8_t *buf, uint16_t len);int uart_read(uint8_t *buf, uint16_t len, uint32_t timeout_ms);
-
-面试答法：
-
-我会把驱动接口设计成清晰的初始化、读写和状态查询函数，参数尽量明确，返回值能表达错误原因。模块内部变量用 static 隐藏，避免上层直接操作底层状态。
-
-14. 高频 Bug 场景场景 1：程序偶尔 HardFault可能原因：
-
-空指针。
-栈溢出。
-数组越界。
-未对齐访问。
-函数指针错误。
-中断访问已释放或失效的缓冲区。
-
-排查方法：
-
-查看 HardFault 寄存器。
-打开 map 文件看栈和 RAM。
-增大任务栈测试。
-检查最近修改。
-加断言和日志。
-
-场景 2：优化等级一开程序就异常可能原因：
-
-应该加 volatile 的变量没加。
-代码依赖未定义行为。
-越界访问。
-未初始化变量。
-延时循环被优化掉。
-
-面试答法：
-
-如果不开优化正常、开优化异常，我会重点怀疑 volatile、未初始化变量、越界访问和未定义行为。比如等待中断标志位的循环，如果标志变量没有 volatile，编译器可能把它优化成死循环。
-
-场景 3：局部数组过大导致异常示例：
-void foo(void)&#123;    uint8_t buf[8192]; // 小 MCU 上很危险&#125;
-
-解决：
-
-改为静态缓冲区。
-减小缓冲区。
-使用分块处理。
-检查任务栈大小。
-
-15. 嵌入式 C 高频问答速背volatile、const、static 的区别？
-volatile：防止编译器优化访问，常用于寄存器和中断共享变量。
-const：表示只读语义，防止误修改，也可能放入只读区。
-static：修饰局部变量改变生命周期，修饰全局变量或函数限制文件作用域。
-
-malloc 和静态分配怎么选？小 MCU 和实时系统中优先静态分配或内存池。动态分配灵活，但有碎片、失败、耗时不确定和泄漏风险。
-为什么中断共享变量要加 volatile？因为变量可能在中断中被修改，主循环如果不加 volatile，编译器可能缓存变量值，导致主循环看不到变化。
-volatile 为什么不等于原子操作？因为 volatile 只约束编译器访问，不保证 count++ 这种读改写操作不可打断。
-如何避免头文件重复包含？使用 include guard 或 #pragma once。
-什么情况下用函数指针？回调、状态机、驱动适配、事件通知。它能降低模块之间的耦合。
-为什么协议解析不建议直接强转结构体？因为结构体可能有 padding，且大小端、对齐方式和编译器实现会影响布局。更稳妥的是按字节解析。
-寄存器操作为什么常用位运算？寄存器通常每一位或几位代表一个配置项。位运算可以只修改目标位，不影响其他位。
-如何看待全局变量？全局变量方便但容易导致耦合和并发问题。能限制作用域就用 static，能通过接口访问就不要直接暴露。
-嵌入式 C 代码最重要的习惯是什么？参数检查、边界检查、清晰的错误码、控制作用域、避免大栈对象、共享变量考虑并发、硬件相关变量使用 volatile。
 
 ]]></content>
       <categories>
@@ -5275,6 +4774,507 @@ MySQL 在 Ubuntu 使用二十三、在服务器 SQLSERVER 上，利用 U 盘“U
       </tags>
   </entry>
   <entry>
+    <title>思澈面试笔记-嵌入式C</title>
+    <url>/2026/06/17/%E6%80%9D%E6%BE%88%E9%9D%A2%E8%AF%95%E7%AC%94%E8%AE%B0-%E5%B5%8C%E5%85%A5%E5%BC%8FC/</url>
+    <content><![CDATA[# 嵌入式 C 语言高频问点这份笔记面向嵌入式方向面试，重点不是单纯背 C 语言语法，而是把 C 语言和 MCU、寄存器、中断、内存、驱动代码联系起来讲。## 1. 面试回答思路回答嵌入式 C 问题时，尽量使用这个结构：1. 先说概念：这个关键字、语法或机制是什么。2. 再说嵌入式场景：它在 MCU、寄存器、外设、中断、RTOS 中怎么用。3. 补充风险点：容易踩什么坑。4. 给一个小例子：用代码或排查场景证明自己会用。例如回答 `volatile`：&gt; `volatile` 告诉编译器变量可能被当前代码之外的因素改变，不能把读写随意优化掉。嵌入式里常用于硬件寄存器、中断共享变量、DMA 缓冲区状态标志。它解决的是编译器优化可见性问题，不等于线程安全；如果多个任务或中断同时修改变量，还需要临界区、互斥锁或原子操作保护。## 2. 基本数据类型### 高频问点：C 语言中 `int` 一定是 32 位吗？不一定。C 标准只规定了类型之间的最小范围和大小关系，不保证 `int` 一定是 32 位。嵌入式开发中，不同编译器、不同芯片架构下，`char`、`short`、`int`、`long` 的大小可能不同。为了代码可移植，推荐使用 `&lt;stdint.h&gt;` 中的固定宽度类型：```c#include &lt;stdint.h&gt;uint8_t  u8;uint16_t u16;uint32_t u32;int32_t  s32;
+
+面试答法：
+
+int 的位宽和平台有关，不能假设一定是 32 位。在嵌入式项目中，如果寄存器、协议字段或 Flash 数据格式要求固定宽度，我会使用 uint8_t、uint16_t、uint32_t 这类类型，避免平台差异导致问题。
+
+高频问点：char 是否一定是有符号？不一定。char 是 signed 还是 unsigned 由编译器决定。
+如果需要明确范围，应该使用：
+signed char a;unsigned char b;uint8_t c;int8_t d;
+
+嵌入式场景：
+
+处理二进制协议、传感器原始数据、Flash 字节流时，建议使用 uint8_t。
+处理有符号温度、加速度等数据时，明确使用 int8_t、int16_t。
+
+高频问点：有符号和无符号混用有什么风险？C 语言中，表达式计算会发生整数提升和类型转换。无符号类型和有符号类型混用时，可能把负数转换成很大的无符号数。
+示例：
+int a = -1;unsigned int b = 1;if (a &lt; b) &#123;    // 这里不一定符合直觉，因为 a 可能被转换成 unsigned&#125;
+
+嵌入式场景：
+
+长度、数组下标、寄存器值通常使用无符号。
+错误码通常使用有符号，例如返回 -1 表示失败。
+比较长度和错误码时要小心类型转换。
+
+面试答法：
+
+有符号和无符号混用可能导致隐式转换，尤其是负数会变成很大的无符号值。嵌入式里我会尽量让协议长度、缓冲区大小、寄存器值使用明确的无符号类型，错误码使用明确的有符号类型，并避免直接混用比较。
+
+3. 指针高频问点：指针是什么？指针是保存地址的变量。通过指针可以间接访问某块内存。
+int a = 10;int *p = &amp;a;*p = 20;
+
+嵌入式场景：
+
+访问寄存器地址。
+传递缓冲区。
+实现驱动回调。
+操作外设接收数据。
+管理链表、队列等数据结构。
+
+面试答法：
+
+指针本质上保存的是地址。嵌入式中指针非常常见，例如通过固定地址访问外设寄存器，或者把缓冲区地址传给 UART、SPI、DMA 驱动。使用指针时要注意空指针、野指针、越界访问和生命周期。
+
+高频问点：指针和数组有什么区别？数组是一段连续内存，数组名在多数表达式中会退化为首元素地址。指针是一个变量，保存某个地址，可以重新赋值。
+int arr[4] = &#123;1, 2, 3, 4&#125;;int *p = arr;p++;        // 合法，指向下一个元素// arr++;   // 不合法，数组名不能被重新赋值
+
+区别：
+
+sizeof(arr) 得到整个数组大小。
+sizeof(p) 得到指针变量大小。
+数组名不是普通变量，不能重新赋值。
+函数参数中的数组会退化为指针。
+
+示例：
+void foo(uint8_t buf[16])&#123;    // 这里 buf 实际上是 uint8_t *，sizeof(buf) 是指针大小&#125;
+
+面试答法：
+
+数组代表一块连续内存，指针是保存地址的变量。数组名在大多数表达式中会退化成首元素指针，但 sizeof(arr) 和 &amp;arr 这类场景不会简单等同于普通指针。嵌入式里处理缓冲区时，函数参数最好同时传入指针和长度，避免数组退化后丢失长度信息。
+
+高频问点：什么是野指针、空指针、悬空指针？空指针：
+int *p = NULL;
+
+野指针：没有初始化的指针，里面是随机地址。
+int *p;*p = 10; // 危险
+
+悬空指针：指向的对象已经失效。
+int *foo(void)&#123;    int x = 10;    return &amp;x; // 错误，x 是局部变量，函数返回后失效&#125;
+
+嵌入式风险：
+
+访问非法地址可能 HardFault。
+写错地址可能破坏寄存器或内存。
+DMA 使用已经失效的缓冲区会导致随机错误。
+
+高频问点：const 和指针组合怎么理解？看 const 修饰谁。
+const int *p1;       // 指向 const int 的指针，不能通过 p1 修改值，但 p1 可以改指向int const *p2;       // 同上int * const p3 = &amp;x; // const 指针，p3 不能改指向，但可以修改 *p3const int * const p4 = &amp;x; // 指针和指向内容都不能改
+
+面试答法：
+
+const 靠近谁就限制谁。const int *p 表示不能通过这个指针修改目标值；int * const p 表示指针变量本身不能再指向别处。嵌入式里函数参数如果只读缓冲区，我会写成 const uint8_t *buf，这样接口语义更清楚。
+
+高频问点：函数指针有什么用？函数指针保存函数入口地址，可以实现回调、驱动适配、状态机动作表。
+typedef void (*irq_callback_t)(void *arg);static irq_callback_t cb;static void *cb_arg;void register_callback(irq_callback_t callback, void *arg)&#123;    cb = callback;    cb_arg = arg;&#125;void irq_handler(void)&#123;    if (cb) &#123;        cb(cb_arg);    &#125;&#125;
+
+嵌入式场景：
+
+GPIO 中断回调。
+UART 接收完成回调。
+定时器超时回调。
+驱动层和应用层解耦。
+
+面试答法：
+
+函数指针常用于回调机制。驱动层不需要知道应用层具体要做什么，只需要在事件发生时调用注册的回调函数，这样能降低模块耦合。
+
+4. 结构体、联合体、枚举高频问点：结构体有什么用？结构体把相关数据组织在一起。
+typedef struct &#123;    uint8_t id;    uint16_t value;    uint32_t timestamp;&#125; sensor_data_t;
+
+嵌入式场景：
+
+保存传感器数据。
+描述设备配置。
+封装驱动对象。
+映射寄存器布局。
+
+示例：
+typedef struct &#123;    volatile uint32_t MODER;    volatile uint32_t OTYPER;    volatile uint32_t OSPEEDR;    volatile uint32_t PUPDR;    volatile uint32_t IDR;    volatile uint32_t ODR;&#125; GPIO_TypeDef;
+
+高频问点：结构体为什么会有内存对齐？CPU 访问对齐地址通常更高效，有些架构访问未对齐地址还会异常。编译器会在结构体成员之间插入 padding。
+typedef struct &#123;    uint8_t  a;    uint32_t b;    uint8_t  c;&#125; demo_t;
+
+这个结构体大小可能不是 6，而是 12。
+优化方法：
+
+把大成员放前面，小成员放后面。
+协议结构不要盲目直接强转。
+如确实需要紧凑布局，可使用编译器 packed 属性，但要注意未对齐访问风险。
+
+面试答法：
+
+结构体会为了满足 CPU 对齐访问插入填充字节，所以 sizeof(struct) 可能大于成员大小之和。在嵌入式协议解析和 Flash 存储中，不能随意假设结构体内存布局完全等于通信数据格式，必要时要逐字节解析或明确 packed。
+
+高频问点：联合体有什么用？联合体中所有成员共享同一块内存，大小等于最大成员大小。
+typedef union &#123;    uint32_t word;    uint8_t  bytes[4];&#125; word_bytes_t;
+
+用途：
+
+节省内存。
+同一数据的不同视图。
+解析寄存器或协议字段。
+
+风险：
+
+大小端影响字节顺序。
+可读性不如显式位运算。
+
+高频问点：枚举有什么用？枚举用于表示一组有限状态或类型。
+typedef enum &#123;    LED_OFF = 0,    LED_ON,    LED_BLINK,&#125; led_state_t;
+
+嵌入式场景：
+
+状态机状态。
+错误码。
+事件类型。
+设备工作模式。
+
+5. 内存布局高频问点：C 程序的内存区域有哪些？常见区域：
+
+.text：代码段，存放程序指令。
+.rodata：只读数据，例如字符串常量、const 常量。
+.data：已初始化的全局变量和静态变量。
+.bss：未初始化或初始化为 0 的全局变量和静态变量。
+heap：堆，动态分配内存。
+stack：栈，函数调用、局部变量、返回地址。
+
+示例：
+const int a = 1;       // 可能在 rodataint b = 2;             // dataint c;                 // bssstatic int d = 3;      // datavoid foo(void)&#123;    int e = 4;         // stack&#125;
+
+面试答法：
+
+嵌入式里 Flash 通常存放代码和只读数据，SRAM 存放 .data、.bss、堆和栈。启动代码会把 .data 从 Flash 复制到 RAM，并把 .bss 清零，然后再进入 main。因此理解内存布局有助于分析 RAM 占用、栈溢出和启动过程。
+
+高频问点：全局变量和局部变量有什么区别？全局变量：
+
+生命周期是整个程序运行期间。
+默认初始化为 0。
+存放在 .data 或 .bss。
+多个函数都可能访问，容易引入耦合。
+
+局部变量：
+
+生命周期通常是函数调用期间。
+默认不初始化，值不确定。
+通常存放在栈上。
+大数组放局部变量可能导致栈溢出。
+
+面试答法：
+
+嵌入式里我会避免在函数里定义很大的局部数组，因为栈空间有限。较大的缓冲区可以放到静态区，但要控制作用域，能用 static 限制在当前文件就不要暴露为全局变量。
+
+高频问点：为什么嵌入式里慎用 malloc？原因：
+
+小 MCU RAM 很有限。
+频繁申请释放可能产生内存碎片。
+分配失败需要处理。
+实时系统中动态分配耗时不确定。
+调试内存泄漏比较困难。
+
+面试答法：
+
+小型嵌入式项目中我会尽量避免频繁动态分配，尤其是在实时路径和中断中。常见做法是使用静态缓冲区、内存池或固定大小队列。如果必须使用动态分配，需要检查返回值，并明确释放时机。
+
+6. volatile高频问点：volatile 的作用是什么？volatile 告诉编译器：这个变量可能被当前执行流之外的因素改变，每次访问都必须真实读写内存，不能假设它的值不变。
+常见场景：
+
+硬件寄存器。
+中断服务函数和主循环共享变量。
+DMA 状态标志。
+RTOS 中某些简单状态标志。
+
+示例：
+volatile uint32_t *GPIO_ODR = (volatile uint32_t *)0x40020014;
+
+中断共享变量：
+static volatile uint8_t uart_rx_done;void USART_IRQHandler(void)&#123;    uart_rx_done = 1;&#125;int main(void)&#123;    while (!uart_rx_done) &#123;    &#125;&#125;
+
+高频追问：volatile 能保证线程安全吗？不能。
+volatile 只保证编译器不优化访问，不保证操作原子性，也不保证多任务互斥。
+volatile int count;count++; // 可能包含读、加、写三个步骤，不是原子操作
+
+如果 count++ 同时发生在中断和主循环中，仍然可能丢失更新。
+面试答法：
+
+volatile 解决的是编译器优化导致的可见性问题，不解决并发安全问题。多个任务或中断同时读写共享变量时，还需要关中断、临界区、互斥锁或原子操作。
+
+7. static、extern、const高频问点：static 有哪些作用？修饰局部变量：
+void foo(void)&#123;    static int count = 0;    count++;&#125;
+
+特点：
+
+生命周期变成整个程序运行期间。
+作用域仍在函数内部。
+只初始化一次。
+
+修饰全局变量或函数：
+static int module_state;static void helper(void)&#123;&#125;
+
+特点：
+
+只在当前 .c 文件可见。
+避免符号污染和命名冲突。
+有利于模块封装。
+
+面试答法：
+
+static 修饰局部变量时改变生命周期，修饰全局变量或函数时限制链接作用域。嵌入式模块里我会把不需要对外暴露的变量和函数声明为 static，减少全局符号污染。
+
+高频问点：extern 的作用是什么？extern 表示声明一个在其他地方定义的变量或函数。
+// config.cint g_baudrate = 115200;// main.cextern int g_baudrate;
+
+注意：
+
+声明不分配存储空间。
+定义才分配存储空间。
+不要在头文件里直接定义普通全局变量。
+
+错误示例：
+// config.hint g_value; // 如果多个 .c 包含，会导致重复定义
+
+正确示例：
+// config.hextern int g_value;// config.cint g_value;
+
+高频问点：const 在嵌入式中有什么意义？const 表示对象不应该被修改。
+嵌入式场景：
+
+查表数据。
+字符串常量。
+设备固定配置。
+函数只读参数。
+
+static const uint16_t crc_table[256] = &#123;    // ...&#125;;void send_data(const uint8_t *buf, uint16_t len);
+
+面试答法：
+
+const 能表达只读语义，也可能让数据放到只读存储区域，节省 RAM。函数参数中使用 const 可以告诉调用者这个函数不会修改传入缓冲区。
+
+8. 位运算和寄存器操作高频问点：如何置位、清零、翻转、判断某一位？#define BIT(n) (1U &lt;&lt; (n))reg |= BIT(3);       // 置位 bit3reg &amp;= ~BIT(3);      // 清零 bit3reg ^= BIT(3);       // 翻转 bit3if (reg &amp; BIT(3)) &#123;  // 判断 bit3 是否为 1&#125;
+
+高频问点：如何设置多位字段？例如要设置寄存器 bit[5:4] 为 0b10：
+#define FIELD_MASK   (0x3U &lt;&lt; 4)#define FIELD_VALUE  (0x2U &lt;&lt; 4)reg = (reg &amp; ~FIELD_MASK) | FIELD_VALUE;
+
+面试答法：
+
+设置多位字段时，不能直接或上新值，否则旧值可能残留。正确做法是先用 mask 清掉目标位，再把新值移位后写进去。
+
+高频问点：为什么寄存器要用 volatile？硬件寄存器的值可能被硬件改变，例如状态寄存器、接收数据寄存器。编译器无法知道这些变化。如果不加 volatile，编译器可能把寄存器读取优化成一次，导致程序看不到状态变化。
+#define UART_SR (*(volatile uint32_t *)0x40011000)while ((UART_SR &amp; BIT(5)) == 0) &#123;&#125;
+
+9. 宏、条件编译和 inline高频问点：宏有什么优缺点？优点：
+
+编译期展开。
+适合定义常量、寄存器地址、bit mask。
+可用于条件编译。
+
+缺点：
+
+没有类型检查。
+参数可能被重复求值。
+复杂宏可读性差。
+
+错误示例：
+#define SQUARE(x) x * xint y = SQUARE(1 + 2); // 展开为 1 + 2 * 1 + 2
+
+改进：
+#define SQUARE(x) ((x) * (x))
+
+但仍有重复求值问题：
+SQUARE(i++); // i++ 会执行两次
+
+面试答法：
+
+简单常量和 bit 操作用宏很方便，但复杂逻辑我更倾向使用 static inline 函数，因为它有类型检查，也更容易调试。
+
+高频问点：#ifdef 常用于什么？用途：
+
+按芯片型号选择代码。
+打开或关闭调试日志。
+配置功能模块。
+适配不同编译器。
+
+示例：
+#ifdef ENABLE_DEBUG_LOG#define LOG(fmt, ...) printf(fmt, ##__VA_ARGS__)#else#define LOG(fmt, ...)#endif
+
+高频问点：头文件为什么要防止重复包含？同一个头文件可能被多个文件间接包含，如果没有 include guard，可能导致重复定义或编译错误。
+#ifndef DRIVER_UART_H#define DRIVER_UART_Hvoid uart_init(void);#endif
+
+或：
+#pragma once
+
+10. 大小端、对齐和字节序高频问点：什么是大小端？多字节数据在内存中的存放顺序不同：
+
+大端：高位字节放低地址。
+小端：低位字节放低地址。
+
+例如 0x12345678：
+
+大端：12 34 56 78
+小端：78 56 34 12
+
+嵌入式场景：
+
+通信协议解析。
+Flash 数据存储。
+传感器寄存器高低字节合成。
+
+示例：
+uint16_t value = ((uint16_t)buf[0] &lt;&lt; 8) | buf[1]; // 大端解析
+
+面试答法：
+
+协议解析时不要直接把字节数组强转成结构体或整数指针，因为会受到大小端和对齐影响。更稳妥的做法是按协议规定显式移位组合。
+
+高频问点：未对齐访问有什么问题？有些 CPU 支持未对齐访问但效率较低，有些 MCU 访问未对齐地址会产生异常。
+风险场景：
+
+把 uint8_t * 强转为 uint32_t *。
+packed 结构体中直接访问多字节成员。
+协议缓冲区地址不对齐。
+
+安全做法：
+
+使用 memcpy 复制到对齐变量。
+使用字节移位解析。
+
+11. 中断与共享变量高频问点：中断函数里为什么不能做太多事？原因：
+
+中断会打断正常任务。
+中断执行时间过长会影响实时性。
+可能阻塞其他中断。
+不适合做 printf、动态内存分配、长循环、复杂协议解析。
+
+推荐做法：
+
+读取必要状态。
+清除中断标志。
+保存少量数据。
+设置标志位。
+释放信号量或发送简短消息给任务。
+
+面试答法：
+
+中断里应该快进快出，只做必要处理。耗时逻辑放到主循环或 RTOS 任务中执行。这样可以减少中断延迟，提高系统实时性。
+
+高频问点：主循环和中断共享变量要注意什么？注意：
+
+共享变量加 volatile。
+多字节变量读写可能不是原子操作。
+读改写操作需要临界区。
+中断标志要及时清除。
+
+示例：
+static volatile uint32_t tick_count;void SysTick_Handler(void)&#123;    tick_count++;&#125;uint32_t get_tick(void)&#123;    uint32_t t;    __disable_irq();    t = tick_count;    __enable_irq();    return t;&#125;
+
+12. 错误处理和健壮性高频问点：嵌入式函数返回值怎么设计？常见方式：
+typedef enum &#123;    ERR_OK = 0,    ERR_TIMEOUT = -1,    ERR_INVALID_ARG = -2,    ERR_BUSY = -3,&#125; error_t;
+
+函数示例：
+int uart_send(const uint8_t *buf, uint16_t len)&#123;    if (buf == NULL || len == 0) &#123;        return ERR_INVALID_ARG;    &#125;    // send...    return ERR_OK;&#125;
+
+面试答法：
+
+驱动接口要尽量返回明确错误码，而不是只返回成功或失败。这样上层可以区分参数错误、超时、忙状态、硬件错误，并做对应处理。
+
+高频问点：为什么要检查空指针和长度？嵌入式系统没有操作系统保护时，空指针或越界访问可能直接 HardFault，甚至破坏内存。
+接口设计建议：
+
+指针参数先判空。
+长度参数检查范围。
+对外接口不要相信调用者一定正确。
+对关键错误可以使用断言。
+
+13. 代码组织高频问点：.h 和 .c 分别放什么？.h 文件：
+
+类型定义。
+宏定义。
+对外函数声明。
+对外常量声明。
+
+.c 文件：
+
+函数实现。
+私有变量。
+私有函数。
+
+示例：
+// led.h#pragma oncevoid led_init(void);void led_set(uint8_t on);
+
+// led.c#include &quot;led.h&quot;static uint8_t led_state;void led_init(void)&#123;    led_state = 0;&#125;void led_set(uint8_t on)&#123;    led_state = on;&#125;
+
+高频问点：如何设计一个简单驱动接口？建议包含：
+
+初始化函数。
+配置函数。
+读写函数。
+状态查询函数。
+错误返回值。
+
+示例：
+typedef struct &#123;    uint32_t baudrate;    uint8_t data_bits;    uint8_t stop_bits;&#125; uart_config_t;int uart_init(const uart_config_t *config);int uart_write(const uint8_t *buf, uint16_t len);int uart_read(uint8_t *buf, uint16_t len, uint32_t timeout_ms);
+
+面试答法：
+
+我会把驱动接口设计成清晰的初始化、读写和状态查询函数，参数尽量明确，返回值能表达错误原因。模块内部变量用 static 隐藏，避免上层直接操作底层状态。
+
+14. 高频 Bug 场景场景 1：程序偶尔 HardFault可能原因：
+
+空指针。
+栈溢出。
+数组越界。
+未对齐访问。
+函数指针错误。
+中断访问已释放或失效的缓冲区。
+
+排查方法：
+
+查看 HardFault 寄存器。
+打开 map 文件看栈和 RAM。
+增大任务栈测试。
+检查最近修改。
+加断言和日志。
+
+场景 2：优化等级一开程序就异常可能原因：
+
+应该加 volatile 的变量没加。
+代码依赖未定义行为。
+越界访问。
+未初始化变量。
+延时循环被优化掉。
+
+面试答法：
+
+如果不开优化正常、开优化异常，我会重点怀疑 volatile、未初始化变量、越界访问和未定义行为。比如等待中断标志位的循环，如果标志变量没有 volatile，编译器可能把它优化成死循环。
+
+场景 3：局部数组过大导致异常示例：
+void foo(void)&#123;    uint8_t buf[8192]; // 小 MCU 上很危险&#125;
+
+解决：
+
+改为静态缓冲区。
+减小缓冲区。
+使用分块处理。
+检查任务栈大小。
+
+15. 嵌入式 C 高频问答速背volatile、const、static 的区别？
+volatile：防止编译器优化访问，常用于寄存器和中断共享变量。
+const：表示只读语义，防止误修改，也可能放入只读区。
+static：修饰局部变量改变生命周期，修饰全局变量或函数限制文件作用域。
+
+malloc 和静态分配怎么选？小 MCU 和实时系统中优先静态分配或内存池。动态分配灵活，但有碎片、失败、耗时不确定和泄漏风险。
+为什么中断共享变量要加 volatile？因为变量可能在中断中被修改，主循环如果不加 volatile，编译器可能缓存变量值，导致主循环看不到变化。
+volatile 为什么不等于原子操作？因为 volatile 只约束编译器访问，不保证 count++ 这种读改写操作不可打断。
+如何避免头文件重复包含？使用 include guard 或 #pragma once。
+什么情况下用函数指针？回调、状态机、驱动适配、事件通知。它能降低模块之间的耦合。
+为什么协议解析不建议直接强转结构体？因为结构体可能有 padding，且大小端、对齐方式和编译器实现会影响布局。更稳妥的是按字节解析。
+寄存器操作为什么常用位运算？寄存器通常每一位或几位代表一个配置项。位运算可以只修改目标位，不影响其他位。
+如何看待全局变量？全局变量方便但容易导致耦合和并发问题。能限制作用域就用 static，能通过接口访问就不要直接暴露。
+嵌入式 C 代码最重要的习惯是什么？参数检查、边界检查、清晰的错误码、控制作用域、避免大栈对象、共享变量考虑并发、硬件相关变量使用 volatile。
+
+]]></content>
+      <categories>
+        <category>求职</category>
+      </categories>
+      <tags>
+        <tag>面试</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>电路基础</title>
     <url>/2023/08/10/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/</url>
     <content><![CDATA[一、电流、电压、电功率和能量电流：
@@ -6027,6 +6027,56 @@ FLASH：G 表示 1024KB,C 表示 256，E 表示 512，I 表示 2048
       </tags>
   </entry>
   <entry>
+    <title>第七章 启动文件详解</title>
+    <url>/2024/03/03/%E7%AC%AC%E4%B8%83%E7%AB%A0%20%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/</url>
+    <content><![CDATA[7.1启动文件介绍1、初始化堆栈指针 SP&#x3D;_initial_sp
+2、初始化PC指针  &#x3D;Rest_Handler
+3、初始化中断向量表
+4、配置系统时钟
+5、调用C库函数_main初始化用户堆栈，调用main函数
+7.2 ARM汇编指令EQU：给数字常量去一个富豪们，相当于C语言的define
+AREA：汇编一个新的代码段或者数据段
+SPACE：分配内存空间
+PRE-SERVE8：当前文件堆栈按照8位字节对齐
+EX-PORT：声明一个符号具有全局属性，可被外部的文件使用
+DCD：字节单位分配，要求4字节对齐，要去初始化这些内存
+PROC：定义子程序，与ENDP成对使用，表示子程序结束
+WEAK：弱定义，如果外部文件声明了一个标号，则优先使用外部文件定义的标号，如果外部文件没有定义也不出错。要注意的是：这个不是 ARM 的指令，是编译器的，这里放在一起只是为了方便。
+IM-PORT：跳转到一个符号
+ALIGN：编译器对指令或者数据的存放地址进行对齐，一般需要跟一个立即数，缺省表示 4 字节对齐要注意的是：这个不是 ARM 的指令，是编译器的，这里放在一起只是为了方便。
+END：到达文件的末尾，文件结束
+IF,ELSE,ENDIF：汇编条件分子语句，跟c语言的if else如此
+7.3 启动文件代码讲解7.3.1 Stack栈Stack_Size     EQU 0x00000400 //开辟栈的大小为0X00000400（1KB）               AREA STACK, NOINIT, READWRITE, ALIGN=3              //名字为STACK      可读写       8（2^3）Stack_Mem      SPACE Stack_Size   //分配内存空间，单位 字节，这里指定大小为Strack_Size__initial_sp  //栈的结束地址，由高向低生长
+
+栈的作用是用于局部变量，函数调用，函数形参等开销，栈的大小不能超过内部SRAM的大小，超过要修改栈的大小。
+7.3.2 Heap堆Heap\_Size EQU 0x00000200    //开辟堆大小0X00000200（512字节）   AREA HEAP, NOINIT, READWRITE, ALIGN=3   //名字     不初始化，可读写，8（2^3）\_\_heap\_base  //堆的起始地址          Heap_Mem SPACE Heap_Size__heap_limit    //堆的结束地址       堆由低到高生长和栈相反
+
+堆用来动态内存的分配，像malloc()函数申请的内存就在堆上面
+7.3.3 向量表AREA RESET, DATA, READONLY//定义数据段为RESET 可读，生命三个标号具有全局属性，可供外部文件调用EXPORT __VectorsEXPORT __Vectors_EndEXPORT __Vectors_Size
+
+__Vectors 为向量表起始地址，__Vectors_End 为向量表结束地址，两个相减即可算出向量表大小
+7.3.4 复位程序AREA |.text|, CODE, READONLY//定义一个名称为.text 的代码段，可读。.textReset_Handler PROCEXPORT Reset_Handler [WEAK]IMPORT SystemInitIMPORT __mainLDR R0, =SystemInitBLX R0LDR R0, =__mainBX R0ENDP
+
+复位子程序是系统上电后第一个执行的程序，调用 SystemInit 函数初始化系统时钟，然后调用 C库函数 _mian，最终调用 main 函数去到 C 的世界。
+SystemInit() 是一个标准的库函数，在 system_stm32f103xe.c 这个库文件中定义。主要作用是配置系统时钟，这里调用这个函数之后，单片机的系统时钟配被配置为 72M。
+__main 是一个标准的 C 库函数，主要作用是初始化用户堆栈。
+7.3.5 中断服务程序NMI_Handler PROC ; 系统异常      EXPORT NMI_Handler [WEAK]      B .      ENDP; 限于篇幅，中间代码省略SysTick_Handler PROC      EXPORT SysTick_Handler [WEAK]      B .      ENDPDefault_Handler PROC ; 外部中断      EXPORT WWDG_IRQHandler [WEAK]      EXPORT PVD_IRQHandler [WEAK]      EXPORT TAMP_STAMP_IRQHandler [WEAK]; 限于篇幅，中间代码省略LTDC_IRQHandlerLTDC_ER_IRQHandlerDMA2D_IRQHandler      B .      ENDP
+
+B：跳转到一个标号。这里跳转到一个‘.’，即表示无线循环。
+7.3.6 用户堆栈初始化ALIGN：对指令或者数据存放的地址进行对齐，后面会跟一个立即数。缺省表示 4 字节对齐。
+; 用户栈和堆初始化, 由 C 库函数_main 来完成IF : DEF :__MICROLIB ; 这个宏在 KEIL 里面开启EXPORT __initial_spEXPORT __heap_baseEXPORT __heap_limitELSE  IMPORT __use_two_region_memory ; 这个函数由用户自己实现  EXPORT __user_initial_stackheap  __user_initial_stackheap  LDR R0, = Heap_Mem  LDR R1, =(Stack_Mem + Stack_Size)  LDR R2, = (Heap_Mem + Heap_Size)  LDR R3, = Stack_Mem  BX LR  ALIGN  ENDIF  END
+
+
+首先判断是否定义了 __MICROLIB，如果定义了这个宏则赋予标号 __initial_sp（栈顶地址）、__heap_base（堆起始地址）、__heap_limit（堆结束地址）全局属性，可供外部文件调用。
+]]></content>
+      <categories>
+        <category>野火 STM32</category>
+      </categories>
+      <tags>
+        <tag>STM32</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>第三章 线性表</title>
     <url>/2024/09/09/%E7%AC%AC%E4%B8%89%E7%AB%A0%20%E7%BA%BF%E6%80%A7%E8%A1%A8/</url>
     <content><![CDATA[1.线性表的定义线性表：零个或多个数据元素的有限序列。
@@ -6297,56 +6347,6 @@ GPIO 引脚将信号传输到 stm32 其他片上外设，由该外设读取引�
       </tags>
   </entry>
   <entry>
-    <title>第七章 启动文件详解</title>
-    <url>/2024/03/03/%E7%AC%AC%E4%B8%83%E7%AB%A0%20%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/</url>
-    <content><![CDATA[7.1启动文件介绍1、初始化堆栈指针 SP&#x3D;_initial_sp
-2、初始化PC指针  &#x3D;Rest_Handler
-3、初始化中断向量表
-4、配置系统时钟
-5、调用C库函数_main初始化用户堆栈，调用main函数
-7.2 ARM汇编指令EQU：给数字常量去一个富豪们，相当于C语言的define
-AREA：汇编一个新的代码段或者数据段
-SPACE：分配内存空间
-PRE-SERVE8：当前文件堆栈按照8位字节对齐
-EX-PORT：声明一个符号具有全局属性，可被外部的文件使用
-DCD：字节单位分配，要求4字节对齐，要去初始化这些内存
-PROC：定义子程序，与ENDP成对使用，表示子程序结束
-WEAK：弱定义，如果外部文件声明了一个标号，则优先使用外部文件定义的标号，如果外部文件没有定义也不出错。要注意的是：这个不是 ARM 的指令，是编译器的，这里放在一起只是为了方便。
-IM-PORT：跳转到一个符号
-ALIGN：编译器对指令或者数据的存放地址进行对齐，一般需要跟一个立即数，缺省表示 4 字节对齐要注意的是：这个不是 ARM 的指令，是编译器的，这里放在一起只是为了方便。
-END：到达文件的末尾，文件结束
-IF,ELSE,ENDIF：汇编条件分子语句，跟c语言的if else如此
-7.3 启动文件代码讲解7.3.1 Stack栈Stack_Size     EQU 0x00000400 //开辟栈的大小为0X00000400（1KB）               AREA STACK, NOINIT, READWRITE, ALIGN=3              //名字为STACK      可读写       8（2^3）Stack_Mem      SPACE Stack_Size   //分配内存空间，单位 字节，这里指定大小为Strack_Size__initial_sp  //栈的结束地址，由高向低生长
-
-栈的作用是用于局部变量，函数调用，函数形参等开销，栈的大小不能超过内部SRAM的大小，超过要修改栈的大小。
-7.3.2 Heap堆Heap\_Size EQU 0x00000200    //开辟堆大小0X00000200（512字节）   AREA HEAP, NOINIT, READWRITE, ALIGN=3   //名字     不初始化，可读写，8（2^3）\_\_heap\_base  //堆的起始地址          Heap_Mem SPACE Heap_Size__heap_limit    //堆的结束地址       堆由低到高生长和栈相反
-
-堆用来动态内存的分配，像malloc()函数申请的内存就在堆上面
-7.3.3 向量表AREA RESET, DATA, READONLY//定义数据段为RESET 可读，生命三个标号具有全局属性，可供外部文件调用EXPORT __VectorsEXPORT __Vectors_EndEXPORT __Vectors_Size
-
-__Vectors 为向量表起始地址，__Vectors_End 为向量表结束地址，两个相减即可算出向量表大小
-7.3.4 复位程序AREA |.text|, CODE, READONLY//定义一个名称为.text 的代码段，可读。.textReset_Handler PROCEXPORT Reset_Handler [WEAK]IMPORT SystemInitIMPORT __mainLDR R0, =SystemInitBLX R0LDR R0, =__mainBX R0ENDP
-
-复位子程序是系统上电后第一个执行的程序，调用 SystemInit 函数初始化系统时钟，然后调用 C库函数 _mian，最终调用 main 函数去到 C 的世界。
-SystemInit() 是一个标准的库函数，在 system_stm32f103xe.c 这个库文件中定义。主要作用是配置系统时钟，这里调用这个函数之后，单片机的系统时钟配被配置为 72M。
-__main 是一个标准的 C 库函数，主要作用是初始化用户堆栈。
-7.3.5 中断服务程序NMI_Handler PROC ; 系统异常      EXPORT NMI_Handler [WEAK]      B .      ENDP; 限于篇幅，中间代码省略SysTick_Handler PROC      EXPORT SysTick_Handler [WEAK]      B .      ENDPDefault_Handler PROC ; 外部中断      EXPORT WWDG_IRQHandler [WEAK]      EXPORT PVD_IRQHandler [WEAK]      EXPORT TAMP_STAMP_IRQHandler [WEAK]; 限于篇幅，中间代码省略LTDC_IRQHandlerLTDC_ER_IRQHandlerDMA2D_IRQHandler      B .      ENDP
-
-B：跳转到一个标号。这里跳转到一个‘.’，即表示无线循环。
-7.3.6 用户堆栈初始化ALIGN：对指令或者数据存放的地址进行对齐，后面会跟一个立即数。缺省表示 4 字节对齐。
-; 用户栈和堆初始化, 由 C 库函数_main 来完成IF : DEF :__MICROLIB ; 这个宏在 KEIL 里面开启EXPORT __initial_spEXPORT __heap_baseEXPORT __heap_limitELSE  IMPORT __use_two_region_memory ; 这个函数由用户自己实现  EXPORT __user_initial_stackheap  __user_initial_stackheap  LDR R0, = Heap_Mem  LDR R1, =(Stack_Mem + Stack_Size)  LDR R2, = (Heap_Mem + Heap_Size)  LDR R3, = Stack_Mem  BX LR  ALIGN  ENDIF  END
-
-
-首先判断是否定义了 __MICROLIB，如果定义了这个宏则赋予标号 __initial_sp（栈顶地址）、__heap_base（堆起始地址）、__heap_limit（堆结束地址）全局属性，可供外部文件调用。
-]]></content>
-      <categories>
-        <category>野火 STM32</category>
-      </categories>
-      <tags>
-        <tag>STM32</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>第九章 STM32中断应用</title>
     <url>/2024/05/09/%E7%AC%AC%E4%B9%9D%E7%AB%A0%20STM32%E4%B8%AD%E6%96%AD%E5%BA%94%E7%94%A8/</url>
     <content><![CDATA[一、中断概述中断时出现某些意外需要主机干预，机器能自动停止运行的程序，转入新的处理的程序，处理完之后返回程序被暂停的程序，继续运行。
@@ -6372,6 +6372,42 @@ B：跳转到一个标号。这里跳转到一个‘.’，即表示无线循环
       </categories>
       <tags>
         <tag>STM32</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>第二章 算法</title>
+    <url>/2024/02/29/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[2.1 算法定义算法是解决特定问题求解步骤的描述，计算机中表现位指令的有限序列，并且每条指令表示一个或多个操作。
+2.2 算法的特性算法具有：输入、输出、有穷性、确定性和可行性。
+2.2.1 输入输出算法具有零个或多个输入和至少一个或多个输出。
+2.2.2 有穷性指的是算法在执行有限步骤之后，自动结束而不会出现无限循环，并且每一个步骤可接受在时间内完成。
+2.2.3 确定性算法的每一步骤具有确定的含义，不会出现二义性。
+2.2.4 可行性算法的每一步都必须可行的，每一步都能狗通过执行有限次数完成。
+2.3 算法设计的要求2.3.1 正确性指的是至少具有输入、输出和加工处理无歧义性，能正确反映问题的需求，能够得到问题的正确答案。
+2.3.2 可读性算法设计的另外一个目的，为了便于阅读、理解和交流。
+2.3.3 健壮性输入数据不合法，算法也能够做出相关处理，而不是产生异常或者莫名其妙的结果。
+2.3.4 时间效率高和存储量低时间效率高：算法的执行时间。存储量低：执行过中需要的最大存储控件，运行时所占用的内存或外部硬盘存储控件。
+应该满足时间效率和存储量低的需求。
+2.4 算法效率的度量方法2.4.1 事后统计方法通过设计好的测试程序和数据，利用计算机计时器对不同算法编制的程序的运行时间进行对比，确定算法效率的高低。
+2.4.2 事前分析估算方法在计算机程序编制前，依据统计方法对算法进行估算。
+
+一个程序的运行时间，依据赖与算法的好坏和问题的输入规模。问题输出规模是指输入量的多少。
+2.5 函数的渐近增长给定义两个函数f（n）和g（n），如果存在一个整数N，使得对于所有的n&gt;N，f（n）总是大于g（n），所以f（n）的增长渐近快于g（n）。
+判断一个算法效率时，函数中的常数和其他次要项常常可以忽略，而更应该关注主项（最高阶项） 的阶数。
+
+可以分析出：某个算法，随着n的增大，它会优越于另外一个算法，或者差于另外一个算法。
+2.6 算法时间的复杂度2.6.1 算法时间复杂度定义在进行算法分析时，语句总的执行次数T（n）是关于问题规模n的函数，进而分析T（n）随n的变化情况并而确定T（n）的数量级。算法的时间复杂度（时间量度），记作T（n）&#x3D;O（f（n））。表示随着问题规模n的增大，算法执行时间的增长率和f（n）的增长率相同，称为算法的渐近时间赋值度，简称时间复杂度。其中f（n）是问题规模n的某个函数。
+2.6.2 推导大O阶方法推导大O阶：
+（1）常数1取代运行时间中的所有加法常数。
+（2）在修改后运行次数函数中，只保留最高阶项。
+（3）如果最高阶项存在且系数不是1，则去除与这个项相乘的系数，得到结果最大O阶。
+2.6.3 常数阶int sum = 0,n = 100;  //一次sum = (1 + n) * n /2; //一次printf(&quot;%d&quot;, sum);    //一次
+]]></content>
+      <categories>
+        <category>数据结构</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
       </tags>
   </entry>
   <entry>
@@ -6675,39 +6711,102 @@ Release_Note.html:：库的版本更新说明。
       </tags>
   </entry>
   <entry>
-    <title>第二章 算法</title>
-    <url>/2024/02/29/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[2.1 算法定义算法是解决特定问题求解步骤的描述，计算机中表现位指令的有限序列，并且每条指令表示一个或多个操作。
-2.2 算法的特性算法具有：输入、输出、有穷性、确定性和可行性。
-2.2.1 输入输出算法具有零个或多个输入和至少一个或多个输出。
-2.2.2 有穷性指的是算法在执行有限步骤之后，自动结束而不会出现无限循环，并且每一个步骤可接受在时间内完成。
-2.2.3 确定性算法的每一步骤具有确定的含义，不会出现二义性。
-2.2.4 可行性算法的每一步都必须可行的，每一步都能狗通过执行有限次数完成。
-2.3 算法设计的要求2.3.1 正确性指的是至少具有输入、输出和加工处理无歧义性，能正确反映问题的需求，能够得到问题的正确答案。
-2.3.2 可读性算法设计的另外一个目的，为了便于阅读、理解和交流。
-2.3.3 健壮性输入数据不合法，算法也能够做出相关处理，而不是产生异常或者莫名其妙的结果。
-2.3.4 时间效率高和存储量低时间效率高：算法的执行时间。存储量低：执行过中需要的最大存储控件，运行时所占用的内存或外部硬盘存储控件。
-应该满足时间效率和存储量低的需求。
-2.4 算法效率的度量方法2.4.1 事后统计方法通过设计好的测试程序和数据，利用计算机计时器对不同算法编制的程序的运行时间进行对比，确定算法效率的高低。
-2.4.2 事前分析估算方法在计算机程序编制前，依据统计方法对算法进行估算。
+    <title>第五章-指针</title>
+    <url>/2023/08/14/%E7%AC%AC%E4%BA%94%E7%AB%A0-%E6%8C%87%E9%92%88/</url>
+    <content><![CDATA[一、指针的概念操作系统给每个存储单元分配了一个编号，从 0x00 00 00 00 00 ~0xff ff ff ff 称之为内存
+指针变量：是变量也是指针变量，这个变量用来存放一个地址编号。在 32 位系统下，有 4 个字节
+注：
+​ 1、无论声明类型的地址，都有存储单元的编号，在 32 位下都是 4 个总控二。所以 任何类型的指针变量都是 4 个字节
+​ 2、对应类型的指针变量，只能存放对应类型的变量地址
+​ 比如：整形的指针变量，就是存放整型变量的地址
+扩展：
+字符变量 char ch; ch 占一个字节，它有一个地址编号，这个地址编号就是 ch 的地址整型变量 int a； a 占四个字节，占有四个字节的存储单位，有四个地址编号
 
-一个程序的运行时间，依据赖与算法的好坏和问题的输入规模。问题输出规模是指输入量的多少。
-2.5 函数的渐近增长给定义两个函数f（n）和g（n），如果存在一个整数N，使得对于所有的n&gt;N，f（n）总是大于g（n），所以f（n）的增长渐近快于g（n）。
-判断一个算法效率时，函数中的常数和其他次要项常常可以忽略，而更应该关注主项（最高阶项） 的阶数。
+二、指针的定义方法1、简单指针
+数据类型 * 指针变量名
+int * P;//定义一个指针变量P
 
-可以分析出：某个算法，随着n的增大，它会优越于另外一个算法，或者差于另外一个算法。
-2.6 算法时间的复杂度2.6.1 算法时间复杂度定义在进行算法分析时，语句总的执行次数T（n）是关于问题规模n的函数，进而分析T（n）随n的变化情况并而确定T（n）的数量级。算法的时间复杂度（时间量度），记作T（n）&#x3D;O（f（n））。表示随着问题规模n的增大，算法执行时间的增长率和f（n）的增长率相同，称为算法的渐近时间赋值度，简称时间复杂度。其中f（n）是问题规模n的某个函数。
-2.6.2 推导大O阶方法推导大O阶：
-（1）常数1取代运行时间中的所有加法常数。
-（2）在修改后运行次数函数中，只保留最高阶项。
-（3）如果最高阶项存在且系数不是1，则去除与这个项相乘的系数，得到结果最大O阶。
-2.6.3 常数阶int sum = 0,n = 100;  //一次sum = (1 + n) * n /2; //一次printf(&quot;%d&quot;, sum);    //一次
+2、指针的运算符
+&amp; 取地址 ：获取一个变量的地址
+*取值：标识作用
+
+#include &lt;stdio.h&gt;int main()&#123;    int a = 100;    int * p;//指针变量    p = &amp;a;//a的地址保存在p中    printf(&quot;a = %d %d\n&quot;,a,*p);    ptintf(&quot;&amp;a = %p %p\n&quot;,&amp;a,p);&#125;
+
+
+3、指针大小
+在 32 位系统下，所以类型的指针都是 4 个字节
+三、指针的分类1、字符指针
+​ char *p;&#x2F;&#x2F;只能存放字符串类型的地址编号
+​ char ch;
+​ p &#x3D; &ch;
+2、短整型指针
+​ short int *p;
+​ short int a;
+​ p &#x3D;&a;
+3、整形指针
+​ int *p;
+​ int a;
+​ p &#x3D;&a;
+4：长整型指针
+long int *p;
+long int a;
+p &#x3D;&a;
+5：float 型的指针
+float *p;
+float a;
+p &#x3D;&a;
+6：double 型的指针
+​ double *p;
+​ double a;
+​ p &#x3D;&a;
+7：函数指针
+8、结构体指针
+9、指针的指针
+10、数组指针
+四、指针和变量的关系指针可以存放变量地址编号
+1、变量的名称引用变量
+​ int a;
+​ a&#x3D;100;
+2、通过指针变量引来变量
+​ int *p;
+​ p &#x3D;&a;&#x2F;&#x2F;p 保存了 a 的地址，也可以说 p 指向了 a
+​ *p&#x3D;100;
+注意：指针变量的定义可以初始化
+int a;
+int *p&#x3D;&a;&#x2F;&#x2F;指针就是存放变量地址的
+#include &lt;stdio.h&gt;int main()&#123;    int *p1,*p2,temp,a,b;    p1=&amp;a;    p2=&amp;b;    printf(&quot;输入a b的值：\n&quot;);    scanf(&quot;%d %d&quot;,p1,p2);//70 90    temp = *p1;//p1指向a的值给temp赋值 70    *p1 = *p2;//p2指向b的值给p1的变量a赋值 90    *p2 = temp;//temp给p2指向的变量b赋值 70    printf(&quot;a=%d b=%d\n&quot;,a,b);	printf(&quot;*p1=%d *p2=%d\n&quot;,*p1,*p2);&#125;
+
+
+扩展：
+对应类型的指针，只能保存对应类型数据的地址
+如果想让不同类型的指针互相赋值，需要强制类型转换
+#include &lt;stdio.h&gt;int main()&#123;    int a=0x1234,b=5678;    char *p1,*p2;    printf(&quot;%#x %#x\n&quot;,a,b);    p1=(char *)&amp;a;    p2=(char *)&amp;b;    printf(&quot;%#x %#x\n&quot;,*p1,*p2);    p1++;    p2++;    printf(&quot;%#x %#x\n&quot;,*p1,*p2);&#125;
+
+
+
+五、指针和数组元素之间的关系1、数组元素和指针的基本关系
+变量存放在内存中，有地址编号，定义的数组，是的哟个相同类型的变量的集合。每个变量都占内存空间，都有地址编号。指针变量可以存放数组元素的地址（数组首元素）
+int a[10];//int *p =&amp;a[0];int *p;p=&amp;a[0]; //指针变量p保存了数组a中第0个元素的地址，即a[0]的地址
+
+2、数组元素的引用方式
+（1）数组名[下标]
+int a[10];a[2]=100;
+
+（2）指针名加下标
+int a[10];int *p;p=a;p[2]=100;
+
+（3）指针运算加取值
+int a[10];int *p;p = a;*(p+2)=100;//a[2]=100
+
+#include &lt;stdio.h&gt;int main()&#123;    int a[5]=&#123;0,1,2,3,4&#125;;    int *p;    p=a;    printf(&quot;a[2]=%d\n&quot;,a[2]);//2    printf(&quot;p[2]=%d\n&quot;,p[2]);//2    printf(&quot;*(p+2) = %d\n&quot;,*(p+2));//2 	printf(&quot;*(a+2) = %d\n&quot;,*(a+2));//2 	printf(&quot;p=%p\n&quot;,p); 	printf(&quot;p+2=%p\n&quot;,p+2); 	printf(&quot;&amp;a[0] = %p\n&quot;, &amp;a[0]); 	printf(&quot;&amp;a[2] = %p\n&quot;, &amp;a[2]);&#125;
+
+
 ]]></content>
       <categories>
-        <category>数据结构</category>
+        <category>千锋C语言</category>
       </categories>
       <tags>
-        <tag>算法</tag>
+        <tag>嵌入式C</tag>
       </tags>
   </entry>
   <entry>
@@ -6873,105 +6972,6 @@ S(2,4)在预处理代替成字符串的形参 2 * 4
 
 3、
 #if 表达式	代码块一#else	代码块二#endif//如果表达式为真，编译第一段，否则第二段//多用于注释多行代码
-]]></content>
-      <categories>
-        <category>千锋C语言</category>
-      </categories>
-      <tags>
-        <tag>嵌入式C</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>第五章-指针</title>
-    <url>/2023/08/14/%E7%AC%AC%E4%BA%94%E7%AB%A0-%E6%8C%87%E9%92%88/</url>
-    <content><![CDATA[一、指针的概念操作系统给每个存储单元分配了一个编号，从 0x00 00 00 00 00 ~0xff ff ff ff 称之为内存
-指针变量：是变量也是指针变量，这个变量用来存放一个地址编号。在 32 位系统下，有 4 个字节
-注：
-​ 1、无论声明类型的地址，都有存储单元的编号，在 32 位下都是 4 个总控二。所以 任何类型的指针变量都是 4 个字节
-​ 2、对应类型的指针变量，只能存放对应类型的变量地址
-​ 比如：整形的指针变量，就是存放整型变量的地址
-扩展：
-字符变量 char ch; ch 占一个字节，它有一个地址编号，这个地址编号就是 ch 的地址整型变量 int a； a 占四个字节，占有四个字节的存储单位，有四个地址编号
-
-二、指针的定义方法1、简单指针
-数据类型 * 指针变量名
-int * P;//定义一个指针变量P
-
-2、指针的运算符
-&amp; 取地址 ：获取一个变量的地址
-*取值：标识作用
-
-#include &lt;stdio.h&gt;int main()&#123;    int a = 100;    int * p;//指针变量    p = &amp;a;//a的地址保存在p中    printf(&quot;a = %d %d\n&quot;,a,*p);    ptintf(&quot;&amp;a = %p %p\n&quot;,&amp;a,p);&#125;
-
-
-3、指针大小
-在 32 位系统下，所以类型的指针都是 4 个字节
-三、指针的分类1、字符指针
-​ char *p;&#x2F;&#x2F;只能存放字符串类型的地址编号
-​ char ch;
-​ p &#x3D; &ch;
-2、短整型指针
-​ short int *p;
-​ short int a;
-​ p &#x3D;&a;
-3、整形指针
-​ int *p;
-​ int a;
-​ p &#x3D;&a;
-4：长整型指针
-long int *p;
-long int a;
-p &#x3D;&a;
-5：float 型的指针
-float *p;
-float a;
-p &#x3D;&a;
-6：double 型的指针
-​ double *p;
-​ double a;
-​ p &#x3D;&a;
-7：函数指针
-8、结构体指针
-9、指针的指针
-10、数组指针
-四、指针和变量的关系指针可以存放变量地址编号
-1、变量的名称引用变量
-​ int a;
-​ a&#x3D;100;
-2、通过指针变量引来变量
-​ int *p;
-​ p &#x3D;&a;&#x2F;&#x2F;p 保存了 a 的地址，也可以说 p 指向了 a
-​ *p&#x3D;100;
-注意：指针变量的定义可以初始化
-int a;
-int *p&#x3D;&a;&#x2F;&#x2F;指针就是存放变量地址的
-#include &lt;stdio.h&gt;int main()&#123;    int *p1,*p2,temp,a,b;    p1=&amp;a;    p2=&amp;b;    printf(&quot;输入a b的值：\n&quot;);    scanf(&quot;%d %d&quot;,p1,p2);//70 90    temp = *p1;//p1指向a的值给temp赋值 70    *p1 = *p2;//p2指向b的值给p1的变量a赋值 90    *p2 = temp;//temp给p2指向的变量b赋值 70    printf(&quot;a=%d b=%d\n&quot;,a,b);	printf(&quot;*p1=%d *p2=%d\n&quot;,*p1,*p2);&#125;
-
-
-扩展：
-对应类型的指针，只能保存对应类型数据的地址
-如果想让不同类型的指针互相赋值，需要强制类型转换
-#include &lt;stdio.h&gt;int main()&#123;    int a=0x1234,b=5678;    char *p1,*p2;    printf(&quot;%#x %#x\n&quot;,a,b);    p1=(char *)&amp;a;    p2=(char *)&amp;b;    printf(&quot;%#x %#x\n&quot;,*p1,*p2);    p1++;    p2++;    printf(&quot;%#x %#x\n&quot;,*p1,*p2);&#125;
-
-
-
-五、指针和数组元素之间的关系1、数组元素和指针的基本关系
-变量存放在内存中，有地址编号，定义的数组，是的哟个相同类型的变量的集合。每个变量都占内存空间，都有地址编号。指针变量可以存放数组元素的地址（数组首元素）
-int a[10];//int *p =&amp;a[0];int *p;p=&amp;a[0]; //指针变量p保存了数组a中第0个元素的地址，即a[0]的地址
-
-2、数组元素的引用方式
-（1）数组名[下标]
-int a[10];a[2]=100;
-
-（2）指针名加下标
-int a[10];int *p;p=a;p[2]=100;
-
-（3）指针运算加取值
-int a[10];int *p;p = a;*(p+2)=100;//a[2]=100
-
-#include &lt;stdio.h&gt;int main()&#123;    int a[5]=&#123;0,1,2,3,4&#125;;    int *p;    p=a;    printf(&quot;a[2]=%d\n&quot;,a[2]);//2    printf(&quot;p[2]=%d\n&quot;,p[2]);//2    printf(&quot;*(p+2) = %d\n&quot;,*(p+2));//2 	printf(&quot;*(a+2) = %d\n&quot;,*(a+2));//2 	printf(&quot;p=%p\n&quot;,p); 	printf(&quot;p+2=%p\n&quot;,p+2); 	printf(&quot;&amp;a[0] = %p\n&quot;, &amp;a[0]); 	printf(&quot;&amp;a[2] = %p\n&quot;, &amp;a[2]);&#125;
-
-
 ]]></content>
       <categories>
         <category>千锋C语言</category>

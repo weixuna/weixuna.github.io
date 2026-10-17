@@ -99,7 +99,7 @@ GATT Write 成功是否代表路线成功？ 不是，只代表包通过同步�
   </entry>
   <entry>
     <title></title>
-    <url>/2026/10/16/C%20%E8%AF%AD%E8%A8%80%E4%B8%8E%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%9F%BA%E7%A1%80%E5%AE%8C%E6%95%B4%E9%9D%A2%E8%AF%95%E6%89%8B%E5%86%8C/</url>
+    <url>/2026/10/17/C%20%E8%AF%AD%E8%A8%80%E4%B8%8E%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%9F%BA%E7%A1%80%E5%AE%8C%E6%95%B4%E9%9D%A2%E8%AF%95%E6%89%8B%E5%86%8C/</url>
     <content><![CDATA[
 C 语言与嵌入式基础面试手册
 适用：嵌入式软件、MCU、RTOS、驱动和应用方案实习面试。
@@ -3103,6 +3103,293 @@ taskENTER_CRITICAL();   // 进入临界区（关闭中断/调到最高优先级�
       </tags>
   </entry>
   <entry>
+    <title>嵌入式面试八股文之外设</title>
+    <url>/2026/10/16/%E5%B5%8C%E5%85%A5%E5%BC%8F%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1%E6%96%87%E4%B9%8B%E5%A4%96%E8%AE%BE/</url>
+    <content><![CDATA[1.1 GPIOGPIO（General Purpose Input&#x2F;Output）是芯片控制外部电路最基础的引脚接口。
+1. 八种工作模式
+
+
+分类
+模式名称
+核心特点与典型应用场景
+
+
+
+输入模式
+浮空输入 (Floating)
+电平完全由外部决定，引脚悬空时电平不确定。常用于UART RX、外部按键（已有外部上下拉）。
+
+
+
+上拉输入 (Pull-up)
+内部连接上拉电阻，默认高电平。用于检测低电平有效的外部中断或按键。
+
+
+
+下拉输入 (Pull-down)
+内部连接下拉电阻，默认低电平。用于检测高电平有效的外部信号。
+
+
+
+模拟输入 (Analog)
+关闭施密特触发器，信号直通内部 ADC 模块。用于ADC 电压采集或低功耗模式下的省电配置。
+
+
+输出模式
+开漏输出 (Open-Drain)
+PMOS 不工作，NMOS 导通输出低电平，截止呈高阻态。必须外接上拉电阻才能输出高电平。
+
+
+
+推挽输出 (Push-Pull)
+PMOS 和 NMOS 交替导通，可直接输出强高低电平，驱动能力强。用于驱动 LED、继电器、SPI&#x2F;UART TX。
+
+
+复用模式
+复用开漏 &#x2F; 复用推挽
+引脚控制权交给片上外设硬件（如 I2C、SPI、PWM），而非 CPU 直接写 ODR 寄存器。
+
+
+1.2 UARTUART 是一种异步、全双工、点对点（1对1）的串行通信协议。
+1. 协议核心要素
+物理连线：TX（发送）、RX（接收）、GND（共地，必不可少）。硬件流控需额外增加 RTS（请求发送）和 CTS（允许发送）。
+数据帧格式：
+**空闲态 (Idle)**：持续高电平。
+**起始位 (Start Bit)**：1 bit 低电平（标志传输开始，触发接收端采样定时器）。
+数据位 (Data Bits)：5~8 bits（通常为 8 bits，低位 LSB 先发）。
+**校验位 (Parity Bit)**：可选（奇校验、偶校验、无校验），用于简单检错。
+**停止位 (Stop Bit)**：1 &#x2F; 1.5 &#x2F; 2 bits 高电平，拉开帧间间隔并校准时钟。
+
+
+
+2. 高频面试考点
+既然没有时钟线（CLK），异步通信如何保证收发同步？
+
+收发双方预先约定相同的波特率（Baud Rate）。接收端检测到起始位下降沿后，以 16 倍波特率的内部时钟进行过采样，取每个 bit 中间位置（第 7、8、9 次采样值）进行表决，从而滤除边沿毛刺并容忍一定程度的时钟偏差（通常要求收发双方时钟误差小于 **2.5%~3%**）。
+
+
+UART、RS232、RS485 的区别？
+
+
+
+特性
+UART (TTL电平)
+RS232
+RS485
+
+
+
+信号类型
+单端信号（3.3V&#x2F;5V）
+单端信号（±3V~ ±15V 负逻辑）
+差分信号（A&#x2F;B 两线压差）
+
+
+通信方式
+全双工（1对1）
+全双工（1对1）
+半双工（支持 1对多 总线组网，最多32~256节点）
+
+
+传输距离
+板级（小于 1 米）
+约 15 米
+可达 1200 米（抗共模干扰极强）
+
+
+
+串口接收不定长数据怎么处理？
+
+最优解是 DMA + 串口空闲中断（IDLE Interrupt）。DMA 在后台自动搬运每个字节到内存缓冲区，当总线出现超过 1 个字节时间的空闲高电平时，触发 IDLE 中断，通知 CPU 一帧数据接收完毕。
+
+
+
+1.3 I2CI2C 是 Philips 开发的同步、半双工、支持多主多从的双线制串行总线。
+1. 物理层与协议时序
+双线结构：SDA（串行数据线）、SCL（串行时钟线）。两条线均配置为开漏输出 + 外部上拉电阻（典型值 1.8kΩ ~ 10kΩ）。
+传输速率：标准模式（100 kbps）、快速模式（400 kbps）、高速模式（3.4 Mbps）。
+核心时序规则：
+**起始信号 (START)**：SCL 为高电平时，SDA 由高变低。
+**停止信号 (STOP)**：SCL 为高电平时，SDA 由低变高。
+数据有效性：SCL 为高电平时，SDA 必须保持稳定（供接收方采样）；SCL 为低电平时，SDA 才允许改变状态。
+应答信号 (ACK&#x2F;NACK)：每传输完 8 bits（1字节，高位 MSB 先发），发送方释放 SDA，在第 9 个时钟周期由接收方拉低 SDA 表示 ACK，保持高电平表示 NACK。
+
+
+
+2. 高频面试考点
+I2C 读寄存器的完整流程是什么？（为什么读操作包含写过程？）
+读操作本质是复合格式（Combined Format），需要先“写”告诉从机要读哪个寄存器地址：
+主机发送 START + 从机地址(7bit) + 写标志(0) -&gt; 等待从机 ACK。
+主机发送 目标寄存器地址(8bit) -&gt; 等待从机 ACK。
+主机发送 Repeated START（重复起始信号，不发 STOP 以防总线被其他主机抢占） + 从机地址(7bit) + 读标志(1) -&gt; 等待从机 ACK。
+从机发送数据字节，主机回复 ACK（若读完最后一个字节，主机必须回复 NACK 通知从机停止发送）。
+主机发送 STOP 释放总线。
+
+
+
+
+I2C 总线死锁（SDA 被一直拉低）的原因及如何解除？
+原因：主机正在读从机数据时，从机正好输出 bit 0（拉低了 SDA），此时主机发生异常复位。复位后主机处于空闲态，而从机因为没有收到后续的 SCL 时钟，一直卡在拉低 SDA 的状态等待时钟，导致总线死锁。
+解决方法：主机初始化时检测 SDA，若为低电平，将 SCL 引脚临时配置为普通 GPIO，软件模拟连续输出 9 个 SCL 时钟脉冲，让从机走完剩余的 bit 状态机并释放 SDA，最后主机再发一个 STOP 信号恢复总线。
+
+
+
+1.4 I2SI2S（Inter-IC Sound）是专为数字音频设备之间传输 PCM 音频数据设计的同步串行接口。
+1. 信号线定义
+CK &#x2F; BCLK（Bit Clock，位时钟）：对应数字音频的每一位数据。
+计算公式：
+
+
+
+WS &#x2F; LRCK（Word Select &#x2F; Left-Right Clock，帧时钟&#x2F;声道选择）：频率等于**采样率 ($f_s$)**。用于区分当前传输的是左声道（通常 0 表示左）还是右声道（1 表示右）。
+SD &#x2F; SDATA（Serial Data）：实际的二进制补码音频数据线（MSB 先发）。
+MCLK（Master Clock，主时钟，可选）：通常为采样率的 256 倍或 384 倍（如 $256 \times f_s$），专供外部 Audio Codec 内部的锁相环（PLL）和 $\Delta-\Sigma$ 调制器使用，不属于标准 I2S 三线制强制要求，但实际硬件中极其常见。
+
+2. 三种对齐格式对比
+标准 I2S 格式（Philips 标准）：最高有效位（MSB）在 LRCK 发生翻转后的第 2 个 BCLK 上升沿才开始有效（即延迟 1 个 BCLK 周期）。
+左对齐格式（Left-Justified）：LRCK 翻转的同时，紧接着的第 1 个 BCLK 周期就开始传输 MSB（无延迟）。
+右对齐格式（Right-Justified）：LSB 对齐在 LRCK 下一次翻转前的最后一个 BCLK 周期。
+
+3. 高频面试考点
+为什么音频传输不直接用 SPI 或 I2C，而要专门设计 I2S？
+① 时钟抖动（Jitter）隔离：音频将数据和时钟完全分离，配合硬件 PLL 降低采样时钟抖动，避免爆音或底噪；② 天然支持双声道同步：通过 LRCK 硬件切换左右声道；③ 容忍位宽不匹配：标准 I2S 因为 MSB 固定在 LRCK 翻转后第 2 个时钟，若发送端发 24-bit 而接收端只支持 16-bit，接收端直接截取高 16 位、忽略后 8 位即可，无需修改协议即可兼容。
+
+
+
+1.5 MIPI嵌入式面试中提到的 MIPI 通常指用于摄像头的 MIPI CSI-2（Camera Serial Interface）和用于显示屏的 MIPI DSI（Display Serial Interface）。
+1. 物理层（D-PHY）核心机制
+Lane（通道）结构：由 1 对差分时钟线（Clock Lane） + 1~4 对差分数据线（Data Lanes） 组成。
+
+两种工作状态自动切换（高频考点）：
+
+
+
+状态模式
+信号类型
+电平范围
+速率
+作用
+
+
+
+LP 模式 (Low Power)
+单端信号
+0~ 1.2V
+小于 10 Mbps
+空闲省电、传输控制命令（如屏幕初始化寄存器配置）。
+
+
+HS 模式 (High Speed)
+低摆幅差分信号
+100mV~ 300mV (典型 200mV)
+80 Mbps~ 2.5 Gbps&#x2F;Lane
+高速传输图像帧数据（像素流）。
+
+
+
+状态切换时序：发送图像帧前，总线从 LP11 -&gt; LP01 -&gt; LP00 序列进入 HS 高速差分模式；一帧或一行传完后（消隐期 Blanking），立刻退回 LP11 省电状态。
+
+
+2. MIPI DSI 的两种工作模式
+Video Mode（视频模式）：类似传统 RGB 接口，主控必须持续不断地向屏幕刷新像素流和同步信号（VSYNC&#x2F;HSYNC）。屏幕内部没有显存（GRAM），一旦主控停止发送数据，屏幕就会黑屏或花屏。
+Command Mode（命令模式）：屏幕内部自带显存（GRAM）。主控只在画面变化时通过 MIPI 发送更新的数据包，平时主控可以休眠，由屏幕自刷新，极大降低系统功耗（常用于智能手表、手机息屏显示）。
+
+1.6 SDMMC 与 SDIOSDMMC 是控制器或存储卡标准，而 SDIO 是基于 SD 总线扩展出来的外设接口协议。
+1. 概念区分
+MMC &#x2F; eMMC：MMC 是最早的多媒体卡标准；eMMC（Embedded MMC） 是将 NAND Flash 芯片和主控（负责磨损均衡、坏块管理 ECC）封装成 BGA 焊死在主板上的存储芯片，通常支持 1-bit、4-bit、8-bit 数据位宽。
+SD 卡（Secure Digital）：在 MMC 基础上发展而来的可插拔存储卡，支持 1-bit 和 4-bit 模式（以及兼容 SPI 模式）。
+SDIO（Secure Digital Input&#x2F;Output）：复用 SD 卡的物理引脚和命令协议，但连接的不是存储卡，而是外设芯片（最典型的是 SDIO Wi-Fi &#x2F; 蓝牙模组，如 AP6212、ESP8266&#x2F;ESP32 作为从机网卡）。
+
+2. 硬件信号线（以 4-bit SD&#x2F;SDIO 为例）
+**CLK**：主机提供给从机的同步时钟。
+**CMD**：双向命令&#x2F;响应线（用于发送控制指令，如 CMD0 复位、CMD5 SDIO 初始化、CMD52/CMD53 SDIO 读写寄存器与数据块）。
+DAT0 ~ DAT3：4 根双向数据线。
+
+3. 高频面试考点
+SDIO 和 SD 卡在中断机制上有什么重要区别？
+普通 SD 存储卡是纯被动的，没有硬件中断概念；而 SDIO 外设（如 Wi-Fi 收到网络数据包）需要主动通知主机。在 4-bit SDIO 模式下，复用 DAT1 引脚在数据传输间隙作为硬件中断线，通知主控读取数据。
+
+
+为什么板载大容量存储普遍用 eMMC 而不是 Raw NAND Flash？
+Raw NAND 需要主控软件自行处理坏块管理（BBM）、磨损均衡（Wear Leveling）和复杂的 ECC 纠错；而 eMMC 内部自带 FTL（Flash Translation Layer）控制器，对外呈现为标准的块设备，极大地简化了 Linux&#x2F;RTOS 的驱动开发。
+
+
+
+1.7 SPI&#x2F;QSPI
+标准 SPI（串行外设接口）
+
+SPI 是 Motorola 提出的同步、全双工、一主多从的高速串行接口（常见速率 10MHz ~ 50MHz+）。
+
+四根信号线：
+
+SCLK（Serial Clock）：同步时钟，由主机产生。
+MOSI（Master Out Slave In）：主机输出，从机输入。
+MISO（Master In Slave Out）：主机输入，从机输出。
+CS / NSS（Chip Select）：片选信号（通常低电平有效），每个从机独占一根 CS 线。
+
+
+四种工作模式（必考核心）：由 CPOL（时钟极性） 和 CPHA（时钟相位） 组合决定：
+
+
+
+SPI 模式
+CPOL（空闲时 SCLK 电平）
+CPHA（数据采样边沿）
+采样时刻与数据切换时刻
+
+
+
+Mode 0 (最常用)
+0（空闲为低电平）
+0（第 1 个跳变沿采样）
+上升沿采样，下降沿切换数据
+
+
+Mode 1
+0（空闲为低电平）
+1（第 2 个跳变沿采样）
+下降沿采样，上升沿切换数据
+
+
+Mode 2
+1（空闲为高电平）
+0（第 1 个跳变沿采样）
+下降沿采样，上升沿切换数据
+
+
+Mode 3 (最常用)
+1（空闲为高电平）
+1（第 2 个跳变沿采样）
+上升沿采样，下降沿切换数据
+
+
+
+记忆技巧：不管 Mode 0 还是 Mode 3，都是上升沿采样数据，这也是绝大多数 SPI Flash 和传感器默认同时兼容 Mode 0 和 Mode 3 的原因！
+
+
+
+2. QSPI（Queued &#x2F; Quad SPI）嵌入式语境下的 QSPI 绝大多指 Quad SPI（四线数据 SPI），专用于连接外部 NOR Flash。
+
+与标准 SPI 的核心区别：
+半双工 4 线并行传输：将原本的 MOSI 和 MISO 升级为双向的 IO0、IO1，并把原本 Flash 的写保护引脚 (WP) 和保持引脚 (HOLD) 复用为 IO2、IO3。一个时钟周期可以同时传输 4 bits 数据，吞吐率直接提升 4 倍（若配合 DTR&#x2F;DDR 双边沿采样，1 个时钟可传 8 bits）。
+帧阶段划分：QSPI 协议将一次通信拆分为 **指令阶段 (Instruction) -&gt; 地址阶段 (Address) -&gt; 交替字节 (Alternate Bytes) -&gt; 空周期 (Dummy Cycles) -&gt; 数据阶段 (Data)**，每个阶段都可独立配置为单线（1-line）、双线（2-line）或四线（4-line）传输。
+XIP（eXecute In Place，片内执行）与内存映射模式（Memory-Mapped Mode）：
+标准 SPI 需要 CPU 先发读命令把数据搬到 RAM 才能运行；
+QSPI 控制器支持内存映射，将外部 Flash 直接映射到 MCU 的系统寻址空间（如 STM32 的 0x90000000）。CPU 可以直接通过指针读取外部 Flash，或者直接把代码放在外部 QSPI Flash 中运行（XIP），极大节省片内 Flash 成本。
+
+
+
+
+
+]]></content>
+      <categories>
+        <category>八股文</category>
+      </categories>
+      <tags>
+        <tag>面试</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>思澈面试笔记-RTOS</title>
     <url>/2026/06/17/%E6%80%9D%E6%BE%88%E9%9D%A2%E8%AF%95%E7%AC%94%E8%AE%B0-RTOS/</url>
     <content><![CDATA[RTOS 高频问点这份笔记用于准备 RT-Thread、FreeRTOS、Zephyr 等实时操作系统相关面试。重点是任务调度、同步通信、中断配合、资源保护和常见问题排查。
@@ -4620,6 +4907,425 @@ volatile 为什么不等于原子操作？因为 volatile 只约束编译器访�
       </tags>
   </entry>
   <entry>
+    <title>技能大赛之Ubuntu维护</title>
+    <url>/2023/10/30/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/</url>
+    <content><![CDATA[如果是首次进入需要 sudo passwd root 启用 root 用户
+一、修改网络 IP 地址1、lm@lm-virtual-machine:~/桌面$ su root密码：2、root@lm-virtual-machine:/home/lm/桌面# cd /etc/netplan/3、root@lm-virtual-machine:/etc/netplan# ls01-network-manager-all.yaml4、root@lm-virtual-machine:/etc/netplan# vim 01-network-manager-all.yaml#键盘点击i，进行修改，&quot;esc&quot;退出编辑，输入&quot;:wq&quot;退出回车保存。输入&quot;netplan apply&quot;,ifconfig可以查看是否修改成功
+
+network:　version: 2　ethernets:　　ens5:　　dhcp4: no　　addresses: [192.168.1.230/24]　　gateway4: 192.168.1.254　　nameservers:　　　addresses: [8.8.4.4,8.8.8.8]
+
+二、使用命令查询磁盘空间使用情况 【df】
+三、命令执行的历史记录【history】
+四、配置允许 tcp 协议通过 eth0 网卡的 80 端口进入服务器iptables -A INPUT -p tcp --dport 80 -i th0 -j ACCEPTiptables -L -n
+
+
+五、开启系统简单防火墙功能ufw enableufw status
+
+
+六、修改时区为中国tzselect
+
+
+七、查看当前系统的内核版本uname -a
+
+
+八、查看系统安装包的统计信息apt-cache stats
+
+
+九、查看&#x2F;home 目录占用空间du -sh
+
+
+十、系统内存的使用情况free
+
+
+十一、修改 test 文件夹权限为 755mkdir xxx      创建文件夹chmod xxx xxx    修改后文件夹名字  修改前
+
+
+十二、配置用户锁策略，用户尝试登录错误 5 次后锁定用户 5 分钟auth required pam_tallu.so deny=5 unlock_time=300 even_deny_root root_unlock_time=300#文件夹在etc/pam.d/login#deny=尝试次数 unlock_time=被锁定，多少秒自动解锁#even_deny_root=对root用户生效 root_unlock_time=被锁后多少秒解锁
+
+
+十三、配置账户密码最短使用期限为 10 天，最长使用期限为 90 天sudo chage -M 90 -m 10 liu#修改#查看sudo chage -l liu
+
+十四、配置用户使用 ssh 登录边缘服务器有“For authorized users only”vim /ect/motd
+
+
+十五、查询系统运行时间及负载的状态uptime
+
+
+十六、统计系统 IO 信息（系统资源）top
+
+
+十七、查看当前登录系统的用户信息
+十八、ubuntu 登录开通 ssh-server 和 root 用户登录权限
+
+
+sudo systemctl start ssh 启动 ssh 服务
+十九、修改 root 用户密码
+二十、切换当前用户为 root 用户
+二十一、查看当前所有已连接端口netstar -ntlp
+
+
+二十二、查看指定端口状态netstat -ntlplgrep 3306
+
+
+二十三、查看所有进程信息ps -aux
+
+
+二十四、查看指定进程信息
+二十五、终端查找文件在当前目录中搜索
+find -name &quot;文件名&quot;
+
+在不切换任何文件夹搜索，必须在命令中声明文件所在目录路劲
+find /路径/ -name &quot;文件名&quot;
+
+如果在终端搜索文件
+find -name &quot;文件名&quot;
+
+如果在终端搜索带某字符的文件
+find / -type f -name &quot;*DB*&quot;
+
+
+二十六、在终端查看 sql 文件的记录head -n 文件名.sql
+
+
+二十七、 使用命令查看要求上传 sql 文件的内容中 包含“xxx”信息的记录行。grep &quot;xxx&quot; xxx.sql
+
+
+二十八、在 Ubuntu 的终端中使用命令查看要求上传 sql 文件内容并显示行号。cat -n xx.sql
+
+
+二十九、在 Ubuntu 的终端中通过 iptables 配置规则链：允许本机开放 TCP 端口 5000-6000iptables -A INPUT -p tcp --match multiport --sports 5000:6000 -j ACCEPT# 如果需要重启后重新起效  iptables-save &gt; /etc/iptables/rules.v4
+
+三十、设置账号密码的最小长度vim /etc/pam.d/common-password
+
+
+三十一、为 MySQL 配置远程访问功能，以便任何 IP 的客户端都能访问数据库#配置用户信息mysql -u root -pALTER USER &#x27;username&#x27;@&#x27;localhost&#x27; IDENTIFIED WITH &#x27;mysql_native_password&#x27; BY &#x27;new_password&#x27;;#先配置mysql文件sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf#添加bind-address = 0.0.0.0#更改用户权限CREATE USER &#x27;username&#x27;@&#x27;%&#x27; IDENTIFIED BY &#x27;password&#x27;;            #用户名字 #允许任何ip连接         #密码GRANT ALL PRIVILEGES ON *.* TO &#x27;username&#x27;@&#x27;%&#x27; WITH GRANT OPTION;FLUSH PRIVILEGES;#重启数据库sudo systemctl restart mysql#查询是否生效SELECT user,authentication_string,host FROM mysql.user;
+
+
+开启成功
+
+三十二、命令行查询网卡 eth0 的工作状态ifconfig eth0
+
+三十三、Xshell 登录 Ubuntu
+
+三十四、删除指令
+三十五、在&#x2F;home&#x2F;iotuser 目录下创建 aaa,bbb 两个目录，在 aaa 目录下添加 a.txt 文件，在 bbb 目录下添加 ccc 目录和 b.txt 文件,在 ccc 目录下添加 c.txt 文件。 命令行将 bbb 文件夹权限设置为：每个人都有读和写以及执行的权限（包含子目录）。 合并压缩 aaa 和 bbb 目录为 xxx.tar.gz。mkdir -p /home/iotuser/aaa /home/iotuser/bbb/ccctouch /home/iotuser/aaa/a.txttouch /home/iotuser/bbb/b.txttouch /home/iotuser/bbb/ccc/c.txtchmod -R 777 /home/iotuser/bbbcd /home/iotusertar -czvf xxx.tar.gz aaa bbb
+
+三十六、在终端配置 ufw，要求设置允许 TCP 的 5505 端口可以访问本机。sudo ufw allow 5505/tcp#保存sudo ufw status
+
+三十七、在终端使用 ufw，要求允许 192.168.0.200 这台计算机访问本机。sudo ufw allow from 192.168.0.200
+
+三十八、修改配置将 ssh 服务远程连接的默认端口修改成 8888。sudo vim /etc/ssh/sshd_config#修改Port 8888
+
+三十九、离线安装 mysql、python，vim#解压mysqlunzip name.file#给权限sudo chmod 775 install.sh#开启服务sudo service mysql start#设置密码sudo mysql_secure_installation#安装pythonsudo dpkg -i python.deb python-libraries.deb#安装vimsudo dpkg -i vim.deb
+
+四十、查看当前操作系统版本信息cat /etc/lsb-release
+
+
+四十一、查看系统内核限制ipcs -l
+
+
+四十二、使用 scp 传输scp /path/file root@172.20.1.1:/path/file
+
+四十三、在终端中使用命令添加一个名为 lily 的用户名，要求在 home 目录下同步创建该用户目录。将该用户添加到名为 school Admin 的用户组#创建schoolAdmin用户组sudo groupadd schoolAdmin#创建lily的用户名sudo useradd -m lily#将将该用户添加到名为school Admin的用户组sudo usermod -a -G schoolAdmin lily
+
+四十五、查看 root 用户进程信息ps -u root
+
+四十六、命令查询 Ubuntu 系统有几块物理硬盘#只显示几块硬盘lsblk -d | grep disk | wc -l
+
+四十七、mysql 命令查询主程序所在路径的参数#which mysqld#SHOW VARIABLES LIKE &#x27;basedir&#x27;;
+
+
+
+四十八、查看数据库大小SELECT CONCAT(ROUND(SUM(data_length / 1024 / 1024), 2), &#x27; MB&#x27;) AS dataFROM information_schema.TABLESWHERE table_schema = &#x27;testdatabase&#x27;;
+
+四十九、mysql 创建数据库然后导入 sqlsource 文件路径;
+
+五十、查看指定用户进程ps -u root
+
+五十一、ubuntu 安装 mysql#解压mysqlunzip name.file#775权限sudo chmod 775 name.file#执行安装sudo ./install.sh#开启服务sudo server mysql start#输入密码mysql -u root -p
+]]></content>
+      <categories>
+        <category>技能大赛</category>
+      </categories>
+      <tags>
+        <tag>Ubuntu维护</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>数据库常用命令</title>
+    <url>/2023/08/29/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</url>
+    <content><![CDATA[修订：查看表中的字段
+show columns from 商品库存;xxxxxxxxxx columnshow columns from 商品库存;
+
+
+
+select 所在区域 from 商品库存 limit 5;  检索此语句使用SELECT语句检索单个列。LIMIT 5指示MySQL返回不多于5行。
+
+
+统计四张表的记录数,要求 SQL 语句禁用联合查询（Union、JOIN、多表
+SELECT	(SELECT COUNT(*) FROM d_3_1) AS dcount,	(SELECT COUNT(*) FROM 商品库存) AS scount
+
+
+一、连接数据库mysql -h 主机IP -P 端口号 -u 用户名 -p 密码
+
+在 UbuntuMySQL -u root -p
+
+连接远程主机
+mysql -h110.110.110.110 -u root -p 123;
+
+二、修改用户密码mysqladmin -u root -password ab12
+
+再次修改
+mysqladmin -u root -password djg345
+
+三、新增用户（1）增加一个用户 test1，密码为 abc
+grant select,insert,delete on *.*to [email]=test@&quot;%]test1@&quot;[/email]&quot;Indentified by&quot;abc&quot;;# grant on 命令格式：grant select on 数据库.* to 用户名@登录主机 identified by “密码”;
+
+（2）新增一个 test2 密码为 abc，只能 localhost 登录
+grant select,insert,update,delete on mydb.* to [email=test2@localhost]test2@localhsot[/email] identified by &quot;abc&quot;;# 如果不想test有密码可以在用一次打消密码grant select,insert,update,delete on mydb.* to [email=test2@localhost]test2@localhost[/email] identified by “”;=
+
+四、创建数据库（1）create database 命名;
+
+（2）创建数据库并分配用户
+#1create database 数据库名;#2create select,insert,update,delete,create,drop,alter on 数据库名.* to 数据库名@loclhost identified by &#x27;密码&#x27;;#3select password por &#x27;数据名&#x27;@&#x27;localhost&#x27; =old_password(&#x27;密码&#x27;);
+
+五、显示数据库show databases 显示所有数据库
+
+六、删除数据库drop database xhkdb;
+
+七、使用数据库use xhkdb;
+（1）use 语句可以通告 mysql 把数据库当作默认使用。知道下一个不同的 use 语句。
+
+（2）use 语句不会阻碍访问其他数据库中的表。ab1 数据库访问 author 表，并从 db2 数据库访问 editor 表
+use db1;select author_name,editor_name from author,ab2,editor;where author.editor_id = ab2.editor.editor_id;
+
+八、当前连接的数据库select database();
+（1）显示 mysql 版本
+select version();
+
+
+（2）显示当前时间
+select now();
+
+
+（3）显示年月日
+
+
+
+（4）显示字符串
+
+（5）当计算器
+
+（5）串接字符串
+
+&#x2F;&#x2F;这里用到 CONCAT()函数，用来把字符串串接起来。
+九、创建数据库表注意：要先使用 use 数据库名；
+create table 表名(	字段名1，数据类型 [列级别约束条件][默认值]，	字段名2，数据类型 [列级别约束条件][默认值],	……	[表级别约束条件])
+
+
+例如:创建 tb_emp1 表结构
+
+
+十、获取表结构查看表结构可以使用 describe 和 show create table；
+describe 表名;
+
+或
+desc 表名；
+
+show create table 可以查看显示创建表时的 create table 语句。
+show create table 表名\G;
+
+
+十一、删除数据表drop table if exists 表1，表2,表n
+
+
+十二、向表中插入数据insert into 插入新行
+insert into 表名称 values(值1，值2);# 也可以指定要插入数据的列insert into table_name(列1，列2)values(值1，值2)
+
+十三、查询表中数据SELECT &#123;* | &lt;字段列表&gt;&#125; [	 FROM &lt;表 1&gt;,&lt;表 2&gt;...	 [WHERE &lt;表达式&gt;	 [GROUP BY &lt;group by definition&gt;]	 [HAVING &lt;expression&gt; [&#123;&lt;operator&gt;&lt;expression&gt;&#125;...]] 	[ORDER BY &lt;order by definition&gt;] 	[LIMIT [&lt;offset&gt;,] &lt;row count&gt;] ]SELECT [字段 1,字段 2,…,字段 n]FROM [表或视图]WHERE [查询条件];
+
+
+十四、删除记录delete from table_name[where &lt;condition&gt;];#						指定删除条件delete from person where id=11;
+
+十五、修改表中的数据update table_nameset column_nmael=value1,column_name2=value2where(condition)
+
+column_name1，为指定更新的字段名称。value 为相对应指定字段的更新值。condition 更新记录需要满足的条件
+【例】在 person 表中，更新 id 值为 11 的记录，将 age 字段值改为 15，将 name 字段值改为 LiMing，SQL 语句如下：
+update person set age=15,name=&#x27;liming&#x27;where id=11;
+
+十六、增加字段alter add 表名 add 新字段 数据类型	约束条件 first|after 已存在字段名	        first将新添加的字段设置为表的第一个字段	        after新添加的字段指定在‘已存在字段名’的后面
+
+【例】在数据表 tb_dept1 中添加一个没有完整性约束的 INT 类型的字段 managerId（部门经理编号），SQL 语句如下：
+ALTER TABLE tb_dept1 ADD managerId INT(10);
+
+十七、修改表名alter table 旧表名 rename to新表名
+
+【例】将数据表 tb_dept3 改名为 tb_deptment3，SQL 语句如下：
+ALTER TABLE tb_dept3 RENAME tb_deptment3;
+
+十八、备份数据库mysqldump -u user -h host -p password dbname[tbname,[tbname]]&gt;filename.sql
+
+十九、还原数据库mysql -u user -p [dbname]&lt;filename.sql
+
+【例 1】使用 mysql 命令将 C:\backup\booksdb_20130301.sql 文件中的备份导入到数据库中，输入语句如下：
+mysql –u root –p booksDB &lt; C:/backup/booksdb_20130301.sql
+
+如果已经登录 MySQL 服务器，还可以使用 source 命令导入 sql 文件。source 语句语法如下：
+source filename
+
+【 例 2 】 使 用 root 用 户 登 录 到 服 务 器 ， 然 后 使 用 source 导 入 本 地 的 备 份 文 件 booksdb_20110101.sql，输入语句如下：
+–选择要恢复到的数据库
+mysql&gt; use booksDB;Database changed
+
+–使用 source 命令导入备份文件
+mysql&gt; source C:\backup\booksDB_20130301.sql
+
+二十、快速恢复数据库在 MySQL 服务器停止运行时，将备份的数据库文件复制到 MySQL 存放数据的位置（MySQL 的 data 文件夹）
+chown -R mysql.mysql /var/lib/mysql/dbname
+
+【例】从 mysqlhotcopy 复制的备份恢复数据库，输入语句如下：
+cp -R /usr/backup/test usr/local/mysql/data
+
+二十一、在 Ubuntu 下安装 mysqlsudo apt-get update #更新软件包sudo apt-get install mysql-server #安装数据库服务器启动：sudo /etc/init.d/mysql start停止：sudo /etc/init.d/mysql stop重启：sudo /etc/init.d/mysql restart登录：mysql -u root -p&lt;pwd&gt;
+
+二十二、关闭防火墙- sudo apt-get install ufw 安装防火墙- sudo ufw enable 打开防火墙- sudo ufw status 查看防火墙状态- sudo ufw disable 关闭防火墙
+
+MySQL 在 Ubuntu 使用二十三、在服务器 SQLSERVER 上，利用 U 盘“U 盘资料&#x2F;test.sql”还原三张数据表。
+
+二十四、统计三张表的记录数，查询结果要求如图。SELECT &#x27;table1&#x27; AS TableName, COUNT(*) AS RecordCount FROM table1UNION ALLSELECT &#x27;table2&#x27; AS TableName, COUNT(*) AS RecordCount FROM table2UNION ALLSELECT &#x27;table3&#x27; AS TableName, COUNT(*) AS RecordCount FROM table3;
+
+二十五、删除 AD_AccountsRole 表中不属于 AD_Accounts 用户的关系数据。重新查询三张表的记录数。
+二十六、新建查询窗口，写出查询 nleedge 数据库中所有数据表和每个表的记录SELECT  (SELECT COUNT(*) FROM d_3_1) AS 表一,  (SELECT COUNT(*) FROM `商品库存`) AS 表二;
+]]></content>
+      <categories>
+        <category>Mysql</category>
+      </categories>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>物联网比赛之Windows维护</title>
+    <url>/2023/08/29/%E7%89%A9%E8%81%94%E7%BD%91%E6%AF%94%E8%B5%9B%E4%B9%8BWindows%E7%BB%B4%E6%8A%A4/</url>
+    <content><![CDATA[模块 B：物联网故障维修与运行维护1、Windows 系统维护
+
+一、出于安全考虑，需要对服务器计算机配置规则：“禁止工作站计算机访问本机任何程序或者端口，暂不启用此规则”。
+点击自定义
+
+
+
+
+
+
+记得露出本地地址
+二、在工作站电脑的命令行窗口中，使用命令查看网络连接以及每一个网络接口设备状态。netstat -an
+
+扩展：（1）netstat -b 可以显示在创建网络连接和侦听端口时所涉及的可执行程序
+（2）netstat -a 显示所有的有效连接信息列表，包括建立的连接（ESTABLISHED），也包括监听连接请求（LISTENLING）的那些连接
+（3）netstat -e 可以显示关于以太网的统计数据，传送字节数、数据包、错误等信息，还可以和-s 结合使用
+（4）netstat -f 显示外部地址的完全限定域名
+（5）netstat -p 可以显示 proto 指定的协议连接情况
+（6）netstat -r 显示路由表
+]]></content>
+      <categories>
+        <category>技能大赛</category>
+      </categories>
+      <tags>
+        <tag>windows维护</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>电子工程师入门篇-入门基础</title>
+    <url>/2024/02/08/%E7%94%B5%E5%AD%90%E5%B7%A5%E7%A8%8B%E5%B8%88%E5%85%A5%E9%97%A8%E7%AF%87-%E5%85%A5%E9%97%A8%E5%9F%BA%E7%A1%80/</url>
+    <content><![CDATA[1.1.1 电路与电路图电源的作用是提供电能；开关、导线的作用是控制和传递电能，称为中间环节；灯泡是消耗电能的用电器，它能将电能转变为光能，称为负载。
+
+1.1.2 电流与电阻1．电流​ 我们把电子运动的反方向作为电流方向，即把正电荷在电路中的移动方向规定为电流的方向。
+​ 电流通常用字母“I”表示，单位为安培（简称安），用“A”表示，比安培小的单位有毫安（mA）、微安（μA），它们之间的换算关系为
+
+2．电阻​ 导体对电流的阻碍称为该导体的电阻。
+​ 电阻通常用字母“R”表示，电阻的单位为欧姆（简称欧），用“Ω”表示，比欧姆大的单位 有千欧（kΩ）、兆欧（MΩ），它们之间的换算关系为
+
+​ 导体的电阻计算公式为
+
+​ L 为导体的长度（单位：m），S 为导体的横截面积（单位：m2），ρ 为导体的电阻率（单位：Ω·m）
+​ 在长度 L 和横截面积 S 相同的情况下，电阻率越大的导体其电阻越大
+1.1.3 电位、电压和电动势1．电位​ 电源的正极输出电流，流到 A 点，再经 R1 流到 B 点，然后通过 R2 流到 C 点，最后流到电源的负极。
+​ 为了表明某点为零基准点，通常在该点处画一个“⊥”符号，该符号称为接地符号，接 地符号处的电位规定为 0V
+2．电压​ 电路中的 A 点和 B 点的电位是不同的，有一定的差距，这种电位之间的差距称为电位差，又称电压
+​ 因为 A 点和 B 点电位差实际上就是电阻器 R1 两端的电位差（即电压）， R1 两端的电压用 UR1 表示，所以 UAB&#x3D;UR1。
+3．电动势​ 电源消耗能量在两极建立的电位差称为电动势，电动势的单位也为伏特
+​ 由于电源内部的电流是由负极流向正极，故电源的电动势方向规定为从电源负极指向正极。
+
+1.1.4 电路的 3 种状态
+1．通路​ 电路处于通路状态的特点有：电路畅通，有正常的电流流过负载，负载正常工作。
+2．开路​ 电路处于开路状态的特点有：电路断开，无电流流过负载，负载不工作。
+3．短路​ 电路处于短路状态的特点有：电路中有很大电流流过，但电流不流过负载，负载不工作。
+1.1.5 接地与屏蔽1．接地（1）在电路中，接地符号处的电位规定为 0V。
+（2）在电路中，标有接地符号的地方都是相通的。
+
+2．屏蔽​ 屏蔽的具体做法是用金属材料（称为屏蔽罩）将元器件或电路封闭起来，再将屏蔽罩接地。
+1.1.6 欧姆定律​ 在电路中，流过电阻的电流 I 的大小与电阻两端的电压 U 成正比，与电阻 R 的大小成反比，即
+
+​ 也可以是U&#x3D;IR 或者 R&#x3D;U&#x2F;I 注意：在电路中，某点电压指的是该点与地之间的电压
+1.1.7 电功、电功率和焦耳定律1．电功​ 可见电流流过一些用电设备时是会做功的，电流做的功称为电功。
+
+​ W 表示电功，单位为焦（J）；U 表示电压，单位为伏（V）；I 表示电流，单位为安（A）；t 表示时间，单位为秒（s）
+2．电功率​ 电功率是指单位时间里电流通过用电设备所做的功。
+​ 电功率常用 P 表示，单位为瓦（W），此外还有千瓦（kW）和毫瓦（mW），它们之间的换算关系是
+
+​ 电功率的计算公式是
+
+
+​ 1kW·h 可以这样理解：一个电功率为 100W 的灯泡连续使用 10h 消耗的电功为 1kW·h，即消耗 1 度电。
+
+3．焦耳定律​ 电流流过导体，导体发出的热量与导体流过的电流、导体的电阻和通电的时间有关。
+
+​ Q 表示热量，单位为焦耳（J）；R 表示电阻，单位为欧姆（Ω）；t 表示时间，单位为秒（s）。
+该定律说明：电流流过导体产生的热量，与电流的平方、导体的电阻及通电时间成正比。
+1.2 电阻的连接方式1.2.1 电阻的串联
+​ 电阻串联电路的特点有以下几个。:
+​ ① 流过各串联电阻的电流相等，都为I。
+​ ② 电阻串联后的总电阻增大，总电阻等于各串联电阻之和，即R&#x3D;R1+R2
+​ ③ 总电压等于各串联电阻上电压之和，即U&#x3D;U1+U2
+​ ④ 电阻越大，两端电压越高，因为R1&lt;R2，所以UR1&lt;UR2。
+1.2.2 电阻的并联
+​ 电阻并联电路的特点有以下几个。
+​ ① 并联电阻两端的电压相等，即总电流等于流过各个并联电阻的电流之和，即I&#x3D;I1+I2
+​ ③ 电阻并联总电阻减小，总电阻的倒数等于各并联电阻的倒数之 1&#x2F;R&#x3D;1&#x2F;R1+1&#x2F;R2和，即该式子可变形为 R&#x3D;R1R2&#x2F;R1+R2
+​ ④ 在并联电路中，电阻越小，流过电阻的电流越大，因为 R1&lt;R2，所以 I1&gt;I2。
+1.2.3 电阻的混联
+1.3 直流电与交流电1.3.1 直流电​ 直流电是指方向始终固定不变的电压或电流。
+1．稳定直流电​ 稳定直流电是指方向固定不变并且大小也不变的直流电。
+2．脉动直流电​ 脉动直流电是指方向固定不变，但大小随时间变化的直流电。
+
+1.3.2 交流电​ 交流电是指方向和大小都随时间作周期性变化的电压或电流
+1．正弦交流电
+
+2．周期和频率
+（1）周期​ 交流电变化过程是不断重复的，交流电重复 变化一次所需的时间称为周期，周期用 T 表示，单位是秒（s）。
+（2）频率​ 交流电在每秒钟内重复变化的次数称为频率，频率用 f 表示，它是 周期的倒数，即
+
+该交流电的频率 f&#x3D;50Hz，说明在 1s 内交流电能重复 0 ～ t4 这个过程 50 次。交流电变化越快，变化一次所
+需要的时间越短，周期就越短，频率就越高。
+（3）高频、中频和低频​ 频率在 3MHz 以上的信号称为高频信号，频率在 300kHz ～ 3MHz 范围内的信 号称为中频信号，频率低于 300kHz 的信号称为低频信号。
+3．瞬时值和有效值（1）瞬时值​ 交流电的大小和方向是不断变化的，交流电在某一时刻的值称为 交流电在该时刻的瞬时值。
+（2）有效值
+所示两个电路中的电热丝完全一样，现分别给电热丝通交流电和直流电，如果两电路通电时间相同，并且电热丝发出热量也相同，对电热丝来说，这里的交流电和直流电是等效的，那么就将图 1-21（b）中直流电的电压值或电流值称为图 1-21（a）中交流电的有效电压值或有效电流值。正弦交流电的有效值与最大瞬时值的关系是
+
+4．相位与相位差（1）相位
+​ 交流电在某时刻的角度称为交流电在该时刻的相位。
+（2）相位差​ 相位差是指两个同频率交流电的相位之差。
+
+​ 两个交流电存在相位差实际上就是两个交流电变化存在着时间差。
+]]></content>
+      <categories>
+        <category>电子技术</category>
+      </categories>
+      <tags>
+        <tag>电子技术</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>思澈面试笔记-构建系统</title>
     <url>/2026/06/17/%E6%80%9D%E6%BE%88%E9%9D%A2%E8%AF%95%E7%AC%94%E8%AE%B0-%E6%9E%84%E5%BB%BA%E7%B3%BB%E7%BB%9F/</url>
     <content><![CDATA[# 嵌入式构建系统高频问点这份笔记对应岗位要求中的“使用过 Make、CMake、xmake、SCons 等构建系统中的一种”。面试时不要只说“我用过 CMake”，更重要的是能说明构建系统在嵌入式项目里负责什么、常见错误怎么排查、交叉编译和链接脚本是什么。## 1. 构建系统是做什么的？构建系统负责把源代码变成可运行或可烧录的目标文件。它通常管理：- 源文件列表：哪些 `.c`、`.cpp`、`.s` 文件参与编译。- 头文件路径：`include` 目录在哪里。- 宏定义：例如芯片型号、功能开关、调试开关。- 编译参数：优化等级、警告选项、CPU 架构。- 汇编参数：启动文件、底层汇编代码。- 链接参数：链接脚本、库文件、内存布局。- 输出文件：`.elf`、`.bin`、`.hex`、`.map`。- 烧录命令：把固件下载到开发板。面试答法：&gt; 构建系统不是简单地执行编译命令，它负责管理源文件、头文件路径、宏定义、编译选项、链接参数和输出产物。在嵌入式项目中，还会涉及交叉编译工具链、启动文件、链接脚本、芯片型号和烧录配置。## 2. 编译、汇编、链接、烧录流程一个典型 C 嵌入式项目从源码到固件，大致经过这些步骤：1. 预处理：展开 `#include`、宏定义和条件编译。2. 编译：把 `.c` 文件编译成汇编或目标文件。3. 汇编：把 `.s` / `.S` 或编译结果变成 `.o` 目标文件。4. 链接：把多个 `.o` 和库文件合成 `.elf`。5. 生成固件：从 `.elf` 转换成 `.bin` 或 `.hex`。6. 烧录：把固件写入 Flash。常见产物：- `.o`：目标文件。- `.a`：静态库。- `.elf`：包含符号信息的可执行文件，常用于调试。- `.bin`：纯二进制固件。- `.hex`：Intel HEX 格式，包含地址信息。- `.map`：链接映射文件，可查看函数、变量和内存占用。面试答法：&gt; 编译只是把单个源文件变成目标文件，链接才会把所有目标文件和库合成最终固件。嵌入式里最终常见产物是 `.elf`、`.bin`、`.hex`，其中 `.elf` 用于调试，`.bin` 或 `.hex` 用于烧录。## 3. Make### Make 是什么？Make 通过 `Makefile` 描述构建规则。它根据文件时间戳判断哪些目标需要重新构建。基本结构：```makefiletarget: dependencies	command
@@ -5048,425 +5754,6 @@ xmake 的基本 target 配置。
       </categories>
       <tags>
         <tag>面试</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>技能大赛之Ubuntu维护</title>
-    <url>/2023/10/30/%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E4%B9%8BUbuntu%E7%BB%B4%E6%8A%A4/</url>
-    <content><![CDATA[如果是首次进入需要 sudo passwd root 启用 root 用户
-一、修改网络 IP 地址1、lm@lm-virtual-machine:~/桌面$ su root密码：2、root@lm-virtual-machine:/home/lm/桌面# cd /etc/netplan/3、root@lm-virtual-machine:/etc/netplan# ls01-network-manager-all.yaml4、root@lm-virtual-machine:/etc/netplan# vim 01-network-manager-all.yaml#键盘点击i，进行修改，&quot;esc&quot;退出编辑，输入&quot;:wq&quot;退出回车保存。输入&quot;netplan apply&quot;,ifconfig可以查看是否修改成功
-
-network:　version: 2　ethernets:　　ens5:　　dhcp4: no　　addresses: [192.168.1.230/24]　　gateway4: 192.168.1.254　　nameservers:　　　addresses: [8.8.4.4,8.8.8.8]
-
-二、使用命令查询磁盘空间使用情况 【df】
-三、命令执行的历史记录【history】
-四、配置允许 tcp 协议通过 eth0 网卡的 80 端口进入服务器iptables -A INPUT -p tcp --dport 80 -i th0 -j ACCEPTiptables -L -n
-
-
-五、开启系统简单防火墙功能ufw enableufw status
-
-
-六、修改时区为中国tzselect
-
-
-七、查看当前系统的内核版本uname -a
-
-
-八、查看系统安装包的统计信息apt-cache stats
-
-
-九、查看&#x2F;home 目录占用空间du -sh
-
-
-十、系统内存的使用情况free
-
-
-十一、修改 test 文件夹权限为 755mkdir xxx      创建文件夹chmod xxx xxx    修改后文件夹名字  修改前
-
-
-十二、配置用户锁策略，用户尝试登录错误 5 次后锁定用户 5 分钟auth required pam_tallu.so deny=5 unlock_time=300 even_deny_root root_unlock_time=300#文件夹在etc/pam.d/login#deny=尝试次数 unlock_time=被锁定，多少秒自动解锁#even_deny_root=对root用户生效 root_unlock_time=被锁后多少秒解锁
-
-
-十三、配置账户密码最短使用期限为 10 天，最长使用期限为 90 天sudo chage -M 90 -m 10 liu#修改#查看sudo chage -l liu
-
-十四、配置用户使用 ssh 登录边缘服务器有“For authorized users only”vim /ect/motd
-
-
-十五、查询系统运行时间及负载的状态uptime
-
-
-十六、统计系统 IO 信息（系统资源）top
-
-
-十七、查看当前登录系统的用户信息
-十八、ubuntu 登录开通 ssh-server 和 root 用户登录权限
-
-
-sudo systemctl start ssh 启动 ssh 服务
-十九、修改 root 用户密码
-二十、切换当前用户为 root 用户
-二十一、查看当前所有已连接端口netstar -ntlp
-
-
-二十二、查看指定端口状态netstat -ntlplgrep 3306
-
-
-二十三、查看所有进程信息ps -aux
-
-
-二十四、查看指定进程信息
-二十五、终端查找文件在当前目录中搜索
-find -name &quot;文件名&quot;
-
-在不切换任何文件夹搜索，必须在命令中声明文件所在目录路劲
-find /路径/ -name &quot;文件名&quot;
-
-如果在终端搜索文件
-find -name &quot;文件名&quot;
-
-如果在终端搜索带某字符的文件
-find / -type f -name &quot;*DB*&quot;
-
-
-二十六、在终端查看 sql 文件的记录head -n 文件名.sql
-
-
-二十七、 使用命令查看要求上传 sql 文件的内容中 包含“xxx”信息的记录行。grep &quot;xxx&quot; xxx.sql
-
-
-二十八、在 Ubuntu 的终端中使用命令查看要求上传 sql 文件内容并显示行号。cat -n xx.sql
-
-
-二十九、在 Ubuntu 的终端中通过 iptables 配置规则链：允许本机开放 TCP 端口 5000-6000iptables -A INPUT -p tcp --match multiport --sports 5000:6000 -j ACCEPT# 如果需要重启后重新起效  iptables-save &gt; /etc/iptables/rules.v4
-
-三十、设置账号密码的最小长度vim /etc/pam.d/common-password
-
-
-三十一、为 MySQL 配置远程访问功能，以便任何 IP 的客户端都能访问数据库#配置用户信息mysql -u root -pALTER USER &#x27;username&#x27;@&#x27;localhost&#x27; IDENTIFIED WITH &#x27;mysql_native_password&#x27; BY &#x27;new_password&#x27;;#先配置mysql文件sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf#添加bind-address = 0.0.0.0#更改用户权限CREATE USER &#x27;username&#x27;@&#x27;%&#x27; IDENTIFIED BY &#x27;password&#x27;;            #用户名字 #允许任何ip连接         #密码GRANT ALL PRIVILEGES ON *.* TO &#x27;username&#x27;@&#x27;%&#x27; WITH GRANT OPTION;FLUSH PRIVILEGES;#重启数据库sudo systemctl restart mysql#查询是否生效SELECT user,authentication_string,host FROM mysql.user;
-
-
-开启成功
-
-三十二、命令行查询网卡 eth0 的工作状态ifconfig eth0
-
-三十三、Xshell 登录 Ubuntu
-
-三十四、删除指令
-三十五、在&#x2F;home&#x2F;iotuser 目录下创建 aaa,bbb 两个目录，在 aaa 目录下添加 a.txt 文件，在 bbb 目录下添加 ccc 目录和 b.txt 文件,在 ccc 目录下添加 c.txt 文件。 命令行将 bbb 文件夹权限设置为：每个人都有读和写以及执行的权限（包含子目录）。 合并压缩 aaa 和 bbb 目录为 xxx.tar.gz。mkdir -p /home/iotuser/aaa /home/iotuser/bbb/ccctouch /home/iotuser/aaa/a.txttouch /home/iotuser/bbb/b.txttouch /home/iotuser/bbb/ccc/c.txtchmod -R 777 /home/iotuser/bbbcd /home/iotusertar -czvf xxx.tar.gz aaa bbb
-
-三十六、在终端配置 ufw，要求设置允许 TCP 的 5505 端口可以访问本机。sudo ufw allow 5505/tcp#保存sudo ufw status
-
-三十七、在终端使用 ufw，要求允许 192.168.0.200 这台计算机访问本机。sudo ufw allow from 192.168.0.200
-
-三十八、修改配置将 ssh 服务远程连接的默认端口修改成 8888。sudo vim /etc/ssh/sshd_config#修改Port 8888
-
-三十九、离线安装 mysql、python，vim#解压mysqlunzip name.file#给权限sudo chmod 775 install.sh#开启服务sudo service mysql start#设置密码sudo mysql_secure_installation#安装pythonsudo dpkg -i python.deb python-libraries.deb#安装vimsudo dpkg -i vim.deb
-
-四十、查看当前操作系统版本信息cat /etc/lsb-release
-
-
-四十一、查看系统内核限制ipcs -l
-
-
-四十二、使用 scp 传输scp /path/file root@172.20.1.1:/path/file
-
-四十三、在终端中使用命令添加一个名为 lily 的用户名，要求在 home 目录下同步创建该用户目录。将该用户添加到名为 school Admin 的用户组#创建schoolAdmin用户组sudo groupadd schoolAdmin#创建lily的用户名sudo useradd -m lily#将将该用户添加到名为school Admin的用户组sudo usermod -a -G schoolAdmin lily
-
-四十五、查看 root 用户进程信息ps -u root
-
-四十六、命令查询 Ubuntu 系统有几块物理硬盘#只显示几块硬盘lsblk -d | grep disk | wc -l
-
-四十七、mysql 命令查询主程序所在路径的参数#which mysqld#SHOW VARIABLES LIKE &#x27;basedir&#x27;;
-
-
-
-四十八、查看数据库大小SELECT CONCAT(ROUND(SUM(data_length / 1024 / 1024), 2), &#x27; MB&#x27;) AS dataFROM information_schema.TABLESWHERE table_schema = &#x27;testdatabase&#x27;;
-
-四十九、mysql 创建数据库然后导入 sqlsource 文件路径;
-
-五十、查看指定用户进程ps -u root
-
-五十一、ubuntu 安装 mysql#解压mysqlunzip name.file#775权限sudo chmod 775 name.file#执行安装sudo ./install.sh#开启服务sudo server mysql start#输入密码mysql -u root -p
-]]></content>
-      <categories>
-        <category>技能大赛</category>
-      </categories>
-      <tags>
-        <tag>Ubuntu维护</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>数据库常用命令</title>
-    <url>/2023/08/29/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</url>
-    <content><![CDATA[修订：查看表中的字段
-show columns from 商品库存;xxxxxxxxxx columnshow columns from 商品库存;
-
-
-
-select 所在区域 from 商品库存 limit 5;  检索此语句使用SELECT语句检索单个列。LIMIT 5指示MySQL返回不多于5行。
-
-
-统计四张表的记录数,要求 SQL 语句禁用联合查询（Union、JOIN、多表
-SELECT	(SELECT COUNT(*) FROM d_3_1) AS dcount,	(SELECT COUNT(*) FROM 商品库存) AS scount
-
-
-一、连接数据库mysql -h 主机IP -P 端口号 -u 用户名 -p 密码
-
-在 UbuntuMySQL -u root -p
-
-连接远程主机
-mysql -h110.110.110.110 -u root -p 123;
-
-二、修改用户密码mysqladmin -u root -password ab12
-
-再次修改
-mysqladmin -u root -password djg345
-
-三、新增用户（1）增加一个用户 test1，密码为 abc
-grant select,insert,delete on *.*to [email]=test@&quot;%]test1@&quot;[/email]&quot;Indentified by&quot;abc&quot;;# grant on 命令格式：grant select on 数据库.* to 用户名@登录主机 identified by “密码”;
-
-（2）新增一个 test2 密码为 abc，只能 localhost 登录
-grant select,insert,update,delete on mydb.* to [email=test2@localhost]test2@localhsot[/email] identified by &quot;abc&quot;;# 如果不想test有密码可以在用一次打消密码grant select,insert,update,delete on mydb.* to [email=test2@localhost]test2@localhost[/email] identified by “”;=
-
-四、创建数据库（1）create database 命名;
-
-（2）创建数据库并分配用户
-#1create database 数据库名;#2create select,insert,update,delete,create,drop,alter on 数据库名.* to 数据库名@loclhost identified by &#x27;密码&#x27;;#3select password por &#x27;数据名&#x27;@&#x27;localhost&#x27; =old_password(&#x27;密码&#x27;);
-
-五、显示数据库show databases 显示所有数据库
-
-六、删除数据库drop database xhkdb;
-
-七、使用数据库use xhkdb;
-（1）use 语句可以通告 mysql 把数据库当作默认使用。知道下一个不同的 use 语句。
-
-（2）use 语句不会阻碍访问其他数据库中的表。ab1 数据库访问 author 表，并从 db2 数据库访问 editor 表
-use db1;select author_name,editor_name from author,ab2,editor;where author.editor_id = ab2.editor.editor_id;
-
-八、当前连接的数据库select database();
-（1）显示 mysql 版本
-select version();
-
-
-（2）显示当前时间
-select now();
-
-
-（3）显示年月日
-
-
-
-（4）显示字符串
-
-（5）当计算器
-
-（5）串接字符串
-
-&#x2F;&#x2F;这里用到 CONCAT()函数，用来把字符串串接起来。
-九、创建数据库表注意：要先使用 use 数据库名；
-create table 表名(	字段名1，数据类型 [列级别约束条件][默认值]，	字段名2，数据类型 [列级别约束条件][默认值],	……	[表级别约束条件])
-
-
-例如:创建 tb_emp1 表结构
-
-
-十、获取表结构查看表结构可以使用 describe 和 show create table；
-describe 表名;
-
-或
-desc 表名；
-
-show create table 可以查看显示创建表时的 create table 语句。
-show create table 表名\G;
-
-
-十一、删除数据表drop table if exists 表1，表2,表n
-
-
-十二、向表中插入数据insert into 插入新行
-insert into 表名称 values(值1，值2);# 也可以指定要插入数据的列insert into table_name(列1，列2)values(值1，值2)
-
-十三、查询表中数据SELECT &#123;* | &lt;字段列表&gt;&#125; [	 FROM &lt;表 1&gt;,&lt;表 2&gt;...	 [WHERE &lt;表达式&gt;	 [GROUP BY &lt;group by definition&gt;]	 [HAVING &lt;expression&gt; [&#123;&lt;operator&gt;&lt;expression&gt;&#125;...]] 	[ORDER BY &lt;order by definition&gt;] 	[LIMIT [&lt;offset&gt;,] &lt;row count&gt;] ]SELECT [字段 1,字段 2,…,字段 n]FROM [表或视图]WHERE [查询条件];
-
-
-十四、删除记录delete from table_name[where &lt;condition&gt;];#						指定删除条件delete from person where id=11;
-
-十五、修改表中的数据update table_nameset column_nmael=value1,column_name2=value2where(condition)
-
-column_name1，为指定更新的字段名称。value 为相对应指定字段的更新值。condition 更新记录需要满足的条件
-【例】在 person 表中，更新 id 值为 11 的记录，将 age 字段值改为 15，将 name 字段值改为 LiMing，SQL 语句如下：
-update person set age=15,name=&#x27;liming&#x27;where id=11;
-
-十六、增加字段alter add 表名 add 新字段 数据类型	约束条件 first|after 已存在字段名	        first将新添加的字段设置为表的第一个字段	        after新添加的字段指定在‘已存在字段名’的后面
-
-【例】在数据表 tb_dept1 中添加一个没有完整性约束的 INT 类型的字段 managerId（部门经理编号），SQL 语句如下：
-ALTER TABLE tb_dept1 ADD managerId INT(10);
-
-十七、修改表名alter table 旧表名 rename to新表名
-
-【例】将数据表 tb_dept3 改名为 tb_deptment3，SQL 语句如下：
-ALTER TABLE tb_dept3 RENAME tb_deptment3;
-
-十八、备份数据库mysqldump -u user -h host -p password dbname[tbname,[tbname]]&gt;filename.sql
-
-十九、还原数据库mysql -u user -p [dbname]&lt;filename.sql
-
-【例 1】使用 mysql 命令将 C:\backup\booksdb_20130301.sql 文件中的备份导入到数据库中，输入语句如下：
-mysql –u root –p booksDB &lt; C:/backup/booksdb_20130301.sql
-
-如果已经登录 MySQL 服务器，还可以使用 source 命令导入 sql 文件。source 语句语法如下：
-source filename
-
-【 例 2 】 使 用 root 用 户 登 录 到 服 务 器 ， 然 后 使 用 source 导 入 本 地 的 备 份 文 件 booksdb_20110101.sql，输入语句如下：
-–选择要恢复到的数据库
-mysql&gt; use booksDB;Database changed
-
-–使用 source 命令导入备份文件
-mysql&gt; source C:\backup\booksDB_20130301.sql
-
-二十、快速恢复数据库在 MySQL 服务器停止运行时，将备份的数据库文件复制到 MySQL 存放数据的位置（MySQL 的 data 文件夹）
-chown -R mysql.mysql /var/lib/mysql/dbname
-
-【例】从 mysqlhotcopy 复制的备份恢复数据库，输入语句如下：
-cp -R /usr/backup/test usr/local/mysql/data
-
-二十一、在 Ubuntu 下安装 mysqlsudo apt-get update #更新软件包sudo apt-get install mysql-server #安装数据库服务器启动：sudo /etc/init.d/mysql start停止：sudo /etc/init.d/mysql stop重启：sudo /etc/init.d/mysql restart登录：mysql -u root -p&lt;pwd&gt;
-
-二十二、关闭防火墙- sudo apt-get install ufw 安装防火墙- sudo ufw enable 打开防火墙- sudo ufw status 查看防火墙状态- sudo ufw disable 关闭防火墙
-
-MySQL 在 Ubuntu 使用二十三、在服务器 SQLSERVER 上，利用 U 盘“U 盘资料&#x2F;test.sql”还原三张数据表。
-
-二十四、统计三张表的记录数，查询结果要求如图。SELECT &#x27;table1&#x27; AS TableName, COUNT(*) AS RecordCount FROM table1UNION ALLSELECT &#x27;table2&#x27; AS TableName, COUNT(*) AS RecordCount FROM table2UNION ALLSELECT &#x27;table3&#x27; AS TableName, COUNT(*) AS RecordCount FROM table3;
-
-二十五、删除 AD_AccountsRole 表中不属于 AD_Accounts 用户的关系数据。重新查询三张表的记录数。
-二十六、新建查询窗口，写出查询 nleedge 数据库中所有数据表和每个表的记录SELECT  (SELECT COUNT(*) FROM d_3_1) AS 表一,  (SELECT COUNT(*) FROM `商品库存`) AS 表二;
-]]></content>
-      <categories>
-        <category>Mysql</category>
-      </categories>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>物联网比赛之Windows维护</title>
-    <url>/2023/08/29/%E7%89%A9%E8%81%94%E7%BD%91%E6%AF%94%E8%B5%9B%E4%B9%8BWindows%E7%BB%B4%E6%8A%A4/</url>
-    <content><![CDATA[模块 B：物联网故障维修与运行维护1、Windows 系统维护
-
-一、出于安全考虑，需要对服务器计算机配置规则：“禁止工作站计算机访问本机任何程序或者端口，暂不启用此规则”。
-点击自定义
-
-
-
-
-
-
-记得露出本地地址
-二、在工作站电脑的命令行窗口中，使用命令查看网络连接以及每一个网络接口设备状态。netstat -an
-
-扩展：（1）netstat -b 可以显示在创建网络连接和侦听端口时所涉及的可执行程序
-（2）netstat -a 显示所有的有效连接信息列表，包括建立的连接（ESTABLISHED），也包括监听连接请求（LISTENLING）的那些连接
-（3）netstat -e 可以显示关于以太网的统计数据，传送字节数、数据包、错误等信息，还可以和-s 结合使用
-（4）netstat -f 显示外部地址的完全限定域名
-（5）netstat -p 可以显示 proto 指定的协议连接情况
-（6）netstat -r 显示路由表
-]]></content>
-      <categories>
-        <category>技能大赛</category>
-      </categories>
-      <tags>
-        <tag>windows维护</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>电子工程师入门篇-入门基础</title>
-    <url>/2024/02/08/%E7%94%B5%E5%AD%90%E5%B7%A5%E7%A8%8B%E5%B8%88%E5%85%A5%E9%97%A8%E7%AF%87-%E5%85%A5%E9%97%A8%E5%9F%BA%E7%A1%80/</url>
-    <content><![CDATA[1.1.1 电路与电路图电源的作用是提供电能；开关、导线的作用是控制和传递电能，称为中间环节；灯泡是消耗电能的用电器，它能将电能转变为光能，称为负载。
-
-1.1.2 电流与电阻1．电流​ 我们把电子运动的反方向作为电流方向，即把正电荷在电路中的移动方向规定为电流的方向。
-​ 电流通常用字母“I”表示，单位为安培（简称安），用“A”表示，比安培小的单位有毫安（mA）、微安（μA），它们之间的换算关系为
-
-2．电阻​ 导体对电流的阻碍称为该导体的电阻。
-​ 电阻通常用字母“R”表示，电阻的单位为欧姆（简称欧），用“Ω”表示，比欧姆大的单位 有千欧（kΩ）、兆欧（MΩ），它们之间的换算关系为
-
-​ 导体的电阻计算公式为
-
-​ L 为导体的长度（单位：m），S 为导体的横截面积（单位：m2），ρ 为导体的电阻率（单位：Ω·m）
-​ 在长度 L 和横截面积 S 相同的情况下，电阻率越大的导体其电阻越大
-1.1.3 电位、电压和电动势1．电位​ 电源的正极输出电流，流到 A 点，再经 R1 流到 B 点，然后通过 R2 流到 C 点，最后流到电源的负极。
-​ 为了表明某点为零基准点，通常在该点处画一个“⊥”符号，该符号称为接地符号，接 地符号处的电位规定为 0V
-2．电压​ 电路中的 A 点和 B 点的电位是不同的，有一定的差距，这种电位之间的差距称为电位差，又称电压
-​ 因为 A 点和 B 点电位差实际上就是电阻器 R1 两端的电位差（即电压）， R1 两端的电压用 UR1 表示，所以 UAB&#x3D;UR1。
-3．电动势​ 电源消耗能量在两极建立的电位差称为电动势，电动势的单位也为伏特
-​ 由于电源内部的电流是由负极流向正极，故电源的电动势方向规定为从电源负极指向正极。
-
-1.1.4 电路的 3 种状态
-1．通路​ 电路处于通路状态的特点有：电路畅通，有正常的电流流过负载，负载正常工作。
-2．开路​ 电路处于开路状态的特点有：电路断开，无电流流过负载，负载不工作。
-3．短路​ 电路处于短路状态的特点有：电路中有很大电流流过，但电流不流过负载，负载不工作。
-1.1.5 接地与屏蔽1．接地（1）在电路中，接地符号处的电位规定为 0V。
-（2）在电路中，标有接地符号的地方都是相通的。
-
-2．屏蔽​ 屏蔽的具体做法是用金属材料（称为屏蔽罩）将元器件或电路封闭起来，再将屏蔽罩接地。
-1.1.6 欧姆定律​ 在电路中，流过电阻的电流 I 的大小与电阻两端的电压 U 成正比，与电阻 R 的大小成反比，即
-
-​ 也可以是U&#x3D;IR 或者 R&#x3D;U&#x2F;I 注意：在电路中，某点电压指的是该点与地之间的电压
-1.1.7 电功、电功率和焦耳定律1．电功​ 可见电流流过一些用电设备时是会做功的，电流做的功称为电功。
-
-​ W 表示电功，单位为焦（J）；U 表示电压，单位为伏（V）；I 表示电流，单位为安（A）；t 表示时间，单位为秒（s）
-2．电功率​ 电功率是指单位时间里电流通过用电设备所做的功。
-​ 电功率常用 P 表示，单位为瓦（W），此外还有千瓦（kW）和毫瓦（mW），它们之间的换算关系是
-
-​ 电功率的计算公式是
-
-
-​ 1kW·h 可以这样理解：一个电功率为 100W 的灯泡连续使用 10h 消耗的电功为 1kW·h，即消耗 1 度电。
-
-3．焦耳定律​ 电流流过导体，导体发出的热量与导体流过的电流、导体的电阻和通电的时间有关。
-
-​ Q 表示热量，单位为焦耳（J）；R 表示电阻，单位为欧姆（Ω）；t 表示时间，单位为秒（s）。
-该定律说明：电流流过导体产生的热量，与电流的平方、导体的电阻及通电时间成正比。
-1.2 电阻的连接方式1.2.1 电阻的串联
-​ 电阻串联电路的特点有以下几个。:
-​ ① 流过各串联电阻的电流相等，都为I。
-​ ② 电阻串联后的总电阻增大，总电阻等于各串联电阻之和，即R&#x3D;R1+R2
-​ ③ 总电压等于各串联电阻上电压之和，即U&#x3D;U1+U2
-​ ④ 电阻越大，两端电压越高，因为R1&lt;R2，所以UR1&lt;UR2。
-1.2.2 电阻的并联
-​ 电阻并联电路的特点有以下几个。
-​ ① 并联电阻两端的电压相等，即总电流等于流过各个并联电阻的电流之和，即I&#x3D;I1+I2
-​ ③ 电阻并联总电阻减小，总电阻的倒数等于各并联电阻的倒数之 1&#x2F;R&#x3D;1&#x2F;R1+1&#x2F;R2和，即该式子可变形为 R&#x3D;R1R2&#x2F;R1+R2
-​ ④ 在并联电路中，电阻越小，流过电阻的电流越大，因为 R1&lt;R2，所以 I1&gt;I2。
-1.2.3 电阻的混联
-1.3 直流电与交流电1.3.1 直流电​ 直流电是指方向始终固定不变的电压或电流。
-1．稳定直流电​ 稳定直流电是指方向固定不变并且大小也不变的直流电。
-2．脉动直流电​ 脉动直流电是指方向固定不变，但大小随时间变化的直流电。
-
-1.3.2 交流电​ 交流电是指方向和大小都随时间作周期性变化的电压或电流
-1．正弦交流电
-
-2．周期和频率
-（1）周期​ 交流电变化过程是不断重复的，交流电重复 变化一次所需的时间称为周期，周期用 T 表示，单位是秒（s）。
-（2）频率​ 交流电在每秒钟内重复变化的次数称为频率，频率用 f 表示，它是 周期的倒数，即
-
-该交流电的频率 f&#x3D;50Hz，说明在 1s 内交流电能重复 0 ～ t4 这个过程 50 次。交流电变化越快，变化一次所
-需要的时间越短，周期就越短，频率就越高。
-（3）高频、中频和低频​ 频率在 3MHz 以上的信号称为高频信号，频率在 300kHz ～ 3MHz 范围内的信 号称为中频信号，频率低于 300kHz 的信号称为低频信号。
-3．瞬时值和有效值（1）瞬时值​ 交流电的大小和方向是不断变化的，交流电在某一时刻的值称为 交流电在该时刻的瞬时值。
-（2）有效值
-所示两个电路中的电热丝完全一样，现分别给电热丝通交流电和直流电，如果两电路通电时间相同，并且电热丝发出热量也相同，对电热丝来说，这里的交流电和直流电是等效的，那么就将图 1-21（b）中直流电的电压值或电流值称为图 1-21（a）中交流电的有效电压值或有效电流值。正弦交流电的有效值与最大瞬时值的关系是
-
-4．相位与相位差（1）相位
-​ 交流电在某时刻的角度称为交流电在该时刻的相位。
-（2）相位差​ 相位差是指两个同频率交流电的相位之差。
-
-​ 两个交流电存在相位差实际上就是两个交流电变化存在着时间差。
-]]></content>
-      <categories>
-        <category>电子技术</category>
-      </categories>
-      <tags>
-        <tag>电子技术</tag>
       </tags>
   </entry>
   <entry>
@@ -7594,38 +7881,6 @@ OPUS encoder 为 VOIP、bitrate&#x3D;16 kbps、complexity&#x3D;1。连续 3 次 
 ]]></content>
   </entry>
   <entry>
-    <title>骑行码表项目：项目架构与面试总览</title>
-    <url>/2026/09/12/%E9%AA%91%E8%A1%8C%E7%A0%81%E8%A1%A8%E9%A1%B9%E7%9B%AE%EF%BC%9A%E9%A1%B9%E7%9B%AE%E6%9E%B6%E6%9E%84%E4%B8%8E%E9%9D%A2%E8%AF%95%E6%80%BB%E8%A7%88/</url>
-    <content><![CDATA[1. 一句话定义这是一个运行在 ESP32-P4 上的圆形 LVGL 骑行终端。P4 负责业务计算、SD 地图、显示、音频和协议栈；ESP32-C6 只提供 Bluetooth Controller，二者通过 ESP-Hosted SDIO 交换 HCI。设备侧把 BLE 路线、手机定位、GNSS、传感器和 DEMO 数据汇聚到统一运动模型，再由 UI、历史记录和主动播报分别消费快照。
-2. 分层边界板级层 components/board_peripherals  PMIC / LCD / Touch / SDMMC / GNSS UART / I2S 音频 / IMU        |业务模型层 main/app_model + map  motion snapshot / weather / history / system time  map_store SD 数据 + map_route 路线投影        |协议接入层 bt + app_net + ai_voice  NimBLE GATT / BLE route / Wi-Fi STA / Xiaozhi WebSocket        |视图层 main/ui_app  ui_page_manager / 页面 / draw callback / 低频 timer
-
-底层任务不能调用 lv_...。UI 只在 LVGL 线程内读取快照并更新控件。跨任务传递使用 FreeRTOS queue、mutex、event group 或“带 generation 的快照”。
-3. 启动顺序及原因main/app_main() 的顺序是：NVS -&gt; board_peripherals_init() -&gt; 运动模型&#x2F;天气任务 -&gt; LCD -&gt; LVGL adapter -&gt; 输入设备 -&gt; UI -&gt; 按键 -&gt; BLE -&gt; 手动 Xiaozhi controller -&gt; 延迟挂载 SD。
-先初始化 NVS 是因为 Wi-Fi profile、天气、骑行历史都依赖 NVS。板级初始化必须早于 UI，确保电源、显示和音频设备状态可用。LVGL 启动后才允许创建页面。BLE 在 UI 之后启动，失败只记录 warning，不阻塞骑行 UI。SD 卡挂载被放到延迟任务，避免启动阶段和 ESP-Hosted&#x2F;显示 DMA 同时争用内部 SRAM。
-LVGL adapter 任务 priority&#x3D;24、core&#x3D;1、最大延迟 5 ms、栈在 PSRAM；这个优先级高于 TCP&#x2F;IP 线程，目的不是让业务跑得更快，而是避免联网时 LVGL worker 被饿死。
-4. 数据流：从手机路线到导航手机规划 GCJ-02 polyline  -&gt; Command Characteristic 0x22 BEGIN  -&gt; 0x23 按 offset 分块  -&gt; 0x24 COMMIT + CRC32  -&gt; ble_route task 形成 LOADED 快照  -&gt; map_route task 复制点列  -&gt; GCJ-02 迭代反算为 WGS84  -&gt; map_store 读取中心 3x3 个 2 km 网格  -&gt; 等距投影为 dm 世界坐标  -&gt; 累计距离/高程/包围盒  -&gt; UI 复制自己的 PSRAM 几何缓存并绘制
-
-PHONE 定位走另一条链：0x30 在 GATT 回调中只做协议解析，然后入队；phone_location_task 做精度&#x2F;时间&#x2F;跳点过滤，调用运动模型更新距离，并由 map_route_project_gcj02() 投影到路线。路线状态和定位来源是两个独立状态机。
-5. 面试中需要主动说清楚的取舍为什么大数据放 PSRAM，音频小块放内部 RAM地图网格、路线点列、历史图表和 Wi-Fi 扫描记录体积不可预测，使用 heap_caps_malloc(..., MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT)，避免挤占 DMA 所需的内部 SRAM。SDMMC、I2S 和 OPUS 热路径要求可寻址且对齐的内部 8-bit 缓冲，所以音频 raw&#x2F;PCM&#x2F;OPUS packet 和 MAX98357A 写入缓冲使用 MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT。
-为什么不在 LVGL 绘制回调里访问 SD 卡SD 读是阻塞 IO，且绘制回调运行在 UI 关键路径；把它放到 map_store task 后，UI 只看到旧快照或新快照，避免卡顿和并发破坏。
-为什么有 generation地图、路线、运动快照都可能在不同任务更新。generation 让 UI 判断“缓存是否仍对应当前源数据”，避免路线替换后旧屏幕点集继续被使用。generation 回绕到 0 时立即改为 1，避免 0 被当作“未初始化”。
-6. 当前边界当前没有 OTA、地图瓦片 BLE 传输、离线唤醒词、ESP-SR、MCP 设备控制工具。Xiaozhi 强制选 WebSocket，MQTT 配置即使返回也不使用。Live Metrics 只包含时间、距离、当前&#x2F;平均速度和保留的电池字段；完整历史记录通过独立 Ride Record characteristic 同步。
-7. 代码入口
-启动：main/main.c
-页面路由：main/ui_app/core/ui_page_manager.c
-统一数据：main/app_model/app_motion_model.c
-BLE：bt/app_ble.c、bt/app_ble_gatt.c、bt/app_ble_proto.c
-完整路线：bt/app_ble_route.c、map/map_route.c
-地图：map/map_store.c
-Wi-Fi&#x2F;Xiaozhi：main/app_net/app_wifi.c、main/ai_voice/app_ai_voice.c
-
-
-
-
-
-]]></content>
-  </entry>
-  <entry>
     <title>黄山派之BLE</title>
     <url>/2025/08/20/%E9%BB%84%E5%B1%B1%E6%B4%BE%E4%B9%8BBLE/</url>
     <content><![CDATA[service服务
@@ -7706,5 +7961,37 @@ HSE或者HSI经过PLL时钟输出分频因子M（2~63）分频后，称为VCO的
       <tags>
         <tag>STM32</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>骑行码表项目：项目架构与面试总览</title>
+    <url>/2026/09/12/%E9%AA%91%E8%A1%8C%E7%A0%81%E8%A1%A8%E9%A1%B9%E7%9B%AE%EF%BC%9A%E9%A1%B9%E7%9B%AE%E6%9E%B6%E6%9E%84%E4%B8%8E%E9%9D%A2%E8%AF%95%E6%80%BB%E8%A7%88/</url>
+    <content><![CDATA[1. 一句话定义这是一个运行在 ESP32-P4 上的圆形 LVGL 骑行终端。P4 负责业务计算、SD 地图、显示、音频和协议栈；ESP32-C6 只提供 Bluetooth Controller，二者通过 ESP-Hosted SDIO 交换 HCI。设备侧把 BLE 路线、手机定位、GNSS、传感器和 DEMO 数据汇聚到统一运动模型，再由 UI、历史记录和主动播报分别消费快照。
+2. 分层边界板级层 components/board_peripherals  PMIC / LCD / Touch / SDMMC / GNSS UART / I2S 音频 / IMU        |业务模型层 main/app_model + map  motion snapshot / weather / history / system time  map_store SD 数据 + map_route 路线投影        |协议接入层 bt + app_net + ai_voice  NimBLE GATT / BLE route / Wi-Fi STA / Xiaozhi WebSocket        |视图层 main/ui_app  ui_page_manager / 页面 / draw callback / 低频 timer
+
+底层任务不能调用 lv_...。UI 只在 LVGL 线程内读取快照并更新控件。跨任务传递使用 FreeRTOS queue、mutex、event group 或“带 generation 的快照”。
+3. 启动顺序及原因main/app_main() 的顺序是：NVS -&gt; board_peripherals_init() -&gt; 运动模型&#x2F;天气任务 -&gt; LCD -&gt; LVGL adapter -&gt; 输入设备 -&gt; UI -&gt; 按键 -&gt; BLE -&gt; 手动 Xiaozhi controller -&gt; 延迟挂载 SD。
+先初始化 NVS 是因为 Wi-Fi profile、天气、骑行历史都依赖 NVS。板级初始化必须早于 UI，确保电源、显示和音频设备状态可用。LVGL 启动后才允许创建页面。BLE 在 UI 之后启动，失败只记录 warning，不阻塞骑行 UI。SD 卡挂载被放到延迟任务，避免启动阶段和 ESP-Hosted&#x2F;显示 DMA 同时争用内部 SRAM。
+LVGL adapter 任务 priority&#x3D;24、core&#x3D;1、最大延迟 5 ms、栈在 PSRAM；这个优先级高于 TCP&#x2F;IP 线程，目的不是让业务跑得更快，而是避免联网时 LVGL worker 被饿死。
+4. 数据流：从手机路线到导航手机规划 GCJ-02 polyline  -&gt; Command Characteristic 0x22 BEGIN  -&gt; 0x23 按 offset 分块  -&gt; 0x24 COMMIT + CRC32  -&gt; ble_route task 形成 LOADED 快照  -&gt; map_route task 复制点列  -&gt; GCJ-02 迭代反算为 WGS84  -&gt; map_store 读取中心 3x3 个 2 km 网格  -&gt; 等距投影为 dm 世界坐标  -&gt; 累计距离/高程/包围盒  -&gt; UI 复制自己的 PSRAM 几何缓存并绘制
+
+PHONE 定位走另一条链：0x30 在 GATT 回调中只做协议解析，然后入队；phone_location_task 做精度&#x2F;时间&#x2F;跳点过滤，调用运动模型更新距离，并由 map_route_project_gcj02() 投影到路线。路线状态和定位来源是两个独立状态机。
+5. 面试中需要主动说清楚的取舍为什么大数据放 PSRAM，音频小块放内部 RAM地图网格、路线点列、历史图表和 Wi-Fi 扫描记录体积不可预测，使用 heap_caps_malloc(..., MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT)，避免挤占 DMA 所需的内部 SRAM。SDMMC、I2S 和 OPUS 热路径要求可寻址且对齐的内部 8-bit 缓冲，所以音频 raw&#x2F;PCM&#x2F;OPUS packet 和 MAX98357A 写入缓冲使用 MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT。
+为什么不在 LVGL 绘制回调里访问 SD 卡SD 读是阻塞 IO，且绘制回调运行在 UI 关键路径；把它放到 map_store task 后，UI 只看到旧快照或新快照，避免卡顿和并发破坏。
+为什么有 generation地图、路线、运动快照都可能在不同任务更新。generation 让 UI 判断“缓存是否仍对应当前源数据”，避免路线替换后旧屏幕点集继续被使用。generation 回绕到 0 时立即改为 1，避免 0 被当作“未初始化”。
+6. 当前边界当前没有 OTA、地图瓦片 BLE 传输、离线唤醒词、ESP-SR、MCP 设备控制工具。Xiaozhi 强制选 WebSocket，MQTT 配置即使返回也不使用。Live Metrics 只包含时间、距离、当前&#x2F;平均速度和保留的电池字段；完整历史记录通过独立 Ride Record characteristic 同步。
+7. 代码入口
+启动：main/main.c
+页面路由：main/ui_app/core/ui_page_manager.c
+统一数据：main/app_model/app_motion_model.c
+BLE：bt/app_ble.c、bt/app_ble_gatt.c、bt/app_ble_proto.c
+完整路线：bt/app_ble_route.c、map/map_route.c
+地图：map/map_store.c
+Wi-Fi&#x2F;Xiaozhi：main/app_net/app_wifi.c、main/ai_voice/app_ai_voice.c
+
+
+
+
+
+]]></content>
   </entry>
 </search>

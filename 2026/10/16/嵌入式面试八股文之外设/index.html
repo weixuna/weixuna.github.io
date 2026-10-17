@@ -1,0 +1,645 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><title>嵌入式面试八股文之外设 | 为巽</title><meta name="keywords" content="面试"><meta name="author" content="为巽"><meta name="copyright" content="为巽"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="嵌入式面试八股文之外设"><meta name="application-name" content="嵌入式面试八股文之外设"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="嵌入式面试八股文之外设"><meta property="og:url" content="http://example.com/2026/10/16/%E5%B5%8C%E5%85%A5%E5%BC%8F%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1%E6%96%87%E4%B9%8B%E5%A4%96%E8%AE%BE/index.html"><meta property="og:site_name" content="为巽"><meta property="og:description" content="1.1 GPIOGPIO（General Purpose Input&amp;#x2F;Output）是芯片控制外部电路最基础的引脚接口。 1. 八种工作模式   分类 模式名称 核心特点与典型应用场景    输入模式 浮空输入 (Floating) 电平完全由外部决定，引脚悬空时电平不确定。常用于UART"><meta property="og:locale" content="en"><meta property="og:image" content="http://example.com/img/touxiang.jpg"><meta property="article:author" content="为巽"><meta property="article:tag"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="http://example.com/img/touxiang.jpg"><meta name="description" content="1.1 GPIOGPIO（General Purpose Input&amp;#x2F;Output）是芯片控制外部电路最基础的引脚接口。 1. 八种工作模式   分类 模式名称 核心特点与典型应用场景    输入模式 浮空输入 (Floating) 电平完全由外部决定，引脚悬空时电平不确定。常用于UART"><link rel="shortcut icon" href="/img/touxiang.ico"><link rel="canonical" href="http://example.com/2026/10/16/%E5%B5%8C%E5%85%A5%E5%BC%8F%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1%E6%96%87%E4%B9%8B%E5%A4%96%E8%AE%BE/"><link rel="preconnect" href="//cdn.cbd.int"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="manifest" href="/manifest.json"/><meta name="msapplication-TileColor" content="var(--anzhiyu-main)"/><link rel="mask-icon" href="/img/siteicon/apple-icon-180.png" color="#5bbad5"/><link rel="apple-touch-icon" sizes="180x180" href="/img/siteicon/apple-icon-180.png"/><link rel="apple-touch-icon-precomposed" sizes="180x180" href="/img/siteicon/apple-icon-180.png"/><link rel="icon" type="image/png" sizes="32x32" href="/img/siteicon/32.png"/><link rel="icon" type="image/png" sizes="16x16" href="/img/siteicon/16.png"/><link rel="bookmark" href="/img/siteicon/apple-icon-180.png"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2048-2732.jpg" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2732-2048.jpg" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1668-2388.jpg" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2388-1668.jpg" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1536-2048.jpg" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2048-1536.jpg" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1668-2224.jpg" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2224-1668.jpg" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1620-2160.jpg" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2160-1620.jpg" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1290-2796.jpg" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2796-1290.jpg" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1179-2556.jpg" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2556-1179.jpg" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1284-2778.jpg" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2778-1284.jpg" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1170-2532.jpg" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2532-1170.jpg" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1125-2436.jpg" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2436-1125.jpg" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1242-2688.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2688-1242.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-828-1792.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1792-828.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1242-2208.jpg" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-2208-1242.jpg" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-750-1334.jpg" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1334-750.jpg" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-640-1136.jpg" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"/><link rel="apple-touch-startup-image" href="/img/siteicon/apple-splash-1136-640.jpg" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.cbd.int/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  linkPageTop: undefined,
+  peoplecanvas: undefined,
+  postHeadAiDescription: {"enable":true,"gptName":"AnZhiYu","mode":"local","switchBtn":false,"btnLink":"https://afdian.net/item/886a79d4db6711eda42a52540025c377","randomNum":3,"basicWordCount":1000,"key":"xxxx","Referer":"https://xx.xx/"},
+  diytitle: undefined,
+  LA51: undefined,
+  greetingBox: {"enable":true,"default":"晚上好👋","list":[{"greeting":"晚安😴","startTime":0,"endTime":5},{"greeting":"早上好鸭👋, 祝你一天好心情！","startTime":6,"endTime":9},{"greeting":"上午好👋, 状态很好，鼓励一下～","startTime":10,"endTime":10},{"greeting":"11点多啦, 在坚持一下就吃饭啦～","startTime":11,"endTime":11},{"greeting":"午安👋","startTime":12,"endTime":14},{"greeting":"充实的一天辛苦啦！","startTime":14,"endTime":18},{"greeting":"19点喽, 奖励一顿丰盛的大餐吧🍔。","startTime":19,"endTime":19},{"greeting":"晚上好👋, 在属于自己的时间好好放松😌~","startTime":20,"endTime":24}]},
+  twikooEnvId: '',
+  commentBarrageConfig:undefined,
+  music_page_default: "nav_music",
+  root: '/',
+  preloader: {"source":3},
+  friends_vue_info: undefined,
+  navMusic: false,
+  mainTone: {"mode":"api","api":"https://img2color-go.vercel.app/api?img=","cover_change":true},
+  authorStatus: {"skills":["🤖️ 数码科技爱好者","🔍 分享与热心帮助","🏠 智能家居小能手","🔨 设计开发一条龙","🤝 专修交互与设计","🏃 脚踏实地行动派","🧱 团队小组发动机","💢 壮汉人狠话不多"]},
+  algolia: {"appId":"71SBKWZYMZ","apiKey":"090032a55c419135ba9c6570d4c7546d","indexName":"hexo","hits":{"per_page":6},"languages":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}.","hits_stats":"${hits} results found in ${time} ms"}},
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简","rightMenuMsgToTraditionalChinese":"转为繁体","rightMenuMsgToSimplifiedChinese":"转为简体"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: true,
+    post: false
+  },
+  runtime: 'days',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: {"copy":true,"copyrightEbable":false,"limitCount":50,"languages":{"author":"Author: 为巽","link":"Link: ","source":"Source: 为巽","info":"Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.","copySuccess":"Copy success, copy and reprint please mark the address of this article"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"Traditional Chinese Activated Manually","cht_to_chs":"Simplified Chinese Activated Manually","day_to_night":"Dark Mode Activated Manually","night_to_day":"Light Mode Activated Manually","bgLight":"#425AEF","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  shortcutKey: undefined,
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  configTitle: '为巽',
+  title: '嵌入式面试八股文之外设',
+  postAI: '',
+  pageFillDescription: '1.1 GPIO, 1. 八种工作模式, 1.2 UART, 1. 协议核心要素, 2. 高频面试考点, 1.3 I2C, 1. 物理层与协议时序, 2. 高频面试考点, 1.4 I2S, 1. 信号线定义, 2. 三种对齐格式对比, 3. 高频面试考点, 1.5 MIPI, 1. 物理层（D-PHY）核心机制, 2. MIPI DSI 的两种工作模式, 1.6 SDMMC 与 SDIO, 1. 概念区分, 2. 硬件信号线（以 4-bit SDx2FSDIO 为例）, 3. 高频面试考点, 1.7 SPIx2FQSPI, 2. QSPI（Queued x2F Quad SPI）是芯片控制外部电路最基础的引脚接口八种工作模式分类模式名称核心特点与典型应用场景输入模式浮空输入电平完全由外部决定引脚悬空时电平不确定常用于外部按键已有外部上下拉上拉输入内部连接上拉电阻默认高电平用于检测低电平有效的外部中断或按键下拉输入内部连接下拉电阻默认低电平用于检测高电平有效的外部信号模拟输入关闭施密特触发器信号直通内部模块用于电压采集或低功耗模式下的省电配置输出模式开漏输出不工作导通输出低电平截止呈高阻态必须外接上拉电阻才能输出高电平推挽输出和交替导通可直接输出强高低电平驱动能力强用于驱动继电器复用模式复用开漏复用推挽引脚控制权交给片上外设硬件如而非直接写寄存器是一种异步全双工点对点对的串行通信协议协议核心要素物理连线发送接收共地必不可少硬件流控需额外增加请求发送和允许发送数据帧格式空闲态持续高电平起始位低电平标志传输开始触发接收端采样定时器数据位通常为低位先发校验位可选奇校验偶校验无校验用于简单检错停止位高电平拉开帧间间隔并校准时钟高频面试考点既然没有时钟线异步通信如何保证收发同步收发双方预先约定相同的波特率接收端检测到起始位下降沿后以倍波特率的内部时钟进行过采样取每个中间位置第次采样值进行表决从而滤除边沿毛刺并容忍一定程度的时钟偏差通常要求收发双方时钟误差小于的区别特性电平信号类型单端信号单端信号负逻辑差分信号两线压差通信方式全双工对全双工对半双工支持对多总线组网最多节点传输距离板级小于米约米可达米抗共模干扰极强串口接收不定长数据怎么处理最优解是串口空闲中断在后台自动搬运每个字节到内存缓冲区当总线出现超过个字节时间的空闲高电平时触发中断通知一帧数据接收完毕是开发的同步半双工支持多主多从的双线制串行总线物理层与协议时序双线结构串行数据线串行时钟线两条线均配置为开漏输出外部上拉电阻典型值传输速率标准模式快速模式高速模式核心时序规则起始信号为高电平时由高变低停止信号为高电平时由低变高数据有效性为高电平时必须保持稳定供接收方采样为低电平时才允许改变状态应答信号每传输完字节高位先发发送方释放在第个时钟周期由接收方拉低表示保持高电平表示高频面试考点读寄存器的完整流程是什么为什么读操作包含写过程读操作本质是复合格式需要先写告诉从机要读哪个寄存器地址主机发送从机地址写标志等待从机主机发送目标寄存器地址等待从机主机发送重复起始信号不发以防总线被其他主机抢占从机地址读标志等待从机从机发送数据字节主机回复若读完最后一个字节主机必须回复通知从机停止发送主机发送释放总线总线死锁被一直拉低的原因及如何解除原因主机正在读从机数据时从机正好输出拉低了此时主机发生异常复位复位后主机处于空闲态而从机因为没有收到后续的时钟一直卡在拉低的状态等待时钟导致总线死锁解决方法主机初始化时检测若为低电平将引脚临时配置为普通软件模拟连续输出个时钟脉冲让从机走完剩余的状态机并释放最后主机再发一个信号恢复总线是专为数字音频设备之间传输音频数据设计的同步串行接口信号线定义位时钟对应数字音频的每一位数据计算公式帧时钟声道选择频率等于采样率用于区分当前传输的是左声道通常表示左还是右声道表示右实际的二进制补码音频数据线先发主时钟可选通常为采样率的倍或倍如专供外部内部的锁相环和调制器使用不属于标准三线制强制要求但实际硬件中极其常见三种对齐格式对比标准格式标准最高有效位在发生翻转后的第个上升沿才开始有效即延迟个周期左对齐格式翻转的同时紧接着的第个周期就开始传输无延迟右对齐格式对齐在下一次翻转前的最后一个周期高频面试考点为什么音频传输不直接用或而要专门设计时钟抖动隔离音频将数据和时钟完全分离配合硬件降低采样时钟抖动避免爆音或底噪天然支持双声道同步通过硬件切换左右声道容忍位宽不匹配标准因为固定在翻转后第个时钟若发送端发而接收端只支持接收端直接截取高位忽略后位即可无需修改协议即可兼容嵌入式面试中提到的通常指用于摄像头的和用于显示屏的物理层核心机制通道结构由对差分时钟线对差分数据线组成两种工作状态自动切换高频考点状态模式信号类型电平范围速率作用模式单端信号小于空闲省电传输控制命令如屏幕初始化寄存器配置模式低摆幅差分信号典型高速传输图像帧数据像素流状态切换时序发送图像帧前总线从序列进入高速差分模式一帧或一行传完后消隐期立刻退回省电状态的两种工作模式视频模式类似传统接口主控必须持续不断地向屏幕刷新像素流和同步信号屏幕内部没有显存一旦主控停止发送数据屏幕就会黑屏或花屏命令模式屏幕内部自带显存主控只在画面变化时通过发送更新的数据包平时主控可以休眠由屏幕自刷新极大降低系统功耗常用于智能手表手机息屏显示与是控制器或存储卡标准而是基于总线扩展出来的外设接口协议概念区分是最早的多媒体卡标准是将芯片和主控负责磨损均衡坏块管理封装成焊死在主板上的存储芯片通常支持数据位宽卡在基础上发展而来的可插拔存储卡支持和模式以及兼容模式复用卡的物理引脚和命令协议但连接的不是存储卡而是外设芯片最典型的是蓝牙模组如作为从机网卡硬件信号线以为例主机提供给从机的同步时钟双向命令响应线用于发送控制指令如复位初始化读写寄存器与数据块根双向数据线高频面试考点和卡在中断机制上有什么重要区别普通存储卡是纯被动的没有硬件中断概念而外设如收到网络数据包需要主动通知主机在模式下复用引脚在数据传输间隙作为硬件中断线通知主控读取数据为什么板载大容量存储普遍用而不是需要主控软件自行处理坏块管理磨损均衡和复杂的纠错而内部自带控制器对外呈现为标准的块设备极大地简化了的驱动开发标准串行外设接口是提出的同步全双工一主多从的高速串行接口常见速率四根信号线同步时钟由主机产生主机输出从机输入主机输入从机输出片选信号通常低电平有效每个从机独占一根线四种工作模式必考核心由时钟极性和时钟相位组合决定模式空闲时电平数据采样边沿采样时刻与数据切换时刻最常用空闲为低电平第个跳变沿采样上升沿采样下降沿切换数据空闲为低电平第个跳变沿采样下降沿采样上升沿切换数据空闲为高电平第个跳变沿采样下降沿采样上升沿切换数据最常用空闲为高电平第个跳变沿采样上升沿采样下降沿切换数据记忆技巧不管还是都是上升沿采样数据这也是绝大多数和传感器默认同时兼容和的原因嵌入式语境下的绝大多指四线数据专用于连接外部与标准的核心区别半双工线并行传输将原本的和升级为双向的并把原本的写保护引脚和保持引脚复用为一个时钟周期可以同时传输数据吞吐率直接提升倍若配合双边沿采样个时钟可传帧阶段划分协议将一次通信拆分为指令阶段地址阶段交替字节空周期数据阶段每个阶段都可独立配置为单线双线或四线传输片内执行与内存映射模式标准需要先发读命令把数据搬到才能运行控制器支持内存映射将外部直接映射到的系统寻址空间如的可以直接通过指针读取外部或者直接把代码放在外部中运行极大节省片内成本',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-10-17 12:16:52',
+  postMainColor: '',
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.1.1"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" alt="加载头像" src="/img/touxiang.ico"/><div class="loading-image-dot"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.getElementById('loading-box').classList.add("loaded");
+  },
+  initLoading: () => {
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+setTimeout(function(){preloader.endLoading();},10000)
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.10/progress_bar/progress_bar.css"/><script async="async" src="https://cdn.cbd.int/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><div id="nav-group"><span id="blog_name"><div class="back-home-button"><i class="anzhiyufont anzhiyu-icon-grip-vertical"></i><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://zh.annas-archive.org/" title="安娜图书"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/book.png" alt="安娜图书"/><span class="back-menu-item-text">安娜图书</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="https://www.book123.info/" title="无名图书"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/book-open.png" alt="无名图书"/><span class="back-menu-item-text">无名图书</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">项目</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://image.anheyu.com/" title="项目"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://image.anheyu.com/favicon.ico" alt="项目"/><span class="back-menu-item-text">项目</span></a></div></div></div></div><a id="site-name" href="/" accesskey="h"><div class="title">为巽</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/album/"><i class="anzhiyufont anzhiyu-icon-images faa-tada" style="font-size: 0.9em;"></i><span> 相册集</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button only-home" id="travellings_button" title="随机前往一个开往项目网站"><a class="site-page" onclick="anzhiyu.totraveling()" title="随机前往一个开往项目网站" href="javascript:void(0);" rel="external nofollow" data-pjax-state="external"><i class="anzhiyufont anzhiyu-icon-train"></i></a></div><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><div class="nav-button" id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" title="搜索🔍" accesskey="s"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span> Search</span></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" alt="微信" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" alt="支付宝" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> Newest Comments</span></div><div class="aside-list"><span>loading...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/APP%E5%BC%80%E5%8F%91/" style="font-size: 1.05rem;">APP开发<sup>1</sup></a><a href="/tags/CSS/" style="font-size: 1.05rem;">CSS<sup>1</sup></a><a href="/tags/HTML/" style="font-size: 1.05rem;">HTML<sup>3</sup></a><a href="/tags/HarmonyOS/" style="font-size: 1.05rem;">HarmonyOS<sup>1</sup></a><a href="/tags/RTOS/" style="font-size: 1.05rem;">RTOS<sup>2</sup></a><a href="/tags/SF32/" style="font-size: 1.05rem;">SF32<sup>1</sup></a><a href="/tags/STM32/" style="font-size: 1.05rem;">STM32<sup>9</sup></a><a href="/tags/Ubuntu%E7%BB%B4%E6%8A%A4/" style="font-size: 1.05rem;">Ubuntu维护<sup>1</sup></a><a href="/tags/windows%E7%BB%B4%E6%8A%A4/" style="font-size: 1.05rem;">windows维护<sup>1</sup></a><a href="/tags/%E5%85%AB%E8%82%A1%E6%96%87/" style="font-size: 1.05rem;">八股文<sup>2</sup></a><a href="/tags/%E5%8D%8E%E4%B8%BAIOT/" style="font-size: 1.05rem;">华为IOT<sup>1</sup></a><a href="/tags/%E5%8D%8E%E4%B8%BA%E4%BA%91IOT/" style="font-size: 1.05rem;">华为云IOT<sup>1</sup></a><a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/" style="font-size: 1.05rem;">嵌入式<sup>1</sup></a><a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8FC/" style="font-size: 1.05rem;">嵌入式C<sup>6</sup></a><a href="/tags/%E6%80%9D%E6%BE%88/" style="font-size: 1.05rem;">思澈<sup>1</sup></a><a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 1.05rem;">数据库<sup>2</sup></a><a href="/tags/%E6%A0%B7%E9%A2%98/" style="font-size: 1.05rem;">样题<sup>1</sup></a><a href="/tags/%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/" style="font-size: 1.05rem;">电子技术<sup>1</sup></a><a href="/tags/%E7%94%B5%E8%B7%AF%E5%92%8C%E7%94%B5%E8%B7%AF%E6%A8%A1%E5%9E%8B/" style="font-size: 1.05rem;">电路和电路模型<sup>1</sup></a><a href="/tags/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/" style="font-size: 1.05rem;">电路基础<sup>1</sup></a><a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 1.05rem;">算法<sup>5</sup></a><a href="/tags/%E8%BD%AF%E8%80%83/" style="font-size: 1.05rem;">软考<sup>1</sup></a><a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 1.05rem;">面试<sup>5</sup></a><a href="/tags/%E9%BB%84%E5%B1%B1%E6%B4%BE/" style="font-size: 1.05rem;">黄山派<sup>1</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>Archives</span><a class="card-more-btn" href="/archives/" title="More">
+    <i class="anzhiyufont anzhiyu-icon-angle-right"></i></a></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2026/10/"><span class="card-archive-list-date">October 2026</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">3</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2026/09/"><span class="card-archive-list-date">September 2026</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">10</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2026/08/"><span class="card-archive-list-date">August 2026</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2026/06/"><span class="card-archive-list-date">June 2026</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">4</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/11/"><span class="card-archive-list-date">November 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/08/"><span class="card-archive-list-date">August 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/04/"><span class="card-archive-list-date">April 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/11/"><span class="card-archive-list-date">November 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="切换"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">原创</a><span class="post-meta-categories"><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%85%AB%E8%82%A1%E6%96%87/" itemprop="url">八股文</a></span><span class="article-meta tags"><a class="article-meta__tags" href="/tags/%E9%9D%A2%E8%AF%95/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>面试</span></a></span></div></div><h1 class="post-title" itemprop="name headline">嵌入式面试八股文之外设</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" itemprop="dateCreated datePublished" datetime="2026-10-16T15:32:35.467Z" title="Created 2026-10-16 15:32:35">2026-10-16</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" itemprop="dateCreated datePublished" datetime="2026-10-17T12:16:52.653Z" title="Updated 2026-10-17 12:16:52">2026-10-17</time></span></div><div class="meta-secondline"><span class="post-meta-separator">       </span><span class="post-meta-position" title="作者IP属地为广东"><i class="anzhiyufont anzhiyu-icon-location-dot"></i>广东</span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src=""></div></header><main id="blog-container"><div class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container" itemscope itemtype="http://example.com/2026/10/16/%E5%B5%8C%E5%85%A5%E5%BC%8F%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1%E6%96%87%E4%B9%8B%E5%A4%96%E8%AE%BE/"><header><a class="post-meta-categories" href="/categories/%E5%85%AB%E8%82%A1%E6%96%87/" itemprop="url">八股文</a><a href="/tags/%E9%9D%A2%E8%AF%95/" tabindex="-1" itemprop="url">面试</a><h1 id="CrawlerTitle" itemprop="name headline">嵌入式面试八股文之外设</h1><span itemprop="author" itemscope itemtype="http://schema.org/Person">为巽</span><time itemprop="dateCreated datePublished" datetime="2026-10-16T15:32:35.467Z" title="Created 2026-10-16 15:32:35">2026-10-16</time><time itemprop="dateCreated datePublished" datetime="2026-10-17T12:16:52.653Z" title="Updated 2026-10-17 12:16:52">2026-10-17</time></header><h1 id="1-1-GPIO"><a href="#1-1-GPIO" class="headerlink" title="1.1 GPIO"></a>1.1 GPIO</h1><p>GPIO（General Purpose Input&#x2F;Output）是芯片控制外部电路最基础的引脚接口。</p>
+<h3 id="1-八种工作模式"><a href="#1-八种工作模式" class="headerlink" title="1. 八种工作模式"></a>1. 八种工作模式</h3><table>
+<thead>
+<tr>
+<th><strong>分类</strong></th>
+<th><strong>模式名称</strong></th>
+<th><strong>核心特点与典型应用场景</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>输入模式</strong></td>
+<td><strong>浮空输入 (Floating)</strong></td>
+<td>电平完全由外部决定，引脚悬空时电平不确定。常用于<strong>UART RX</strong>、外部按键（已有外部上下拉）。</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>上拉输入 (Pull-up)</strong></td>
+<td>内部连接上拉电阻，默认高电平。用于检测<strong>低电平有效</strong>的外部中断或按键。</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>下拉输入 (Pull-down)</strong></td>
+<td>内部连接下拉电阻，默认低电平。用于检测<strong>高电平有效</strong>的外部信号。</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>模拟输入 (Analog)</strong></td>
+<td>关闭施密特触发器，信号直通内部 ADC 模块。用于<strong>ADC 电压采集</strong>或低功耗模式下的省电配置。</td>
+</tr>
+<tr>
+<td><strong>输出模式</strong></td>
+<td><strong>开漏输出 (Open-Drain)</strong></td>
+<td>PMOS 不工作，NMOS 导通输出低电平，截止呈高阻态。<strong>必须外接上拉电阻才能输出高电平</strong>。</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>推挽输出 (Push-Pull)</strong></td>
+<td>PMOS 和 NMOS 交替导通，可直接输出强高低电平，驱动能力强。用于驱动 LED、继电器、<strong>SPI&#x2F;UART TX</strong>。</td>
+</tr>
+<tr>
+<td><strong>复用模式</strong></td>
+<td><strong>复用开漏 &#x2F; 复用推挽</strong></td>
+<td>引脚控制权交给片上外设硬件（如 I2C、SPI、PWM），而非 CPU 直接写 ODR 寄存器。</td>
+</tr>
+</tbody></table>
+<h1 id="1-2-UART"><a href="#1-2-UART" class="headerlink" title="1.2 UART"></a>1.2 UART</h1><p>UART 是一种异步、全双工、点对点（1对1）的串行通信协议。</p>
+<h3 id="1-协议核心要素"><a href="#1-协议核心要素" class="headerlink" title="1. 协议核心要素"></a>1. 协议核心要素</h3><ul>
+<li><strong>物理连线</strong>：<code>TX</code>（发送）、<code>RX</code>（接收）、<code>GND</code>（共地，必不可少）。硬件流控需额外增加 <code>RTS</code>（请求发送）和 <code>CTS</code>（允许发送）。</li>
+<li><strong>数据帧格式</strong>：<ol>
+<li>**空闲态 (Idle)**：持续高电平。</li>
+<li>**起始位 (Start Bit)**：1 bit 低电平（标志传输开始，触发接收端采样定时器）。</li>
+<li><strong>数据位 (Data Bits)<strong>：5~8 bits（通常为 8 bits，</strong>低位 LSB 先发</strong>）。</li>
+<li>**校验位 (Parity Bit)**：可选（奇校验、偶校验、无校验），用于简单检错。</li>
+<li>**停止位 (Stop Bit)**：1 &#x2F; 1.5 &#x2F; 2 bits 高电平，拉开帧间间隔并校准时钟。</li>
+</ol>
+</li>
+</ul>
+<h3 id="2-高频面试考点"><a href="#2-高频面试考点" class="headerlink" title="2. 高频面试考点"></a>2. 高频面试考点</h3><ul>
+<li><p><strong>既然没有时钟线（CLK），异步通信如何保证收发同步？</strong></p>
+<ul>
+<li>收发双方预先约定相同的<strong>波特率（Baud Rate）</strong>。接收端检测到起始位下降沿后，以 <strong>16 倍波特率</strong>的内部时钟进行过采样，取每个 bit 中间位置（第 7、8、9 次采样值）进行表决，从而滤除边沿毛刺并容忍一定程度的时钟偏差（通常要求收发双方时钟误差小于 **2.5%~3%**）。</li>
+</ul>
+</li>
+<li><p><strong>UART、RS232、RS485 的区别？</strong></p>
+<table>
+<thead>
+<tr>
+<th><strong>特性</strong></th>
+<th><strong>UART (TTL电平)</strong></th>
+<th><strong>RS232</strong></th>
+<th><strong>RS485</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>信号类型</strong></td>
+<td>单端信号（3.3V&#x2F;5V）</td>
+<td>单端信号（±3V~ ±15V 负逻辑）</td>
+<td><strong>差分信号</strong>（A&#x2F;B 两线压差）</td>
+</tr>
+<tr>
+<td><strong>通信方式</strong></td>
+<td>全双工（1对1）</td>
+<td>全双工（1对1）</td>
+<td><strong>半双工</strong>（支持 1对多 总线组网，最多32~256节点）</td>
+</tr>
+<tr>
+<td><strong>传输距离</strong></td>
+<td>板级（小于 1 米）</td>
+<td>约 15 米</td>
+<td><strong>可达 1200 米</strong>（抗共模干扰极强）</td>
+</tr>
+</tbody></table>
+</li>
+<li><p><strong>串口接收不定长数据怎么处理？</strong></p>
+<ul>
+<li>最优解是 <strong>DMA + 串口空闲中断（IDLE Interrupt）</strong>。DMA 在后台自动搬运每个字节到内存缓冲区，当总线出现超过 1 个字节时间的空闲高电平时，触发 IDLE 中断，通知 CPU 一帧数据接收完毕。</li>
+</ul>
+</li>
+</ul>
+<h1 id="1-3-I2C"><a href="#1-3-I2C" class="headerlink" title="1.3 I2C"></a>1.3 I2C</h1><p>I2C 是 Philips 开发的<strong>同步、半双工、支持多主多从</strong>的双线制串行总线。</p>
+<h3 id="1-物理层与协议时序"><a href="#1-物理层与协议时序" class="headerlink" title="1. 物理层与协议时序"></a>1. 物理层与协议时序</h3><ul>
+<li><strong>双线结构</strong>：<code>SDA</code>（串行数据线）、<code>SCL</code>（串行时钟线）。两条线均配置为<strong>开漏输出 + 外部上拉电阻</strong>（典型值 1.8kΩ ~ 10kΩ）。</li>
+<li><strong>传输速率</strong>：标准模式（100 kbps）、快速模式（400 kbps）、高速模式（3.4 Mbps）。</li>
+<li><strong>核心时序规则</strong>：<ul>
+<li>**起始信号 (START)**：SCL 为高电平时，SDA 由高变低。</li>
+<li>**停止信号 (STOP)**：SCL 为高电平时，SDA 由低变高。</li>
+<li><strong>数据有效性</strong>：<strong>SCL 为高电平时，SDA 必须保持稳定</strong>（供接收方采样）；<strong>SCL 为低电平时，SDA 才允许改变状态</strong>。</li>
+<li><strong>应答信号 (ACK&#x2F;NACK)<strong>：每传输完 8 bits（1字节，</strong>高位 MSB 先发</strong>），发送方释放 SDA，在第 9 个时钟周期由接收方拉低 SDA 表示 ACK，保持高电平表示 NACK。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-高频面试考点-1"><a href="#2-高频面试考点-1" class="headerlink" title="2. 高频面试考点"></a>2. 高频面试考点</h3><ul>
+<li><strong>I2C 读寄存器的完整流程是什么？（为什么读操作包含写过程？）</strong><ul>
+<li>读操作本质是<strong>复合格式（Combined Format）</strong>，需要先“写”告诉从机要读哪个寄存器地址：<ol>
+<li>主机发送 <code>START</code> + <code>从机地址(7bit) + 写标志(0)</code> -&gt; 等待从机 <code>ACK</code>。</li>
+<li>主机发送 <code>目标寄存器地址(8bit)</code> -&gt; 等待从机 <code>ACK</code>。</li>
+<li>主机发送 <strong><code>Repeated START</code>（重复起始信号，不发 STOP 以防总线被其他主机抢占）</strong> + <code>从机地址(7bit) + 读标志(1)</code> -&gt; 等待从机 <code>ACK</code>。</li>
+<li>从机发送数据字节，主机回复 <code>ACK</code>（若读完最后一个字节，主机必须回复 <strong><code>NACK</code></strong> 通知从机停止发送）。</li>
+<li>主机发送 <code>STOP</code> 释放总线。</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><strong>I2C 总线死锁（SDA 被一直拉低）的原因及如何解除？</strong><ul>
+<li><strong>原因</strong>：主机正在读从机数据时，从机正好输出 bit <code>0</code>（拉低了 SDA），此时主机发生异常复位。复位后主机处于空闲态，而从机因为没有收到后续的 SCL 时钟，一直卡在拉低 SDA 的状态等待时钟，导致总线死锁。</li>
+<li><strong>解决方法</strong>：主机初始化时检测 SDA，若为低电平，将 SCL 引脚临时配置为普通 GPIO，<strong>软件模拟连续输出 9 个 SCL 时钟脉冲</strong>，让从机走完剩余的 bit 状态机并释放 SDA，最后主机再发一个 <code>STOP</code> 信号恢复总线。</li>
+</ul>
+</li>
+</ul>
+<h1 id="1-4-I2S"><a href="#1-4-I2S" class="headerlink" title="1.4 I2S"></a>1.4 I2S</h1><p>I2S（Inter-IC Sound）是专为数字音频设备之间传输 PCM 音频数据设计的<strong>同步串行接口</strong>。</p>
+<h3 id="1-信号线定义"><a href="#1-信号线定义" class="headerlink" title="1. 信号线定义"></a>1. 信号线定义</h3><ul>
+<li>CK &#x2F; BCLK（Bit Clock，位时钟）：对应数字音频的每一位数据。<ul>
+<li><strong>计算公式</strong>：</li>
+<li></li>
+</ul>
+</li>
+<li><strong>WS &#x2F; LRCK（Word Select &#x2F; Left-Right Clock，帧时钟&#x2F;声道选择）</strong>：频率等于**采样率 (<strong>$f_s$</strong>)**。用于区分当前传输的是左声道（通常 <code>0</code> 表示左）还是右声道（<code>1</code> 表示右）。</li>
+<li><strong>SD &#x2F; SDATA（Serial Data）</strong>：实际的二进制补码音频数据线（MSB 先发）。</li>
+<li><strong>MCLK（Master Clock，主时钟，可选）</strong>：通常为采样率的 <strong>256 倍或 384 倍</strong>（如 <strong>$256 \times f_s$</strong>），专供外部 Audio Codec 内部的锁相环（PLL）和 <strong>$\Delta-\Sigma$</strong> 调制器使用，不属于标准 I2S 三线制强制要求，但实际硬件中极其常见。</li>
+</ul>
+<h3 id="2-三种对齐格式对比"><a href="#2-三种对齐格式对比" class="headerlink" title="2. 三种对齐格式对比"></a>2. 三种对齐格式对比</h3><ul>
+<li><strong>标准 I2S 格式（Philips 标准）</strong>：最高有效位（MSB）在 LRCK 发生翻转后的<strong>第 2 个 BCLK 上升沿</strong>才开始有效（即延迟 1 个 BCLK 周期）。<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/weixuna/MyPic/26/10/image_8a4b333dbdf7727d1093260a07ee0b58.png"></li>
+<li><strong>左对齐格式（Left-Justified）</strong>：LRCK 翻转的同时，紧接着的第 1 个 BCLK 周期就开始传输 MSB（无延迟）。</li>
+<li><strong>右对齐格式（Right-Justified）</strong>：LSB 对齐在 LRCK 下一次翻转前的最后一个 BCLK 周期。</li>
+</ul>
+<h3 id="3-高频面试考点"><a href="#3-高频面试考点" class="headerlink" title="3. 高频面试考点"></a>3. 高频面试考点</h3><ul>
+<li><strong>为什么音频传输不直接用 SPI 或 I2C，而要专门设计 I2S？</strong><ul>
+<li>① <strong>时钟抖动（Jitter）隔离</strong>：音频将数据和时钟完全分离，配合硬件 PLL 降低采样时钟抖动，避免爆音或底噪；② <strong>天然支持双声道同步</strong>：通过 LRCK 硬件切换左右声道；③ <strong>容忍位宽不匹配</strong>：标准 I2S 因为 MSB 固定在 LRCK 翻转后第 2 个时钟，若发送端发 24-bit 而接收端只支持 16-bit，接收端直接截取高 16 位、忽略后 8 位即可，无需修改协议即可兼容。</li>
+</ul>
+</li>
+</ul>
+<h1 id="1-5-MIPI"><a href="#1-5-MIPI" class="headerlink" title="1.5 MIPI"></a>1.5 MIPI</h1><p>嵌入式面试中提到的 MIPI 通常指用于摄像头的 <strong>MIPI CSI-2</strong>（Camera Serial Interface）和用于显示屏的 <strong>MIPI DSI</strong>（Display Serial Interface）。</p>
+<h3 id="1-物理层（D-PHY）核心机制"><a href="#1-物理层（D-PHY）核心机制" class="headerlink" title="1. 物理层（D-PHY）核心机制"></a>1. 物理层（D-PHY）核心机制</h3><ul>
+<li><p><strong>Lane（通道）结构</strong>：由 <strong>1 对差分时钟线（Clock Lane）</strong> + <strong>1~4 对差分数据线（Data Lanes）</strong> 组成。</p>
+</li>
+<li><p><strong>两种工作状态自动切换（高频考点）</strong>：</p>
+<table>
+<thead>
+<tr>
+<th><strong>状态模式</strong></th>
+<th><strong>信号类型</strong></th>
+<th><strong>电平范围</strong></th>
+<th><strong>速率</strong></th>
+<th><strong>作用</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>LP 模式 (Low Power)</strong></td>
+<td>单端信号</td>
+<td>0~ 1.2V</td>
+<td>小于 10 Mbps</td>
+<td>空闲省电、传输控制命令（如屏幕初始化寄存器配置）。</td>
+</tr>
+<tr>
+<td><strong>HS 模式 (High Speed)</strong></td>
+<td>低摆幅差分信号</td>
+<td>100mV~ 300mV (典型 200mV)</td>
+<td>80 Mbps~ 2.5 Gbps&#x2F;Lane</td>
+<td>高速传输图像帧数据（像素流）。</td>
+</tr>
+</tbody></table>
+</li>
+<li><p><strong>状态切换时序</strong>：发送图像帧前，总线从 <strong>LP11 -&gt; LP01 -&gt; LP00</strong> 序列进入 HS 高速差分模式；一帧或一行传完后（消隐期 Blanking），立刻退回 LP11 省电状态。</p>
+</li>
+</ul>
+<h3 id="2-MIPI-DSI-的两种工作模式"><a href="#2-MIPI-DSI-的两种工作模式" class="headerlink" title="2. MIPI DSI 的两种工作模式"></a>2. MIPI DSI 的两种工作模式</h3><ul>
+<li><strong>Video Mode（视频模式）</strong>：类似传统 RGB 接口，主控必须持续不断地向屏幕刷新像素流和同步信号（VSYNC&#x2F;HSYNC）。屏幕内部没有显存（GRAM），一旦主控停止发送数据，屏幕就会黑屏或花屏。</li>
+<li><strong>Command Mode（命令模式）</strong>：屏幕内部自带显存（GRAM）。主控只在画面变化时通过 MIPI 发送更新的数据包，平时主控可以休眠，由屏幕自刷新，极大降低系统功耗（常用于智能手表、手机息屏显示）。</li>
+</ul>
+<h1 id="1-6-SDMMC-与-SDIO"><a href="#1-6-SDMMC-与-SDIO" class="headerlink" title="1.6 SDMMC 与 SDIO"></a>1.6 SDMMC 与 SDIO</h1><p><strong>SDMMC 是控制器或存储卡标准，而 SDIO 是基于 SD 总线扩展出来的外设接口协议</strong>。</p>
+<h3 id="1-概念区分"><a href="#1-概念区分" class="headerlink" title="1. 概念区分"></a>1. 概念区分</h3><ul>
+<li><strong>MMC &#x2F; eMMC</strong>：MMC 是最早的多媒体卡标准；<strong>eMMC（Embedded MMC）</strong> 是将 NAND Flash 芯片和主控（负责磨损均衡、坏块管理 ECC）封装成 BGA 焊死在主板上的存储芯片，通常支持 <strong>1-bit、4-bit、8-bit</strong> 数据位宽。</li>
+<li><strong>SD 卡（Secure Digital）</strong>：在 MMC 基础上发展而来的可插拔存储卡，支持 <strong>1-bit 和 4-bit</strong> 模式（以及兼容 SPI 模式）。</li>
+<li><strong>SDIO（Secure Digital Input&#x2F;Output）</strong>：<strong>复用 SD 卡的物理引脚和命令协议，但连接的不是存储卡，而是外设芯片</strong>（最典型的是 <strong>SDIO Wi-Fi &#x2F; 蓝牙模组</strong>，如 AP6212、ESP8266&#x2F;ESP32 作为从机网卡）。</li>
+</ul>
+<h3 id="2-硬件信号线（以-4-bit-SD-SDIO-为例）"><a href="#2-硬件信号线（以-4-bit-SD-SDIO-为例）" class="headerlink" title="2. 硬件信号线（以 4-bit SD&#x2F;SDIO 为例）"></a>2. 硬件信号线（以 4-bit SD&#x2F;SDIO 为例）</h3><ul>
+<li>**<code>CLK</code>**：主机提供给从机的同步时钟。</li>
+<li>**<code>CMD</code>**：双向命令&#x2F;响应线（用于发送控制指令，如 <code>CMD0</code> 复位、<code>CMD5</code> SDIO 初始化、<code>CMD52/CMD53</code> SDIO 读写寄存器与数据块）。</li>
+<li><code>DAT0 ~ DAT3</code>：4 根双向数据线。</li>
+</ul>
+<h3 id="3-高频面试考点-1"><a href="#3-高频面试考点-1" class="headerlink" title="3. 高频面试考点"></a>3. 高频面试考点</h3><ul>
+<li><strong>SDIO 和 SD 卡在中断机制上有什么重要区别？</strong><ul>
+<li>普通 SD 存储卡是纯被动的，没有硬件中断概念；而 <strong>SDIO 外设（如 Wi-Fi 收到网络数据包）需要主动通知主机</strong>。在 4-bit SDIO 模式下，<strong>复用 <code>DAT1</code> 引脚在数据传输间隙作为硬件中断线</strong>，通知主控读取数据。</li>
+</ul>
+</li>
+<li><strong>为什么板载大容量存储普遍用 eMMC 而不是 Raw NAND Flash？</strong><ul>
+<li>Raw NAND 需要主控软件自行处理坏块管理（BBM）、磨损均衡（Wear Leveling）和复杂的 ECC 纠错；而 eMMC 内部自带 FTL（Flash Translation Layer）控制器，对外呈现为标准的块设备，极大地简化了 Linux&#x2F;RTOS 的驱动开发。</li>
+</ul>
+</li>
+</ul>
+<h1 id="1-7-SPI-QSPI"><a href="#1-7-SPI-QSPI" class="headerlink" title="1.7 SPI&#x2F;QSPI"></a>1.7 SPI&#x2F;QSPI</h1><ol>
+<li>标准 SPI（串行外设接口）</li>
+</ol>
+<p>SPI 是 Motorola 提出的<strong>同步、全双工、一主多从</strong>的高速串行接口（常见速率 10MHz ~ 50MHz+）。</p>
+<ul>
+<li><p><strong>四根信号线</strong>：</p>
+<ul>
+<li><code>SCLK</code>（Serial Clock）：同步时钟，由主机产生。</li>
+<li><code>MOSI</code>（Master Out Slave In）：主机输出，从机输入。</li>
+<li><code>MISO</code>（Master In Slave Out）：主机输入，从机输出。</li>
+<li><code>CS / NSS</code>（Chip Select）：片选信号（通常低电平有效），每个从机独占一根 CS 线。</li>
+</ul>
+</li>
+<li><p><strong>四种工作模式（必考核心）</strong>：由 <strong>CPOL（时钟极性）</strong> 和 <strong>CPHA（时钟相位）</strong> 组合决定：</p>
+<table>
+<thead>
+<tr>
+<th><strong>SPI 模式</strong></th>
+<th><strong>CPOL（空闲时 SCLK 电平）</strong></th>
+<th><strong>CPHA（数据采样边沿）</strong></th>
+<th><strong>采样时刻与数据切换时刻</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Mode 0 (最常用)</strong></td>
+<td><code>0</code>（空闲为低电平）</td>
+<td><code>0</code>（第 1 个跳变沿采样）</td>
+<td><strong>上升沿采样</strong>，下降沿切换数据</td>
+</tr>
+<tr>
+<td><strong>Mode 1</strong></td>
+<td><code>0</code>（空闲为低电平）</td>
+<td><code>1</code>（第 2 个跳变沿采样）</td>
+<td><strong>下降沿采样</strong>，上升沿切换数据</td>
+</tr>
+<tr>
+<td><strong>Mode 2</strong></td>
+<td><code>1</code>（空闲为高电平）</td>
+<td><code>0</code>（第 1 个跳变沿采样）</td>
+<td><strong>下降沿采样</strong>，上升沿切换数据</td>
+</tr>
+<tr>
+<td><strong>Mode 3 (最常用)</strong></td>
+<td><code>1</code>（空闲为高电平）</td>
+<td><code>1</code>（第 2 个跳变沿采样）</td>
+<td><strong>上升沿采样</strong>，下降沿切换数据</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>记忆技巧</strong>：不管 Mode 0 还是 Mode 3，都是<strong>上升沿采样数据</strong>，这也是绝大多数 SPI Flash 和传感器默认同时兼容 Mode 0 和 Mode 3 的原因！</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="2-QSPI（Queued-Quad-SPI）"><a href="#2-QSPI（Queued-Quad-SPI）" class="headerlink" title="2. QSPI（Queued &#x2F; Quad SPI）"></a>2. QSPI（Queued &#x2F; Quad SPI）</h3><p>嵌入式语境下的 QSPI 绝大多指 <strong>Quad SPI（四线数据 SPI）</strong>，专用于连接外部 NOR Flash。</p>
+<ul>
+<li><strong>与标准 SPI 的核心区别</strong>：<ol>
+<li><strong>半双工 4 线并行传输</strong>：将原本的 <code>MOSI</code> 和 <code>MISO</code> 升级为双向的 <code>IO0</code>、<code>IO1</code>，并把原本 Flash 的写保护引脚 (<code>WP</code>) 和保持引脚 (<code>HOLD</code>) 复用为 <code>IO2</code>、<code>IO3</code>。<strong>一个时钟周期可以同时传输 4 bits 数据</strong>，吞吐率直接提升 <strong>4 倍</strong>（若配合 DTR&#x2F;DDR 双边沿采样，1 个时钟可传 8 bits）。</li>
+<li><strong>帧阶段划分</strong>：QSPI 协议将一次通信拆分为 **指令阶段 (Instruction) -&gt; 地址阶段 (Address) -&gt; 交替字节 (Alternate Bytes) -&gt; 空周期 (Dummy Cycles) -&gt; 数据阶段 (Data)**，每个阶段都可独立配置为单线（1-line）、双线（2-line）或四线（4-line）传输。</li>
+<li><strong>XIP（eXecute In Place，片内执行）与内存映射模式（Memory-Mapped Mode）</strong>：<ul>
+<li>标准 SPI 需要 CPU 先发读命令把数据搬到 RAM 才能运行；</li>
+<li>QSPI 控制器支持<strong>内存映射</strong>，将外部 Flash 直接映射到 MCU 的系统寻址空间（如 STM32 的 <code>0x90000000</code>）。CPU 可以直接通过指针读取外部 Flash，或者直接把代码放在外部 QSPI Flash 中运行（XIP），极大节省片内 Flash 成本。</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="copyright-cc-box"><i class="anzhiyufont anzhiyu-icon-copyright"></i></div><div class="post-copyright__author_box"><a class="post-copyright__author_img" href="/" title="头像"><img class="post-copyright__author_img_back" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/touxiang.jpg" title="头像" alt="头像"><img class="post-copyright__author_img_front" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/touxiang.jpg" title="头像" alt="头像"></a><div class="post-copyright__author_name">为巽</div><div class="post-copyright__author_desc">咬定青山不放松</div></div><div class="post-copyright__post__info"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="http://example.com/2026/10/16/%E5%B5%8C%E5%85%A5%E5%BC%8F%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1%E6%96%87%E4%B9%8B%E5%A4%96%E8%AE%BE/">原创</a><a class="post-copyright-title"><span onclick="rm.copyPageUrl('http://example.com/2026/10/16/%E5%B5%8C%E5%85%A5%E5%BC%8F%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1%E6%96%87%E4%B9%8B%E5%A4%96%E8%AE%BE/')">嵌入式面试八股文之外设</span></a></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="rewardLeftButton"></div><div class="shareRight"><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="http://example.com/2026/10/16/%E5%B5%8C%E5%85%A5%E5%BC%8F%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1%E6%96%87%E4%B9%8B%E5%A4%96%E8%AE%BE/"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=嵌入式面试八股文之外设&amp;url=http://example.com/2026/10/16/%E5%B5%8C%E5%85%A5%E5%BC%8F%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1%E6%96%87%E4%B9%8B%E5%A4%96%E8%AE%BE/&amp;pic=" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><script>function copyCurrentPageUrl() {
+  var currentPageUrl = window.location.href;
+  var input = document.createElement("input");
+  input.setAttribute("value", currentPageUrl);
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.body.removeChild(input);
+}</script><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="copyCurrentPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/%E9%9D%A2%E8%AF%95/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>面试<span class="tagsPageCount">5</span></a></div></div></div><div class="post_share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"/><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer="defer"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2026/10/11/%E5%B5%8C%E5%85%A5%E5%BC%8F%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1%E6%96%87%E4%B9%8BFreeRTOS/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">嵌入式面试八股文之FreeRTOS</div></div></a></div><div class="next-post pull-right"><a href="/2026/10/17/C%20%E8%AF%AD%E8%A8%80%E4%B8%8E%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%9F%BA%E7%A1%80%E5%AE%8C%E6%95%B4%E9%9D%A2%E8%AF%95%E6%89%8B%E5%86%8C/"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info"></div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="anzhiyufont anzhiyu-icon-thumbs-up fa-fw" style="font-size: 1.5rem; margin-right: 4px"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/2026/06/17/%E6%80%9D%E6%BE%88%E9%9D%A2%E8%AF%95%E7%AC%94%E8%AE%B0-RTOS/" title="思澈面试笔记-RTOS"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2026-06-17</div><div class="title">思澈面试笔记-RTOS</div></div></a></div><div><a href="/2026/06/17/%E6%80%9D%E6%BE%88%E9%9D%A2%E8%AF%95%E7%AC%94%E8%AE%B0-%E5%A4%96%E8%AE%BE/" title="思澈面试笔记-外设"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2026-06-17</div><div class="title">思澈面试笔记-外设</div></div></a></div><div><a href="/2026/06/17/%E6%80%9D%E6%BE%88%E9%9D%A2%E8%AF%95%E7%AC%94%E8%AE%B0-%E5%B5%8C%E5%85%A5%E5%BC%8FC/" title="思澈面试笔记-嵌入式C"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2026-06-17</div><div class="title">思澈面试笔记-嵌入式C</div></div></a></div><div><a href="/2026/06/17/%E6%80%9D%E6%BE%88%E9%9D%A2%E8%AF%95%E7%AC%94%E8%AE%B0-%E6%9E%84%E5%BB%BA%E7%B3%BB%E7%BB%9F/" title="思澈面试笔记-构建系统"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2026-06-17</div><div class="title">思澈面试笔记-构建系统</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="author-info__sayhi" id="author-info__sayhi" onclick="anzhiyu.changeSayHelloText()"></div><div class="author-info-avatar"><img class="avatar-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-status"><img class="g-status" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://bu.dusays.com/2023/08/24/64e6ce9c507bb.png" alt="status"/></div></div><div class="author-info__description"></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/"><h1 class="author-info__name">为巽</h1><div class="author-info__desc">咬定青山不放松</div></a><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/anzhiyu-c" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-1-GPIO"><span class="toc-number">1.</span> <span class="toc-text">1.1 GPIO</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%85%AB%E7%A7%8D%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.0.1.</span> <span class="toc-text">1. 八种工作模式</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-2-UART"><span class="toc-number">2.</span> <span class="toc-text">1.2 UART</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%8D%8F%E8%AE%AE%E6%A0%B8%E5%BF%83%E8%A6%81%E7%B4%A0"><span class="toc-number">2.0.1.</span> <span class="toc-text">1. 协议核心要素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E8%80%83%E7%82%B9"><span class="toc-number">2.0.2.</span> <span class="toc-text">2. 高频面试考点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-3-I2C"><span class="toc-number">3.</span> <span class="toc-text">1.3 I2C</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%89%A9%E7%90%86%E5%B1%82%E4%B8%8E%E5%8D%8F%E8%AE%AE%E6%97%B6%E5%BA%8F"><span class="toc-number">3.0.1.</span> <span class="toc-text">1. 物理层与协议时序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E8%80%83%E7%82%B9-1"><span class="toc-number">3.0.2.</span> <span class="toc-text">2. 高频面试考点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-4-I2S"><span class="toc-number">4.</span> <span class="toc-text">1.4 I2S</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BF%A1%E5%8F%B7%E7%BA%BF%E5%AE%9A%E4%B9%89"><span class="toc-number">4.0.1.</span> <span class="toc-text">1. 信号线定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%B8%89%E7%A7%8D%E5%AF%B9%E9%BD%90%E6%A0%BC%E5%BC%8F%E5%AF%B9%E6%AF%94"><span class="toc-number">4.0.2.</span> <span class="toc-text">2. 三种对齐格式对比</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E8%80%83%E7%82%B9"><span class="toc-number">4.0.3.</span> <span class="toc-text">3. 高频面试考点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-5-MIPI"><span class="toc-number">5.</span> <span class="toc-text">1.5 MIPI</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%89%A9%E7%90%86%E5%B1%82%EF%BC%88D-PHY%EF%BC%89%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6"><span class="toc-number">5.0.1.</span> <span class="toc-text">1. 物理层（D-PHY）核心机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-MIPI-DSI-%E7%9A%84%E4%B8%A4%E7%A7%8D%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F"><span class="toc-number">5.0.2.</span> <span class="toc-text">2. MIPI DSI 的两种工作模式</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-6-SDMMC-%E4%B8%8E-SDIO"><span class="toc-number">6.</span> <span class="toc-text">1.6 SDMMC 与 SDIO</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%A6%82%E5%BF%B5%E5%8C%BA%E5%88%86"><span class="toc-number">6.0.1.</span> <span class="toc-text">1. 概念区分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%A1%AC%E4%BB%B6%E4%BF%A1%E5%8F%B7%E7%BA%BF%EF%BC%88%E4%BB%A5-4-bit-SD-SDIO-%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="toc-number">6.0.2.</span> <span class="toc-text">2. 硬件信号线（以 4-bit SD&#x2F;SDIO 为例）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E8%80%83%E7%82%B9-1"><span class="toc-number">6.0.3.</span> <span class="toc-text">3. 高频面试考点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-7-SPI-QSPI"><span class="toc-number">7.</span> <span class="toc-text">1.7 SPI&#x2F;QSPI</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-QSPI%EF%BC%88Queued-Quad-SPI%EF%BC%89"><span class="toc-number">7.0.1.</span> <span class="toc-text">2. QSPI（Queued &#x2F; Quad SPI）</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/17/C%20%E8%AF%AD%E8%A8%80%E4%B8%8E%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%9F%BA%E7%A1%80%E5%AE%8C%E6%95%B4%E9%9D%A2%E8%AF%95%E6%89%8B%E5%86%8C/" title="No title">No title</a><time datetime="2026-10-17T13:04:10.217Z" title="Created 2026-10-17 13:04:10">2026-10-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/16/%E5%B5%8C%E5%85%A5%E5%BC%8F%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1%E6%96%87%E4%B9%8B%E5%A4%96%E8%AE%BE/" title="嵌入式面试八股文之外设">嵌入式面试八股文之外设</a><time datetime="2026-10-16T15:32:35.467Z" title="Created 2026-10-16 15:32:35">2026-10-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/11/%E5%B5%8C%E5%85%A5%E5%BC%8F%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1%E6%96%87%E4%B9%8BFreeRTOS/" title="嵌入式面试八股文之FreeRTOS">嵌入式面试八股文之FreeRTOS</a><time datetime="2026-10-11T13:14:17.433Z" title="Created 2026-10-11 13:14:17">2026-10-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/14/%E5%B5%8C%E5%85%A5%E5%BC%8F%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1%E6%96%87/" title="嵌入式面试八股文之C语言">嵌入式面试八股文之C语言</a><time datetime="2026-09-14T14:29:33.051Z" title="Created 2026-09-14 14:29:33">2026-09-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/12/%E9%AA%91%E8%A1%8C%E7%A0%81%E8%A1%A8%E9%9D%A2%E8%AF%95%E6%B7%B1%E6%8C%96%E9%97%AE%E7%AD%94%E6%89%8B%E5%86%8C/" title="骑行码表面试深挖问答手册">骑行码表面试深挖问答手册</a><time datetime="2026-09-12T19:00:26.863Z" title="Created 2026-09-12 19:00:26">2026-09-12</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div id="footer-bar-tips"></div><div id="footer-type-tips"></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/anzhiyu-c/hexo-theme-anzhiyu" title="主题">主题</a></div></div></div></footer></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">Articles</div><div class="length-num">69</div></a><a href="/tags/" title="tag"><div class="headline">Tags</div><div class="length-num">24</div></a><a href="/categories/" title="category"><div class="headline">Categories</div><div class="length-num">23</div></a></div><span class="sidebar-menu-item-title">Function</span><div class="sidebar-menu-item"><a class="darkmode_switchbutton menu-child" href="javascript:void(0);" title="Display Mode"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span>Display Mode</span></a></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://zh.annas-archive.org/" title="安娜图书"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/book.png" alt="安娜图书"/><span class="back-menu-item-text">安娜图书</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="https://www.book123.info/" title="无名图书"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/book-open.png" alt="无名图书"/><span class="back-menu-item-text">无名图书</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">项目</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://image.anheyu.com/" title="项目"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://image.anheyu.com/favicon.ico" alt="项目"/><span class="back-menu-item-text">项目</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/album/"><i class="anzhiyufont anzhiyu-icon-images faa-tada" style="font-size: 0.9em;"></i><span> 相册集</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li></ul></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/APP%E5%BC%80%E5%8F%91/" style="font-size: 0.88rem;">APP开发<sup>1</sup></a><a href="/tags/CSS/" style="font-size: 0.88rem;">CSS<sup>1</sup></a><a href="/tags/HTML/" style="font-size: 0.88rem;">HTML<sup>3</sup></a><a href="/tags/HarmonyOS/" style="font-size: 0.88rem;">HarmonyOS<sup>1</sup></a><a href="/tags/RTOS/" style="font-size: 0.88rem;">RTOS<sup>2</sup></a><a href="/tags/SF32/" style="font-size: 0.88rem;">SF32<sup>1</sup></a><a href="/tags/STM32/" style="font-size: 0.88rem;">STM32<sup>9</sup></a><a href="/tags/Ubuntu%E7%BB%B4%E6%8A%A4/" style="font-size: 0.88rem;">Ubuntu维护<sup>1</sup></a><a href="/tags/windows%E7%BB%B4%E6%8A%A4/" style="font-size: 0.88rem;">windows维护<sup>1</sup></a><a href="/tags/%E5%85%AB%E8%82%A1%E6%96%87/" style="font-size: 0.88rem;">八股文<sup>2</sup></a><a href="/tags/%E5%8D%8E%E4%B8%BAIOT/" style="font-size: 0.88rem;">华为IOT<sup>1</sup></a><a href="/tags/%E5%8D%8E%E4%B8%BA%E4%BA%91IOT/" style="font-size: 0.88rem;">华为云IOT<sup>1</sup></a><a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/" style="font-size: 0.88rem;">嵌入式<sup>1</sup></a><a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8FC/" style="font-size: 0.88rem;">嵌入式C<sup>6</sup></a><a href="/tags/%E6%80%9D%E6%BE%88/" style="font-size: 0.88rem;">思澈<sup>1</sup></a><a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 0.88rem;">数据库<sup>2</sup></a><a href="/tags/%E6%A0%B7%E9%A2%98/" style="font-size: 0.88rem;">样题<sup>1</sup></a><a href="/tags/%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/" style="font-size: 0.88rem;">电子技术<sup>1</sup></a><a href="/tags/%E7%94%B5%E8%B7%AF%E5%92%8C%E7%94%B5%E8%B7%AF%E6%A8%A1%E5%9E%8B/" style="font-size: 0.88rem;">电路和电路模型<sup>1</sup></a><a href="/tags/%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80/" style="font-size: 0.88rem;">电路基础<sup>1</sup></a><a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 0.88rem;">算法<sup>5</sup></a><a href="/tags/%E8%BD%AF%E8%80%83/" style="font-size: 0.88rem;">软考<sup>1</sup></a><a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 0.88rem;">面试<sup>5</sup></a><a href="/tags/%E9%BB%84%E5%B1%B1%E6%B4%BE/" style="font-size: 0.88rem;">黄山派<sup>1</sup></a></div></div><hr/></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="Switch Between Traditional Chinese And Simplified Chinese">繁</button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><button class="search-close-button"><i class="anzhiyufont anzhiyu-icon-xmark"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://y.qq.com/n/ryqq/playlist/8802438608&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.umd.js"></script><script src="https://cdn.cbd.int/instant.page@5.2.0/instantpage.js" type="module"></script><script src="https://cdn.cbd.int/vanilla-lazyload@17.8.5/dist/lazyload.iife.min.js"></script><script src="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.cbd.int/pangu@4.0.7/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script>// 消除控制台打印
+var HoldLog = console.log;
+console.log = function () {};
+let now1 = new Date();
+queueMicrotask(() => {
+  const Log = function () {
+    HoldLog.apply(console, arguments);
+  }; //在恢复前输出日志
+  const grt = new Date("04/01/2021 00:00:00"); //此处修改你的建站时间或者网站上线时间
+  now1.setTime(now1.getTime() + 250);
+  const days = (now1 - grt) / 1000 / 60 / 60 / 24;
+  const dnum = Math.floor(days);
+  const ascll = [
+    `欢迎使用安知鱼!`,
+    `生活明朗, 万物可爱`,
+    `
+        
+       █████╗ ███╗   ██╗███████╗██╗  ██╗██╗██╗   ██╗██╗   ██╗
+      ██╔══██╗████╗  ██║╚══███╔╝██║  ██║██║╚██╗ ██╔╝██║   ██║
+      ███████║██╔██╗ ██║  ███╔╝ ███████║██║ ╚████╔╝ ██║   ██║
+      ██╔══██║██║╚██╗██║ ███╔╝  ██╔══██║██║  ╚██╔╝  ██║   ██║
+      ██║  ██║██║ ╚████║███████╗██║  ██║██║   ██║   ╚██████╔╝
+      ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝    ╚═════╝
+        
+        `,
+    "已上线",
+    dnum,
+    "天",
+    "©2020 By 安知鱼 V1.6.12",
+  ];
+  const ascll2 = [`NCC2-036`, `调用前置摄像头拍照成功，识别为【小笨蛋】.`, `Photo captured: `, `🤪`];
+
+  setTimeout(
+    Log.bind(
+      console,
+      `\n%c${ascll[0]} %c ${ascll[1]} %c ${ascll[2]} %c${ascll[3]}%c ${ascll[4]}%c ${ascll[5]}\n\n%c ${ascll[6]}\n`,
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      ""
+    )
+  );
+  setTimeout(
+    Log.bind(
+      console,
+      `%c ${ascll2[0]} %c ${ascll2[1]} %c \n${ascll2[2]} %c\n${ascll2[3]}\n`,
+      "color:white; background-color:#4fd953",
+      "",
+      "",
+      'background:url("https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/tinggge.gif") no-repeat;font-size:450%'
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c WELCOME %c 你好，小笨蛋.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(
+      console,
+      "%c ⚡ Powered by 安知鱼 %c 你正在访问 为巽 的博客.",
+      "color:white; background-color:#f0ad4e",
+      ""
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c W23-12 %c 你已打开控制台.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(console, "%c S013-782 %c 你现在正处于监控中.", "color:white; background-color:#d9534f", "")
+  );
+});</script><script async src="/anzhiyu/random.js"></script><script src="https://cdn.cbd.int/algoliasearch@4.18.0/dist/algoliasearch-lite.umd.js"></script><script src="https://cdn.cbd.int/instantsearch.js@4.60.0/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script><div class="js-pjax"><input type="hidden" name="page-type" id="page-type" value="post"></div><script>var visitorMail = "";
+</script><script async data-pjax src="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css"><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.cbd.int/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://cdn.cbd.int/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://cdn.cbd.int/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  anzhiyu.removeGlobalFnEvent('pjax')
+  anzhiyu.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script charset="UTF-8" src="https://cdn.cbd.int/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div><div id="popup-window"><div class="popup-window-title">通知</div><div class="popup-window-divider"></div><div class="popup-window-content"><div class="popup-tip">你好呀</div><div class="popup-link"><i class="anzhiyufont anzhiyu-icon-arrow-circle-right"></i></div></div></div><script async>window.onload=function(){var a=document.createElement('script'),b=document.getElementsByTagName('script')[0];a.type='text/javascript',a.async=!0,a.src='/sw-register.js?v='+Date.now(),b.parentNode.insertBefore(a,b)};</script></body></html>
